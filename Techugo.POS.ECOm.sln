@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Techugo.POS.ECOm", "Techugo.POS.ECOm\Techugo.POS.ECOm.csproj", "{E9CCE9EF-3D44-400E-B9E3-BB3FF6980001}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E9CCE9EF-3D44-400E-B9E3-BB3FF6980001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9CCE9EF-3D44-400E-B9E3-BB3FF6980001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9CCE9EF-3D44-400E-B9E3-BB3FF6980001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9CCE9EF-3D44-400E-B9E3-BB3FF6980001}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E107A63-9C61-4A9F-8D89-2246769C27D7}
+	EndGlobalSection
+EndGlobal
