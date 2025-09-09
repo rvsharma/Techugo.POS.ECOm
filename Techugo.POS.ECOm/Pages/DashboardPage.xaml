@@ -30,42 +30,16 @@
         </StackPanel>
         <UniformGrid Columns="4" Rows="2" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <!-- Example for Total Orders -->
-            <Button Background="Transparent" BorderThickness="0" Padding="0" Click="TotalOrders_Click">
-                <Border Background="#F4F9FF"
-                CornerRadius="16"
-                Margin="0"
-                Padding="0"
-                BorderBrush="#E5E7EB"
-                BorderThickness="1"
-                
-                >
-                    <Grid>
-                        <!-- Left colored border -->
-                        <Border Background="#297EFF"
-                        Width="5"
-                        HorizontalAlignment="Left"
-                        CornerRadius="8,0,0,8"/>
-                        <Grid Margin="20,16,20,16">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <!-- Title and Icon -->
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Orders" FontWeight="Bold" FontSize="18" VerticalAlignment="Top"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#297EFF" VerticalAlignment="Top"/>
-                            <!-- Value -->
-                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="6" FontWeight="Bold" FontSize="32" Margin="0,16,0,0"/>
-                            <!-- Subtitle -->
-                            <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="5 processed, 1 pending" FontSize="15" Foreground="#888" Margin="0,8,0,0"/>
-                        </Grid>
-                    </Grid>
-                </Border>
-            </Button>
+            <Border Background="#F4F9FF" BorderBrush="#B3D6FF" BorderThickness="1" CornerRadius="16" Margin="8" Padding="20" MouseLeftButtonUp="PickList_Click" TouchUp="PickList_Click">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Total Orders" FontWeight="Bold" FontSize="18"/>
+                        <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="18" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <TextBlock Text="6" FontWeight="Bold" FontSize="32" Margin="0,8,0,0"/>
+                    <TextBlock Text="5 processed, 1 pending" FontSize="14" Foreground="#888"/>
+                </StackPanel>
+            </Border>
             <Button Background="Transparent" BorderThickness="0" Padding="0" Click="PickList_Click">
                 <Border Background="#F4F9FF" BorderBrush="#B3D6FF" BorderThickness="1" CornerRadius="16" Margin="8" Padding="20">
                     <StackPanel>
@@ -81,7 +55,4 @@
             <!-- Repeat for other tiles, each with its own Click handler -->
         </UniformGrid>
     </StackPanel>
-    <UserControl.Resources>
-        <DropShadowEffect x:Key="TileShadow" Color="#22000000" BlurRadius="12" ShadowDepth="2"/>
-    </UserControl.Resources>
 </UserControl>
