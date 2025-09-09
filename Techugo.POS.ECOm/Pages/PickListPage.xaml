@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="Techugo.POS.ECOm.Pages.PickListPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+Height="Auto" Width="Auto">
+    <StackPanel Margin="32">
+        <Button Content="Back to Dashboard" Width="180" Height="40" Margin="0,0,0,24" Click="BackButton_Click"/>
+        <TextBlock Text="Pick List" FontSize="24" FontWeight="Bold"/>
+        <!-- Add more details here -->
+    </StackPanel>
+</UserControl>
