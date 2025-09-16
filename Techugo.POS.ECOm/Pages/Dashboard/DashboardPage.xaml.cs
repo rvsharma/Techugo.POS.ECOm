@@ -7,6 +7,13 @@ namespace Techugo.POS.ECOm.Pages
     {
         public event RoutedEventHandler TotalOrdersClicked;
         public event RoutedEventHandler PickListClicked;
+        public event RoutedEventHandler AssignRiderClicked;
+        public event RoutedEventHandler PendingDeliveryClicked;
+        public event RoutedEventHandler DeliveredClicked;
+        public event RoutedEventHandler RejectedClicked;
+        public event RoutedEventHandler PartialReturnsClicked;
+        public event RoutedEventHandler CarryForwardClicked;
+
         // Add events for other tiles
 
         public DashboardPage()
@@ -22,6 +29,31 @@ namespace Techugo.POS.ECOm.Pages
         private void PickList_Click(object sender, RoutedEventArgs e)
         {
             PickListClicked?.Invoke(this, new RoutedEventArgs());
+        }
+
+        private void AssignRider_Click(object sender, RoutedEventArgs e)
+        {
+            AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
+        }
+        private void PendingDelivery_Click(object sender, RoutedEventArgs e)
+        {
+            PendingDeliveryClicked?.Invoke(this, new RoutedEventArgs());
+        }
+        private void Delivered_Click(object sender, RoutedEventArgs e)
+        {
+            DeliveredClicked?.Invoke(this, new RoutedEventArgs());
+        }
+        private void Rejected_Click(object sender, RoutedEventArgs e)
+        {
+            RejectedClicked?.Invoke(this, new RoutedEventArgs());
+        }
+        private void PartialReturns_Click(object sender, RoutedEventArgs e)
+        {
+            PartialReturnsClicked?.Invoke(this, new RoutedEventArgs());
+        }
+        private void CarryForward_Click(object sender, RoutedEventArgs e)
+        {
+            CarryForwardClicked?.Invoke(this, new RoutedEventArgs());
         }
         // Add handlers for other tiles
     }

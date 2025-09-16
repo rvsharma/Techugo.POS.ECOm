@@ -30,7 +30,6 @@
         </StackPanel>
         <UniformGrid Columns="4" Rows="2" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <!-- Example for Total Orders -->
-
             <Border Background="#eff6ff"
                 BorderBrush="#a1a1a1"
                 BorderThickness="1"
@@ -46,7 +45,7 @@
                     <Border Grid.Column="0"
                             Height="130"
                         Background="#2b7fff"
-                        CornerRadius="12,0,0,13"/>
+                        CornerRadius="12,0,0,12"/>
                     <!-- Tile content -->
                     <StackPanel Grid.Column="1" Margin="20">
                         <Grid>
@@ -95,8 +94,198 @@
                     </StackPanel>
                 </Grid>
             </Border>
-
-
+            <Border Background="#faf5ff"
+                    BorderBrush="#a1a1a1"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Margin="8"
+                    Padding=".5" MouseLeftButtonUp="AssignRider_Click" TouchUp="AssignRider_Click">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Left blue accent border -->
+                                    <Border Grid.Column="0"
+                    Height="130"
+                    Background="#ad46ff"
+                    CornerRadius="12,0,0,13"/>
+                    <!-- Tile content -->
+                    <StackPanel Grid.Column="1" Margin="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Assign Rider" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#297EFF" 
+                    VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="0" FontWeight="Bold" FontSize="32" Margin="0,8,0,0"/>
+                        <TextBlock Text="Ready for rider assignment" FontSize="14" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="#fff7ed"
+                    BorderBrush="#a1a1a1"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Margin="8"
+                    Padding=".5" MouseLeftButtonUp="PendingDelivery_Click" TouchUp="PendingDelivery_Click">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Left blue accent border -->
+                                    <Border Grid.Column="0"
+                    Height="130"
+                    Background="#ff6900"
+                    CornerRadius="12,0,0,13"/>
+                    <!-- Tile content -->
+                    <StackPanel Grid.Column="1" Margin="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Pending Delivery" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#297EFF" 
+                    VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="1" FontWeight="Bold" FontSize="32" Margin="0,8,0,0"/>
+                        <TextBlock Text="Orders in transit" FontSize="14" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="#f0fdf4"
+                    BorderBrush="#a1a1a1"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Margin="8"
+                    Padding=".5" MouseLeftButtonUp="Delivered_Click" TouchUp="Delivered_Click">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Left blue accent border -->
+                                    <Border Grid.Column="0"
+                    Height="130"
+                    Background="#00c951"
+                    CornerRadius="12,0,0,13"/>
+                    <!-- Tile content -->
+                    <StackPanel Grid.Column="1" Margin="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Delivered" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#297EFF" 
+                    VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="3" FontWeight="Bold" FontSize="32" Margin="0,8,0,0"/>
+                        <TextBlock Text="Successfully delivered" FontSize="14" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="#fef2f2"
+                    BorderBrush="#a1a1a1"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Margin="8"
+                    Padding=".5" MouseLeftButtonUp="Rejected_Click" TouchUp="Rejected_Click">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Left blue accent border -->
+                                    <Border Grid.Column="0"
+                    Height="130"
+                    Background="#fb2c36"
+                    CornerRadius="12,0,0,13"/>
+                    <!-- Tile content -->
+                    <StackPanel Grid.Column="1" Margin="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Rejected" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#297EFF" 
+                    VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="0" FontWeight="Bold" FontSize="32" Margin="0,8,0,0"/>
+                        <TextBlock Text="Cancelled or failed delivery" FontSize="14" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="#eef2ff"
+                    BorderBrush="#a1a1a1"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Margin="8"
+                    Padding=".5" MouseLeftButtonUp="PartialReturns_Click" TouchUp="PartialReturns_Click">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Left blue accent border -->
+                                    <Border Grid.Column="0"
+                    Height="130"
+                    Background="#615fff"
+                    CornerRadius="12,0,0,13"/>
+                    <!-- Tile content -->
+                    <StackPanel Grid.Column="1" Margin="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Partial Returns" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#297EFF" 
+                    VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="2" FontWeight="Bold" FontSize="32" Margin="0,8,0,0"/>
+                        <TextBlock Text="450 refund amound" FontSize="14" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="#fff7ed"
+                    BorderBrush="#a1a1a1"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Margin="8"
+                    Padding=".5" MouseLeftButtonUp="CarryForward_Click" TouchUp="CarryForward_Click">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Left blue accent border -->
+                                    <Border Grid.Column="0"
+                    Height="130"
+                    Background="#ff6900"
+                    CornerRadius="12,0,0,13"/>
+                    <!-- Tile content -->
+                    <StackPanel Grid.Column="1" Margin="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Previous Day Carry-Forward" FontWeight="Bold" FontSize="18" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="#297EFF" 
+                    VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="0" FontWeight="Bold" FontSize="32" Margin="0,8,0,0"/>
+                        <TextBlock Text="Orders received after 9PM cutoff" FontSize="14" Foreground="#888"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
             <!-- Repeat for other tiles, each with its own Click handler -->
         </UniformGrid>
     </StackPanel>
