@@ -15,26 +15,26 @@
                 <TextBlock Text="E-Stock POS" FontWeight="Bold" FontSize="24" Margin="24,32,0,0"/>
                 <TextBlock Text="Order Management" FontSize="14" Foreground="#888" Margin="24,4,0,24"/>
                 <TextBlock Text="Main Menu" FontWeight="SemiBold" FontSize="13" Margin="24,16,0,8"/>
-                <ListBox Margin="12,0,12,0" BorderThickness="0" Background="Transparent" SelectedIndex="0">
-                    <ListBoxItem>
+                <ListBox Margin="12,0,12,0" BorderThickness="0" Background="Transparent">
+                    <ListBoxItem PreviewMouseLeftButtonUp="OrderDashboardMenu_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8D2;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
                             <TextBlock Text="Order Dashboard" FontWeight="Bold"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem>
+                    <ListBoxItem PreviewMouseLeftButtonUp="SalesDashboardMenu_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
                             <TextBlock Text="Sales Dashboard"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem>
+                    <ListBoxItem PreviewMouseLeftButtonUp="RefundManagementMenu_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE90A;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
                             <TextBlock Text="Refund Management"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem>
+                    <ListBoxItem PreviewMouseLeftButtonUp="InventoryManagementMenu_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/>
                             <TextBlock Text="Inventory Management"/>
