@@ -57,10 +57,10 @@
                     <TextBlock Text="E-Stock Order Management" FontWeight="Bold" FontSize="22"/>
                     <TextBlock Text="Store POS Dashboard" FontSize="14" Foreground="#888"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,32,0">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,32,0" HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal" Margin="0,0,24,0">
                         <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,4,0"/>
-                        <TextBlock Text="Last updated: 12:07:05 PM" FontSize="14" Foreground="#888"/>
+                        <TextBlock Text="Last updated: 12:07:05 PM" FontSize="14" Foreground="#888" TextAlignment="Right"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Border Background="#F44336" CornerRadius="10" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
