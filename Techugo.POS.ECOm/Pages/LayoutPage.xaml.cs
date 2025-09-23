@@ -12,7 +12,7 @@ namespace Techugo.POS.ECOm.Pages
             ShowDashboard();
         }
 
-        private void ShowDashboard()
+        private DashboardPage CreateDashboardPage()
         {
             var dashboardPage = new DashboardPage();
             dashboardPage.TotalOrdersClicked += DashboardPage_TotalOrdersClicked;
@@ -23,79 +23,83 @@ namespace Techugo.POS.ECOm.Pages
             dashboardPage.RejectedClicked += DashboardPage_RejectedClicked;
             dashboardPage.PartialReturnsClicked += DashboardPage_PartialReturnsClicked;
             dashboardPage.CarryForwardClicked += DashboardPage_CarryForwardClicked;
+            return dashboardPage;
+        }
 
-            SetPageContent(dashboardPage);
+        private void ShowDashboard()
+        {
+            SetPageContent(CreateDashboardPage());
         }
 
         // Menu navigation handlers should call SetPageContent(newPage)
         private void OrderDashboardMenu_Click(object sender, RoutedEventArgs e)
         {
-            SetPageContent(new DashboardPage());
+            SetPageContent(CreateDashboardPage());
         }
         private void SalesDashboardMenu_Click(object sender, RoutedEventArgs e)
         {
             var page = new SalesDashboardPage();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void RefundManagementMenu_Click(object sender, RoutedEventArgs e)
         {
             var page = new RefundManagementPage();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void InventoryManagementMenu_Click(object sender, RoutedEventArgs e)
         {
             var page = new InventoryManagementPage();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void DashboardPage_TotalOrdersClicked(object sender, RoutedEventArgs e)
         {
             var page = new TotalOrdersPage();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void DashboardPage_PickListClicked(object sender, RoutedEventArgs e)
         {
             var page = new PickListPage();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void DashboardPage_AssignRiderClicked(object sender, RoutedEventArgs e)
         {
             var page = new AssignRider();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void DashboardPage_PendingDeliveryClicked(object sender, RoutedEventArgs e)
         {
             var page = new PendingDelivery();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void DashboardPage_DeliveredClicked(object sender, RoutedEventArgs e)
         {
             var page = new Delivered();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void DashboardPage_RejectedClicked(object sender, RoutedEventArgs e)
         {
             var page = new Rejected();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void DashboardPage_PartialReturnsClicked(object sender, RoutedEventArgs e)
         {
             var page = new PartialReturns();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
         private void DashboardPage_CarryForwardClicked(object sender, RoutedEventArgs e)
         {
             var page = new CarryForward();
-            page.BackRequested += (s, args) => SetPageContent(new DashboardPage());
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
 
