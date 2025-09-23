@@ -1,116 +1,41 @@
 ﻿using System.Windows;
-using Techugo.POS.ECOm.Pages;
+using Techugo.POS.ECOm.Pages.Login;
 using Techugo.POS.ECOm.Pages.Dashboard;
+using Techugo.POS.ECOm.Pages;
 
-namespace Techugo.POS.ECOm  
+namespace Techugo.POS.ECOm
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DashboardPage dashboardPage;
+        
 
         public MainWindow()
         {
             InitializeComponent();
-            ShowDashboard();
+            ShowLogin();
         }
 
-        private void ShowDashboard()
+        private void ShowLogin()
         {
-            dashboardPage = new DashboardPage();
-            dashboardPage.TotalOrdersClicked += DashboardPage_TotalOrdersClicked;
-            dashboardPage.PickListClicked += DashboardPage_PickListClicked;
-            dashboardPage.AssignRiderClicked += DashboardPage_AssignRiderClicked;
-            dashboardPage.PendingDeliveryClicked += DashboardPage_PendingDeliveryClicked;
-            dashboardPage.DeliveredClicked += DashboardPage_DeliveredClicked;
-            dashboardPage.RejectedClicked += DashboardPage_RejectedClicked;
-            dashboardPage.PartialReturnsClicked += DashboardPage_PartialReturnsClicked;
-            dashboardPage.CarryForwardClicked += DashboardPage_CarryForwardClicked;
-
-            // Wire up other tile events here
-            DashboardContent.Content = dashboardPage;
+            var loginPage = new LoginPage();
+            loginPage.OtpRequested += (s, e) => ShowVerifyOtp();
+            MainContent.Content = loginPage;
         }
 
-     
-
-        private void OrderDashboardMenu_Click(object sender, RoutedEventArgs e)
+        private void ShowVerifyOtp()
         {
-            ShowDashboard();
+            var verifyOtpPage = new VerifyOtpPage();
+            verifyOtpPage.OtpVerified += (s, e) => ShowLayoutPage();
+            MainContent.Content = verifyOtpPage;
         }
 
-        private void SalesDashboardMenu_Click(object sender, RoutedEventArgs e)
+        private void ShowLayoutPage()
         {
-            var page = new SalesDashboardPage();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
+            var layoutPage = new LayoutPage();
+            MainContent.Content = layoutPage;
         }
-
-        private void RefundManagementMenu_Click(object sender, RoutedEventArgs e)
-        {
-            var page = new RefundManagementPage();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-
-        private void InventoryManagementMenu_Click(object sender, RoutedEventArgs e)
-        {
-            var page = new InventoryManagementPage();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-
-        // Existing tile click handlers...
-        private void DashboardPage_TotalOrdersClicked(object sender, RoutedEventArgs e)
-        {
-            var page = new TotalOrdersPage();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-        private void DashboardPage_PickListClicked(object sender, RoutedEventArgs e)
-        {
-            var page = new PickListPage();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-
-        private void DashboardPage_AssignRiderClicked(object sender, RoutedEventArgs e)
-        {
-            var page = new AssignRider();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-        private void DashboardPage_PendingDeliveryClicked(object sender, RoutedEventArgs e)
-        {
-            var page = new PendingDelivery();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-        private void DashboardPage_DeliveredClicked(object sender, RoutedEventArgs e)
-        {
-            var page = new Delivered();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-        private void DashboardPage_RejectedClicked(object sender, RoutedEventArgs e)
-        {
-            var page = new Rejected();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-        private void DashboardPage_PartialReturnsClicked(object sender, RoutedEventArgs e)
-        {
-            var page = new PartialReturns();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-        private void DashboardPage_CarryForwardClicked(object sender, RoutedEventArgs e)
-        {
-            var page = new CarryForward();
-            page.BackRequested += (s, args) => ShowDashboard();
-            DashboardContent.Content = page;
-        }
-        // ...other tile handlers
     }
 }
