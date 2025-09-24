@@ -122,7 +122,7 @@
                         <TextBlock Text="Last updated: 12:07:05 PM" FontSize="14" Foreground="#444"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Border Background="#FFF" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Width="34" Height="34" Margin="4,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Border x:Name="NewOrderAlerts" Background="#FFF" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Width="34" Height="34" Margin="4,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" MouseLeftButtonUp="NewOrderAlerts_Click">
                             <TextBlock Text="&#xE7ED;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#222" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </StackPanel>

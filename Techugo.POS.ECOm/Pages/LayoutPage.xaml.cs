@@ -1,11 +1,14 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Techugo.POS.ECOm.Pages.Dashboard;
 
 namespace Techugo.POS.ECOm.Pages
 {
     public partial class LayoutPage : UserControl
     {
+        private Window _newOrderPopupWindow; // Add this field
+
         public LayoutPage()
         {
             InitializeComponent();
@@ -102,10 +105,43 @@ namespace Techugo.POS.ECOm.Pages
             page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }
+        private void NewOrderAlerts_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var popup = new NewOrderPopUp();
+            popup.AcceptOrderClicked += CloseNewOrderPopUp;
+            popup.RejectOrderClicked += CloseNewOrderPopUp;
 
+            // Option 1: Show as overlay in PageContent (replace current content)
+            // SetPageContent(popup);
+
+            // Option 2: Show as a dialog/modal (recommended for popups)
+            // If you want a true modal, consider using a Window or a custom overlay.
+            // Example:
+            _newOrderPopupWindow = new Window
+            {
+                Content = popup,
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                Background = Brushes.Transparent,
+                Owner = Application.Current.MainWindow,
+                Width = 400,
+                Height = 220,
+                ShowInTaskbar = false
+            };
+            _newOrderPopupWindow.ShowDialog();
+
+        }
         public void SetPageContent(UserControl page)
         {
             PageContent.Content = page;
+        }
+        private void CloseNewOrderPopUp(object sender, RoutedEventArgs e)
+        {
+            if (_newOrderPopupWindow != null)
+            {
+                _newOrderPopupWindow.Close();
+                _newOrderPopupWindow = null;
+            }
         }
     }
 }
