@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Techugo.POS.ECOm.Pages.Login
 {
@@ -11,6 +12,44 @@ namespace Techugo.POS.ECOm.Pages.Login
         public VerifyOtpPage()
         {
             InitializeComponent();
+        }
+        private void OtpBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var box = sender as TextBox;
+            if (box == null) return;
+            if (box.Text.Length == 1)
+            {
+                MoveToNextBox(box);
+            }
+        }
+
+        private void OtpBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var box = sender as TextBox;
+            if (box == null) return;
+
+            if (e.Key == Key.Back && string.IsNullOrEmpty(box.Text))
+            {
+                MoveToPreviousBox(box);
+            }
+        }
+
+        private void MoveToNextBox(TextBox currentBox)
+        {
+            if (currentBox == OtpBox1) OtpBox2.Focus();
+            else if (currentBox == OtpBox2) OtpBox3.Focus();
+            else if (currentBox == OtpBox3) OtpBox4.Focus();
+            else if (currentBox == OtpBox4) OtpBox5.Focus();
+            else if (currentBox == OtpBox5) OtpBox6.Focus();
+        }
+
+        private void MoveToPreviousBox(TextBox currentBox)
+        {
+            if (currentBox == OtpBox6) OtpBox5.Focus();
+            else if (currentBox == OtpBox5) OtpBox4.Focus();
+            else if (currentBox == OtpBox4) OtpBox3.Focus();
+            else if (currentBox == OtpBox3) OtpBox2.Focus();
+            else if (currentBox == OtpBox2) OtpBox1.Focus();
         }
 
         private void VerifyButton_Click(object sender, RoutedEventArgs e)

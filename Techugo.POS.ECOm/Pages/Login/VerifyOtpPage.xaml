@@ -11,23 +11,23 @@
             <GradientStop Color="#E8FBF1" Offset="0.0"/>
             <GradientStop Color="#E3FAEE" Offset="1.0"/>
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="PrimaryGreen" Color="#00A857"/>
+        <SolidColorBrush x:Key="PrimaryGreen" Color="#00a63e"/>
         <SolidColorBrush x:Key="AccentGreen" Color="#008236"/>
         <SolidColorBrush x:Key="MutedText" Color="#6B6B6B"/>
         <SolidColorBrush x:Key="HeadingText" Color="#111111"/>
         <SolidColorBrush x:Key="LightCard" Color="#FFFFFF"/>
-        <DropShadowEffect x:Key="CardShadow" Color="#22000000" BlurRadius="18" ShadowDepth="6" Opacity="0.6"/>
+        <DropShadowEffect x:Key="CardShadow" Color="#22000000" BlurRadius="10" ShadowDepth="3" Opacity="0.6"/>
         <Style x:Key="OtpBoxStyle" TargetType="TextBox">
             <Setter Property="Width" Value="40"/>
             <Setter Property="Height" Value="40"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Normal"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Background" Value="#F3F7F6"/>
+            <Setter Property="Background" Value="#f4f4f5"/>
             <Setter Property="BorderBrush" Value="#ffffff"/>
             <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="MaxLength" Value="1"/>
             <Setter Property="TextAlignment" Value="Center"/>
@@ -43,11 +43,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="#B3BDC0"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#f4f4f5"/>
                                 <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
                                 <Setter TargetName="Bd" Property="Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect Color="#44000000" BlurRadius="6" ShadowDepth="1" Opacity="0.35"/>
+                                        <DropShadowEffect Color="#44000000" BlurRadius="4" ShadowDepth="1" Opacity="0.10"/>
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
@@ -143,7 +143,7 @@
                     <!-- OTP boxes -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,40">
                         <!-- First box: left rounded -->
-                        <TextBox x:Name="OtpBox1" Style="{StaticResource OtpBoxStyle}" >
+                        <TextBox x:Name="OtpBox1" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="8,0,0,8"/>
@@ -151,28 +151,28 @@
                             </TextBox.Resources>
                         </TextBox>
                         <!-- Middle boxes: no radius -->
-                        <TextBox x:Name="OtpBox2" Style="{StaticResource OtpBoxStyle}">
+                        <TextBox x:Name="OtpBox2" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0"/>
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBox x:Name="OtpBox3" Style="{StaticResource OtpBoxStyle}">
+                        <TextBox x:Name="OtpBox3" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0"/>
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBox x:Name="OtpBox4" Style="{StaticResource OtpBoxStyle}">
+                        <TextBox x:Name="OtpBox4" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0"/>
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBox x:Name="OtpBox5" Style="{StaticResource OtpBoxStyle}">
+                        <TextBox x:Name="OtpBox5" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0"/>
@@ -180,7 +180,7 @@
                             </TextBox.Resources>
                         </TextBox>
                         <!-- Last box: right rounded -->
-                        <TextBox x:Name="OtpBox6" Style="{StaticResource OtpBoxStyle}" Margin="0">
+                        <TextBox x:Name="OtpBox6" Style="{StaticResource OtpBoxStyle}" Margin="0" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0,8,8,0"/>
