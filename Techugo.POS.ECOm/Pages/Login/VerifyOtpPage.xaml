@@ -18,8 +18,8 @@
         <SolidColorBrush x:Key="LightCard" Color="#FFFFFF"/>
         <DropShadowEffect x:Key="CardShadow" Color="#22000000" BlurRadius="18" ShadowDepth="6" Opacity="0.6"/>
         <Style x:Key="OtpBoxStyle" TargetType="TextBox">
-            <Setter Property="Width" Value="48"/>
-            <Setter Property="Height" Value="48"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -114,7 +114,7 @@
     </UserControl.Resources>
     <Grid Background="{StaticResource BackgroundGradient}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -123,16 +123,16 @@
         <!-- Shield Icon -->
         
         <!-- Title & Subtitle -->
-        <StackPanel Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,16,0,0">
-			<Button Style="{StaticResource BackButtonStyle}" Content="Back to Login" HorizontalAlignment="Left" Margin="0,0,0,18"/>
-			<Border Grid.Row="1" Width="72" Height="72" CornerRadius="36" Background="{StaticResource PrimaryGreen}" HorizontalAlignment="Center" Margin="0,16,0,0">
-				<TextBlock Text="&#xEBD3;" FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="36" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <StackPanel Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,06,0,0">
+            <Button Style="{StaticResource BackButtonStyle}" Content="Back to Login" HorizontalAlignment="Left" Margin="0,0,0,10" Click="BackToLoginButton_Click"/>
+			<Border Grid.Row="1" Width="64" Height="64" CornerRadius="36" Background="{StaticResource PrimaryGreen}" HorizontalAlignment="Center" Margin="0,16,0,0">
+				<TextBlock Text="&#xEBD3;" FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 			</Border>
-			<TextBlock Text="Verify OTP" FontSize="28" FontWeight="Bold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,0,0,6"/>
+			<TextBlock Text="Verify OTP" FontSize="24" FontWeight="Bold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,6,0,6"/>
             <TextBlock Text="Enter the 6-digit code sent to" FontSize="15" Foreground="{StaticResource MutedText}" HorizontalAlignment="Center"/>
             <TextBlock Text="+91 9540415052" FontSize="16" FontWeight="Bold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,8,0,18"/>
             <!-- Card -->
-            <Border Background="{StaticResource LightCard}" CornerRadius="16" Padding="32" Width="520"
+            <Border Background="{StaticResource LightCard}" CornerRadius="16" Padding="32" Width="450"
                     Effect="{StaticResource CardShadow}" HorizontalAlignment="Center">
                 <StackPanel>
                     <!-- Enter Verification Code header with green check icon -->

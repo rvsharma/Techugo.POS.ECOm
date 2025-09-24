@@ -19,13 +19,24 @@ namespace Techugo.POS.ECOm.Pages.Login
             string otp = $"{OtpBox1.Text}{OtpBox2.Text}{OtpBox3.Text}{OtpBox4.Text}{OtpBox5.Text}{OtpBox6.Text}";
 
             // Demo logic: accept any 6 digits or "123456"
-            if (otp.Length == 6 && (otp == "123456" || IsAllDigits(otp)))
+            if (otp == "123456")
             {
                 OtpVerified?.Invoke(this, new RoutedEventArgs());
             }
             else
             {
                 MessageBox.Show("Invalid OTP. Please enter a valid 6-digit code.", "OTP Verification", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void BackToLoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            var mainWindow = Window.GetWindow(this) as Techugo.POS.ECOm.MainWindow;
+            if (mainWindow != null)
+            {
+                // Use the navigation method to ensure events are wired
+                mainWindow.GetType().GetMethod("ShowLogin", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    ?.Invoke(mainWindow, null);
             }
         }
 
