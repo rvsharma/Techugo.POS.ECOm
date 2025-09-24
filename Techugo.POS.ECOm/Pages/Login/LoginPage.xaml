@@ -19,7 +19,8 @@
         </Style>
 		
     </UserControl.Resources>
-    <Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -52,7 +53,7 @@
                     <TextBlock Text="Mobile Number" FontWeight="Bold" FontSize="13" Foreground="#222222" Margin="0,0,0,6"/>
 
                     <!-- FIX: Replace DockPanel with Border to support CornerRadius -->
-                    <Border Margin="0,0,0,6" Background="#F3F4F6" Height="36" CornerRadius="8">
+                    <Border Margin="0,0,0,8" Background="#F3F4F6" Height="36" CornerRadius="8">
                         <DockPanel LastChildFill="True">
                             <TextBlock Text="+91" FontSize="14" Foreground="#888888" VerticalAlignment="Center" Margin="12,0,8,0"/>
                             <TextBox x:Name="MobileNumberTextBox"
@@ -69,7 +70,7 @@
 					<TextBlock x:Name="MobilePreviewTextBlock"
 							   FontSize="12"
 							   Foreground="#888"
-							   Margin="0,0,0,19"
+							   Margin="0,0,0,16"
 							   Visibility="Collapsed"
 />
 					<Button x:Name="SendOtpButton"
@@ -80,7 +81,7 @@
                         FontWeight="SemiBold"
                         FontSize="14"
                         BorderThickness="0"
-                        Margin="0,0,0,16"
+                        Margin="0,8,0,16"
                         Cursor="Hand"
                         Click="SendOtpButton_Click"
                         Style="{StaticResource RoundedButtonStyle}"
@@ -101,4 +102,5 @@
                        Margin="0,24,0,0"/>
         </StackPanel>
     </Grid>
+    </ScrollViewer>
 </UserControl>

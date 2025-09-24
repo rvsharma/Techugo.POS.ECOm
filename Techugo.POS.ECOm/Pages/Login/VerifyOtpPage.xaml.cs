@@ -9,9 +9,13 @@ namespace Techugo.POS.ECOm.Pages.Login
     {
         public event RoutedEventHandler OtpVerified;
 
-        public VerifyOtpPage()
+        public string PhoneNumber { get; set; }
+
+        public VerifyOtpPage(string phoneNumber)
         {
             InitializeComponent();
+            PhoneNumber = phoneNumber;
+            DataContext = this; // For simple binding
         }
         private void OtpBox_TextChanged(object sender, TextChangedEventArgs e)
         {

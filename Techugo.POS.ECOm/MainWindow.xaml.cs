@@ -10,7 +10,7 @@ namespace Techugo.POS.ECOm
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+        private LoginPage loginPage; // Store reference to LoginPage
 
         public MainWindow()
         {
@@ -20,14 +20,15 @@ namespace Techugo.POS.ECOm
 
         private void ShowLogin()
         {
-            var loginPage = new LoginPage();
+            loginPage = new LoginPage();
             loginPage.OtpRequested += (s, e) => ShowVerifyOtp();
             MainContent.Content = loginPage;
         }
 
         private void ShowVerifyOtp()
         {
-            var verifyOtpPage = new VerifyOtpPage();
+            string phoneNumber = loginPage?.EnteredPhoneNumber ?? "";
+            var verifyOtpPage = new VerifyOtpPage("+91 " + phoneNumber);
             verifyOtpPage.OtpVerified += (s, e) => ShowLayoutPage();
             MainContent.Content = verifyOtpPage;
         }

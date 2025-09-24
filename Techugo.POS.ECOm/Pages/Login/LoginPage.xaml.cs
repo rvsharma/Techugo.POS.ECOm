@@ -76,5 +76,8 @@ namespace Techugo.POS.ECOm.Pages.Login
                 MobilePreviewTextBlock.Text = "";
             }
         }
+
+        // Expose entered phone number
+        public string EnteredPhoneNumber => MobileNumberTextBox.Text;
     }
 }

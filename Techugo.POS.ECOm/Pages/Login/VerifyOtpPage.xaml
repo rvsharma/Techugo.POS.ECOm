@@ -112,25 +112,26 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid Background="{StaticResource BackgroundGradient}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Background="{StaticResource BackgroundGradient}">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <!-- Shield Icon -->
-        
+
         <!-- Title & Subtitle -->
         <StackPanel Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,06,0,0">
             <Button Style="{StaticResource BackButtonStyle}" Content="Back to Login" HorizontalAlignment="Left" Margin="0,0,0,10" Click="BackToLoginButton_Click"/>
-			<Border Grid.Row="1" Width="64" Height="64" CornerRadius="36" Background="{StaticResource PrimaryGreen}" HorizontalAlignment="Center" Margin="0,16,0,0">
-				<TextBlock Text="&#xEBD3;" FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-			</Border>
-			<TextBlock Text="Verify OTP" FontSize="24" FontWeight="Bold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,6,0,6"/>
+            <Border Grid.Row="1" Width="64" Height="64" CornerRadius="36" Background="{StaticResource PrimaryGreen}" HorizontalAlignment="Center" Margin="0,16,0,0">
+                <TextBlock Text="&#xEBD3;" FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="Verify OTP" FontSize="24" FontWeight="Bold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,6,0,6"/>
             <TextBlock Text="Enter the 6-digit code sent to" FontSize="15" Foreground="{StaticResource MutedText}" HorizontalAlignment="Center"/>
-            <TextBlock Text="+91 9540415052" FontSize="16" FontWeight="Bold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,8,0,18"/>
+                <TextBlock Text="{Binding PhoneNumber}" FontSize="16" FontWeight="DemiBold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,8,0,18"/>
             <!-- Card -->
             <Border Background="{StaticResource LightCard}" CornerRadius="16" Padding="32" Width="450"
                     Effect="{StaticResource CardShadow}" HorizontalAlignment="Center">
@@ -216,5 +217,6 @@
         </StackPanel>
         <!-- Bottom hint -->
         <TextBlock Grid.Row="3" Text="Didn't receive the code? Check your SMS or try resending." FontSize="13" Foreground="{StaticResource MutedText}" HorizontalAlignment="Center" Margin="0,18,0,0"/>
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>
