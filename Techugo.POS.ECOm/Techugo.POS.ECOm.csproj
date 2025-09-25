@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Sounds\neworder.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Sounds\neworder.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Techugo.POS.ECom.ApiClient\Techugo.POS.ECom.ApiClient.csproj" />
   </ItemGroup>
 

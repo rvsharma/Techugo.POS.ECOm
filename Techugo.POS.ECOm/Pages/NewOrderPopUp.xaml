@@ -4,8 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="220" d:DesignWidth="400">
-    <Border Background="White" CornerRadius="12" Padding="18" BorderBrush="#FF868686" BorderThickness=".3">
+             d:DesignHeight="220" d:DesignWidth="400"
+              Background="Transparent" ClipToBounds="False">
+    <Border Background="White"
+        CornerRadius="12"
+        Padding="18"
+        BorderBrush="#FF868686"
+        BorderThickness=".3"
+        MouseDown="PopupBorder_MouseDown">
+        <Border.Effect>
+            <DropShadowEffect Color="#33000000" BlurRadius="40" ShadowDepth="2" Opacity="0.45"/>
+        </Border.Effect>
         <StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                 <Grid Width="40" Height="40" VerticalAlignment="Center">
