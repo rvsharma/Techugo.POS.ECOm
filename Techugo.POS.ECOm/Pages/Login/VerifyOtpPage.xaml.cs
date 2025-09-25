@@ -25,6 +25,17 @@ namespace Techugo.POS.ECOm.Pages.Login
             {
                 MoveToNextBox(box);
             }
+            bool allFilled = !string.IsNullOrEmpty(OtpBox1.Text)
+        && !string.IsNullOrEmpty(OtpBox2.Text)
+        && !string.IsNullOrEmpty(OtpBox3.Text)
+        && !string.IsNullOrEmpty(OtpBox4.Text)
+        && !string.IsNullOrEmpty(OtpBox5.Text)
+        && !string.IsNullOrEmpty(OtpBox6.Text);
+
+            VerifyButton.Background = allFilled
+                ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black)
+                : new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#7F7B81"));
+        
         }
 
         private void OtpBox_PreviewKeyDown(object sender, KeyEventArgs e)
