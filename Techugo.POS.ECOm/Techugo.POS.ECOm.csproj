@@ -8,4 +8,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Techugo.POS.ECom.ApiClient\Techugo.POS.ECom.ApiClient.csproj" />
+  </ItemGroup>
+
 </Project>

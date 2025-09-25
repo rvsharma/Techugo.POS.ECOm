@@ -1,5 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
+using Techugo.POS.ECOm.ApiClient;
+
+
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -14,11 +17,20 @@ namespace Techugo.POS.ECOm.Pages
         public event RoutedEventHandler PartialReturnsClicked;
         public event RoutedEventHandler CarryForwardClicked;
 
+        private readonly ApiService _apiService;
         // Add events for other tiles
 
         public DashboardPage()
         {
             InitializeComponent();
+            _apiService = new ApiService("https://your-api-url.com/", "your-username", "your-password");
+            LoadDashboardData();
+        }
+
+        private async void LoadDashboardData()
+        {
+            string data = await _apiService.GetAsync("dashboard/data");
+            // TODO: Parse and display data in your dashboard UI
         }
 
         private void TotalOrders_Click(object sender, RoutedEventArgs e)
