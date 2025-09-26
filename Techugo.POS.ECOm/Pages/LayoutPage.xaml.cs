@@ -1,3 +1,4 @@
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -107,6 +108,18 @@ namespace Techugo.POS.ECOm.Pages
         }
         private void NewOrderAlerts_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            // Play sound
+            try
+            {
+                var soundPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Sounds", "neworder.wav");
+                if (System.IO.File.Exists(soundPath))
+                {
+                    SoundPlayer player = new SoundPlayer(soundPath);
+                    player.Play();
+                }
+            }
+            catch { /* Handle exceptions if needed */ }
+
             var popup = new NewOrderPopUp();
             popup.AcceptOrderClicked += CloseNewOrderPopUp;
             popup.RejectOrderClicked += CloseNewOrderPopUp;

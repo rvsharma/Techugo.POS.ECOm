@@ -23,5 +23,14 @@ namespace Techugo.POS.ECOm.Pages
         {
             RejectOrderClicked?.Invoke(this, new RoutedEventArgs());
         }
+        private void PopupBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Only allow drag if hosted in a Window
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                Window parentWindow = Window.GetWindow(this);
+                parentWindow?.DragMove();
+            }
+        }
     }
 }
