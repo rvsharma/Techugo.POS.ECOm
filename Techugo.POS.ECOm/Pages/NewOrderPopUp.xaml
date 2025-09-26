@@ -42,23 +42,73 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
                 <!-- Accept Order Button with rounded corners -->
-                <Border CornerRadius="6" Background="#00a63e" Margin="0,0,12,0" Height="32">
+                <Border CornerRadius="6" Background="#00a63e" Margin="0,0,12,0" BorderBrush="#00a63e" Height="32" BorderThickness="1">
                     <Button Background="Transparent" Foreground="White" FontWeight="SemiBold" FontSize="12" Padding="18,2" BorderThickness="0" Click="AcceptOrder_Click" Height="32">
-                        <StackPanel Orientation="Horizontal">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                    <Trigger Property="IsFocused" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal" Margin="12,0">
                             <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0"/>
                             <TextBlock Text="Accept Order"/>
                         </StackPanel>
                     </Button>
                 </Border>
-                <!-- Reject Order Button with rounded corners -->
-                <Border CornerRadius="6" Background="White" BorderBrush="#E53935" BorderThickness="2">
-                    <Button Background="Transparent" Foreground="#E53935" FontWeight="DemiBold" FontSize="12" Padding="18,6" BorderThickness="0" Click="RejectOrder_Click" Height="32">
-                        <StackPanel Orientation="Horizontal">
+                <Border CornerRadius="6" Background="Transparent" Margin="0,0,12,0" BorderBrush="#E53935" Height="32" BorderThickness="1">
+                    <Button Background="Transparent" Foreground="#E53935" FontWeight="SemiBold" FontSize="12" Padding="18,2" BorderThickness="0" Click="AcceptOrder_Click" Height="32">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                    <Trigger Property="IsFocused" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <StackPanel Orientation="Horizontal" Margin="12,0">
                             <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0"/>
                             <TextBlock Text="Reject Order"/>
                         </StackPanel>
                     </Button>
                 </Border>
+                
             </StackPanel>
         </StackPanel>
     </Border>
