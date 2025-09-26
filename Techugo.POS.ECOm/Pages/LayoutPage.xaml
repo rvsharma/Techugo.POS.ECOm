@@ -107,7 +107,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <!-- Header -->
-            <Grid Grid.Row="0" Background="#FFF" Margin="0,0,0,1" x:Name="HeaderContent">
+            <Grid Grid.Row="0" Background="#FFF" x:Name="HeaderContent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -127,6 +127,8 @@
                         </Border>
                     </StackPanel>
                 </StackPanel>
+                <!-- Bottom Border -->
+                <Border Grid.ColumnSpan="2" Height="1" Background="#E5E7EB" VerticalAlignment="Bottom"/>
             </Grid>
             <!-- Dashboard Content -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">

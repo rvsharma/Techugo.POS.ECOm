@@ -1,10 +1,151 @@
 ﻿<UserControl x:Class="Techugo.POS.ECOm.Pages.PickListPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-Height="Auto" Width="Auto">
-    <StackPanel Margin="32">
-        <Button Content="Back to Dashboard" Width="180" Height="40" Margin="0,0,0,24" Click="BackButton_Click"/>
-        <TextBlock Text="Pick List" FontSize="24" FontWeight="Bold"/>
-        <!-- Add more details here -->
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="Auto" Width="Auto" Background="WhiteSmoke">
+    <StackPanel Margin="32" >
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Back to Dashboard"
+                    Grid.Column="0"
+                    Height="34"
+                    Padding="12,4"
+                    Click="BackButton_Click"
+                    HorizontalAlignment="Left"
+                    FontSize="14"
+                    FontWeight="SemiBold">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                         Background="white"
+                         BorderBrush="white"
+                         BorderThickness="1"
+                          CornerRadius="8"
+                          Padding="10"
+                          SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="LightGray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+
+            <StackPanel Grid.Column="1" Margin="24,0,0,0" >
+                <TextBlock Text="Pick List Orders" FontSize="24" FontWeight="Bold" Margin="0,0,0,4"/>
+                <TextBlock Text="Item-wise picking with real-time weighing integration" FontSize="14" Foreground="#888"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Weighing Scale Section -->
+        <Border Background="#F0F8FF" BorderThickness="1" BorderBrush="#ADD8E6" CornerRadius="8" Padding="18" Margin="0,24,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Weighing Scale Info -->
+                <StackPanel Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE998;" FontFamily="Segoe MDL2 Assets" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Digital Weighing Scale" FontWeight="SemiBold" Foreground ="DarkBlue" FontSize="16" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="Real-time weight: 0.00 kg" FontSize="14" Foreground="#2196F3" Margin="24,4,0,0"/>
+                </StackPanel>
+
+                <!-- Simulate Weight Button -->
+                <Button Content="Simulate Weight" Grid.Column="1" Padding="12,4" FontSize="14" Background="#FFF" BorderBrush ="White" BorderThickness="1" Foreground ="Black" FontWeight="SemiBold" HorizontalAlignment="Right">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                             Background="white"
+                             BorderBrush="LightGray"           
+                             BorderThickness="1"
+                             CornerRadius="15"
+                              Padding="10"
+                             SnapsToDevicePixels="True">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <!-- Hover -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="LightGray"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+
+                </Button>
+            </Grid>
+        </Border>
+
+        <Border Background="White" BorderThickness="1" BorderBrush="#E0E0E0" CornerRadius="8" Padding="18" Margin="0,24,0,0">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,10,10,20">
+                    <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock Text="Pick List Orders " FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center" Foreground="#222"/>
+                </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions >
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Table -->
+                    <DataGrid Grid.Row="3"
+              AutoGenerateColumns="False"
+              HeadersVisibility="Column"
+              CanUserAddRows="False"
+              Margin="15"
+              FontSize="14" 
+              FontWeight="SemiBold"
+              BorderBrush="white"
+               
+               GridLinesVisibility="None"
+              BorderThickness="0">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="white"/>
+                                <Setter Property="BorderBrush" Value="white"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Style.Triggers>
+                                    <!-- Hover effect -->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="LightGray"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Order Details" Binding="{Binding OrderDetails}" Width="*"/>
+                            <DataGridTextColumn Header="Customer" Binding="{Binding Customer}" Width="*"/>
+                            <DataGridTextColumn Header="Total Items" Binding="{Binding TotalItems}" Width="*"/>
+                            <DataGridTextColumn Header="Order Value" Binding="{Binding OrderValue}" Width="*"/>
+                            <DataGridTextColumn Header="Actions" Binding="{Binding Actions}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
+            </StackPanel>
+        </Border>
     </StackPanel>
 </UserControl>
