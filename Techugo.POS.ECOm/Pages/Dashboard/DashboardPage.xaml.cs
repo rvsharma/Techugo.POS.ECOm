@@ -23,7 +23,8 @@ namespace Techugo.POS.ECOm.Pages
         public DashboardPage()
         {
             InitializeComponent();
-            _apiService = new ApiService("https://your-api-url.com/", "your-username", "your-password");
+            // When making API calls
+            var apiService = new ApiService(baseUrl, TokenService.BearerToken);
             LoadDashboardData();
         }
 

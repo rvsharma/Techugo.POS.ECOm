@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Techugo.POS.ECOm", "Techugo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Techugo.POS.ECom.ApiClient", "Techugo.POS.ECom.ApiClient\Techugo.POS.ECom.ApiClient.csproj", "{F7A6424D-C791-4515-8551-B7105FC68258}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Techugo.POS.ECom.Model", "Techugo.POS.ECom.Model\Techugo.POS.ECom.Model.csproj", "{FB030840-CD56-46A6-B453-531FE21DCDA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F7A6424D-C791-4515-8551-B7105FC68258}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7A6424D-C791-4515-8551-B7105FC68258}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7A6424D-C791-4515-8551-B7105FC68258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB030840-CD56-46A6-B453-531FE21DCDA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB030840-CD56-46A6-B453-531FE21DCDA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB030840-CD56-46A6-B453-531FE21DCDA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB030840-CD56-46A6-B453-531FE21DCDA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
