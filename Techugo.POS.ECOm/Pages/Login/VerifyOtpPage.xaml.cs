@@ -69,12 +69,18 @@ namespace Techugo.POS.ECOm.Pages.Login
 
         private void VerifyButton_Click(object sender, RoutedEventArgs e)
         {
-            // Assuming your TextBoxes are named OtpBox1, OtpBox2, ..., OtpBox6 in XAML
             string otp = $"{OtpBox1.Text}{OtpBox2.Text}{OtpBox3.Text}{OtpBox4.Text}{OtpBox5.Text}{OtpBox6.Text}";
 
-            // Demo logic: accept any 6 digits or "123456"
+            // Replace this with your actual API call to verify OTP and get token
+            string token = null;
             if (otp == "123456")
             {
+                // Simulate token retrieval from API
+                token = "your_token_from_api"; // Replace with actual token from API response
+
+                // Store token globally
+                TokenService.BearerToken = token;
+
                 OtpVerified?.Invoke(this, new RoutedEventArgs());
             }
             else
