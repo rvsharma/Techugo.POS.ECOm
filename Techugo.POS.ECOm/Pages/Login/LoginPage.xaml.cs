@@ -1,17 +1,30 @@
+using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Techugo.POS.ECom.Model;
+using Techugo.POS.ECOm.ApiClient;
 
 namespace Techugo.POS.ECOm.Pages.Login
 {
     public partial class LoginPage : UserControl
     {
         public event RoutedEventHandler OtpRequested;
+        private readonly ApiService _apiService;
 
         public LoginPage()
         {
             InitializeComponent();
+            // Get ApiSettings from DI container
+            var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
+            if (apiSettingsOptions == null)
+            {
+                throw new System.Exception("ApiSettings not configured.");
+            }
+
+            // Use the token stored in TokenService
+            _apiService = new ApiService(apiSettingsOptions, TokenService.BearerToken);
             MobileNumberTextBox.PreviewTextInput += MobileNumberTextBox_PreviewTextInput;
             MobileNumberTextBox.TextChanged += MobileNumberTextBox_TextChanged;
             DataObject.AddPastingHandler(MobileNumberTextBox, OnPaste);
@@ -40,9 +53,18 @@ namespace Techugo.POS.ECOm.Pages.Login
             }
         }
 
-        private void SendOtpButton_Click(object sender, RoutedEventArgs e)
+        private async void SendOtpButton_Click(object sender, RoutedEventArgs e)
         {
-            OtpRequested?.Invoke(this, new RoutedEventArgs());
+            var data = new { MobileNo = MobileNumberTextBox.Text };
+            LoginResponse result = await _apiService.PostAsync<LoginResponse>("auth/login", data);
+            if(result !=null)
+            {
+                if(result.Success == true)
+                {
+
+                    OtpRequested?.Invoke(this, new RoutedEventArgs());
+                }
+            }
         }
         private void MobileNumberTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {

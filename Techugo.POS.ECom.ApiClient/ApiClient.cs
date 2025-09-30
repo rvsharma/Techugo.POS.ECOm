@@ -27,11 +27,22 @@ namespace Techugo.POS.ECOm.ApiClient
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<string> PostAsync(string endpoint, object data)
+        public async Task<T> PostAsync<T>(string endpoint, object data)
         {
-            var response = await _httpClient.PostAsJsonAsync(endpoint, data);
+            var json = System.Text.Json.JsonSerializer.Serialize(data);
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            {
+                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+            };
+            request.Headers.Add("Accept-Language", "en");
+
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var result = System.Text.Json.JsonSerializer.Deserialize<T>(responseString);
+            if (result is null)
+                throw new System.InvalidOperationException("Deserialization returned null.");
+            return result;
         }
     }
 }
