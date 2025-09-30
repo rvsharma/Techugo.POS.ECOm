@@ -5,24 +5,26 @@ using System.IO;
 using System.Windows;
 using Techugo.POS.ECom.Model;
 
-public partial class App : Application
+namespace Techugo.POS.ECOm
 {
-    public static IServiceProvider ServiceProvider { get; private set; }
-
-    protected override void OnStartup(StartupEventArgs e)
+    public partial class App : Application
     {
-        base.OnStartup(e);
+        public static IServiceProvider? ServiceProvider { get; set; }
 
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
-        IConfiguration configuration = builder.Build();
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-        var services = new ServiceCollection();
-        services.Configure<ApiSettings>(configuration.GetSection("ApiSettings"));
+            IConfiguration configuration = builder.Build();
 
-        // FIX: Add using for Microsoft.Extensions.DependencyInjection and call extension method
-        ServiceProvider = services.BuildServiceProvider(); // This extension method is in Microsoft.Extensions.DependencyInjection
+            var services = new ServiceCollection();
+            services.Configure<ApiSettings>(configuration.GetSection("ApiSettings"));
+
+            ServiceProvider = services.BuildServiceProvider();
+        }
     }
 }

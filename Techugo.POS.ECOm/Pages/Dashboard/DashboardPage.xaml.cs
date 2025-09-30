@@ -1,5 +1,7 @@
+using Microsoft.Extensions.Options;
 using System.Windows;
 using System.Windows.Controls;
+using Techugo.POS.ECom.Model;
 using Techugo.POS.ECOm.ApiClient;
 
 
@@ -23,8 +25,17 @@ namespace Techugo.POS.ECOm.Pages
         public DashboardPage()
         {
             InitializeComponent();
-            // When making API calls
-            var apiService = new ApiService(baseUrl, TokenService.BearerToken);
+
+            // Get ApiSettings from DI container
+            var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
+            if (apiSettingsOptions == null)
+            {
+                throw new System.Exception("ApiSettings not configured.");
+            }
+
+            // Use the token stored in TokenService
+            _apiService = new ApiService(apiSettingsOptions, TokenService.BearerToken);
+
             LoadDashboardData();
         }
 
