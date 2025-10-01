@@ -1,6 +1,6 @@
-<UserControl x:Class="Techugo.POS.ECOm.Pages.DashboardPage"
+<UserControl x:Class="Techugo.POS.ECOm.Pages.DashboardPage" xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     Height="Auto" Width="Auto">
     <StackPanel Margin="32,32,32,32">
         <Grid>
@@ -13,15 +13,15 @@
             <!-- Status and refresh on the right -->
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="1">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,4,0"/>
+                    <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,2,6,0"/>
                     <TextBlock Text="Last updated: 12:17:27 PM" FontSize="14" Foreground="#444"/>
                 </StackPanel>
-                <Button Margin="16,0,0,0" Padding="16,4" FontWeight="SemiBold" Background="#FFF" BorderBrush="#222" BorderThickness="1">
+                <Border Margin="16,0,0,0" Padding="16,4" Background="#FFF" BorderBrush="#e3e3e3" BorderThickness="1" CornerRadius="6">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Refresh" VerticalAlignment="Center"/>
+                        <svg:SvgViewbox Source="/Assets/Images/refresh.svg" Width="14" Height="14" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,2,12,0"/>
+                        <TextBlock Text="Refresh" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="2" FontSize="14"/>
                     </StackPanel>
-                </Button>
+                </Border>
             </StackPanel>
         </Grid>
         <TextBlock Text="Real-time order status overview" FontSize="14" Foreground="#444" Margin="0,4,0,16"/>
@@ -65,8 +65,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Total Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/total_orders.svg" Width="30" Height="30" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.TotalOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="5 processed, 1 pending" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
@@ -96,8 +95,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Pending Request" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
-                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/pending_request.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.PendingRequest}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="Orders in transit" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
@@ -127,15 +125,14 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Pick List Order" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/pick_list.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.PickListOrder}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="Orders ready for picking" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
             </Border>
-            <!-- Subscription Orders Orders -->
+            <!-- Subscription Orders -->
             <Border
                 Background="#f3f8ff"
                 BorderBrush="#e0e0e0"
@@ -158,11 +155,10 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Subscription Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
-                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/total_orders.svg" Width="30" Height="30" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.SubscriptionOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
-                        <TextBlock Text="5 processed, 1 pending" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
+                        <TextBlock Text="Subscription" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
             </Border>
@@ -189,8 +185,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Delivered Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE001;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
-                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/delivered.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.DeliveredOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="Successfully delivered" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
@@ -220,8 +215,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Assign Rider" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="Black"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/assign_rider.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.AssignRider}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="Ready for rider assignment" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
@@ -251,8 +245,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Order Tracking" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
-                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/carry_forward.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.OrderTracking}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="Orders received after 9PM &#x0a; cutoff" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
@@ -282,8 +275,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Return Requests" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
-                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/partial_returns.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.ReturnRequests}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="450 refund amound" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
@@ -313,8 +305,7 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Cancelled Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <svg:SvgViewbox Source="/Assets/Images/rejected.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.CancelledOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="Cancelled or failed delivery" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>

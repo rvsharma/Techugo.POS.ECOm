@@ -7,7 +7,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <!-- Sidebar with left border -->
-        <Border BorderBrush="#E5E7EB" BorderThickness="4,0,0,0" Grid.Column="0" Background="#FFF" x:Name="LeftMenu">
+        <Border BorderBrush="#e3e3e3" BorderThickness="0,0,1,0" Grid.Column="0" Background="#fafafa" x:Name="LeftMenu">
             <StackPanel VerticalAlignment="Stretch">
                 <TextBlock Text="E-Stock POS" FontWeight="SemiBold" FontSize="20" Margin="24,32,0,0"/>
                 <TextBlock Text="Order Management" FontSize="14" Foreground="#888" Margin="24,4,0,24"/>
@@ -131,7 +131,7 @@
                 <Border Grid.ColumnSpan="2" Height="1" Background="#E5E7EB" VerticalAlignment="Bottom"/>
             </Grid>
             <!-- Dashboard Content -->
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="#fbf9fa">
                 <ContentControl x:Name="PageContent"/>
             </ScrollViewer>
         </Grid>

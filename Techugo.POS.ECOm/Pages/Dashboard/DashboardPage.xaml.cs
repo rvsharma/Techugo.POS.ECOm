@@ -60,15 +60,6 @@ namespace Techugo.POS.ECOm.Pages
             if (data != null)
             {
                 orderData = data.Data;
-                // Example: Update UI elements with fetched data
-                //TotalOrdersCount.Text = data.Data.TotalOrders.ToString();
-                //PickListCount.Text = data.Data.PickListOrder.ToString();
-                //AssignRiderCount.Text = data.Data.AssignRider.ToString();
-                //PendingDeliveryCount.Text = data.Data.PendingRequest.ToString();
-                //DeliveredCount.Text = data.Data.DeliveredOrders.ToString();
-                //RejectedCount.Text = data.Data.CancelledOrders.ToString();
-                //PartialReturnsCount.Text = data.Data.AssignRider.ToString();
-                //CarryForwardCount.Text = data.Data.ReturnRequests.ToString();
             }
             // TODO: Parse and display data in your dashboard UI
         }

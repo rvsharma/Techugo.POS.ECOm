@@ -10,6 +10,17 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="Assets\Images\assign_rider.svg" />
+    <None Remove="Assets\Images\back.svg" />
+    <None Remove="Assets\Images\carry_forward.svg" />
+    <None Remove="Assets\Images\delivered.svg" />
+    <None Remove="Assets\Images\orders.svg" />
+    <None Remove="Assets\Images\partial_returns.svg" />
+    <None Remove="Assets\Images\pending_request.svg" />
+    <None Remove="Assets\Images\pick_list.svg" />
+    <None Remove="Assets\Images\refresh.svg" />
+    <None Remove="Assets\Images\rejected.svg" />
+    <None Remove="Assets\Images\total_orders.svg" />
     <None Remove="Assets\Sounds\neworder.wav" />
   </ItemGroup>
 
@@ -24,10 +35,26 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageReference Include="SharpVectors" Version="1.8.5" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Techugo.POS.ECom.ApiClient\Techugo.POS.ECom.ApiClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\assign_rider.svg" />
+    <Resource Include="Assets\Images\back.svg" />
+    <Resource Include="Assets\Images\carry_forward.svg" />
+    <Resource Include="Assets\Images\delivered.svg" />
+    <Resource Include="Assets\Images\orders.svg" />
+    <Resource Include="Assets\Images\partial_returns.svg" />
+    <Resource Include="Assets\Images\pending_request.svg" />
+    <Resource Include="Assets\Images\pick_list.svg" />
+    <Resource Include="Assets\Images\refresh.svg" />
+    <Resource Include="Assets\Images\rejected.svg" />
+    <Resource Include="Assets\Images\total_orders.svg" />
   </ItemGroup>
 
 </Project>
