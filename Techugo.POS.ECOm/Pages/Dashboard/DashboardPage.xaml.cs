@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using Techugo.POS.ECom.Model;
@@ -8,7 +9,7 @@ using Techugo.POS.ECOm.ApiClient;
 
 namespace Techugo.POS.ECOm.Pages
 {
-    public partial class DashboardPage : UserControl
+    public partial class DashboardPage : UserControl, INotifyPropertyChanged
     {
         public event RoutedEventHandler TotalOrdersClicked;
         public event RoutedEventHandler PickListClicked;
@@ -20,12 +21,25 @@ namespace Techugo.POS.ECOm.Pages
         public event RoutedEventHandler CarryForwardClicked;
 
         private readonly ApiService _apiService;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private OrderStatsData _orderData;
+        public OrderStatsData orderData
+        {
+            get => _orderData;
+            set
+            {
+                _orderData = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(orderData)));
+            }
+        }
         // Add events for other tiles
 
         public DashboardPage()
         {
             InitializeComponent();
-
+            DataContext = this;
             // Get ApiSettings from DI container
             var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
             if (apiSettingsOptions == null)
@@ -41,7 +55,21 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void LoadDashboardData()
         {
-            string data = await _apiService.GetAsync("dashboard/data");
+            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            DashboardResponse data = await _apiService.GetAsync<DashboardResponse>("order/dashboard?Date=" + formattedDate + "");
+            if (data != null)
+            {
+                orderData = data.Data;
+                // Example: Update UI elements with fetched data
+                //TotalOrdersCount.Text = data.Data.TotalOrders.ToString();
+                //PickListCount.Text = data.Data.PickListOrder.ToString();
+                //AssignRiderCount.Text = data.Data.AssignRider.ToString();
+                //PendingDeliveryCount.Text = data.Data.PendingRequest.ToString();
+                //DeliveredCount.Text = data.Data.DeliveredOrders.ToString();
+                //RejectedCount.Text = data.Data.CancelledOrders.ToString();
+                //PartialReturnsCount.Text = data.Data.AssignRider.ToString();
+                //CarryForwardCount.Text = data.Data.ReturnRequests.ToString();
+            }
             // TODO: Parse and display data in your dashboard UI
         }
 

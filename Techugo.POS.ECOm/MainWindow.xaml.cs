@@ -28,7 +28,7 @@ namespace Techugo.POS.ECOm
         private void ShowVerifyOtp()
         {
             string phoneNumber = loginPage?.EnteredPhoneNumber ?? "";
-            var verifyOtpPage = new VerifyOtpPage("+91 " + phoneNumber);
+            var verifyOtpPage = new VerifyOtpPage(phoneNumber);
             verifyOtpPage.OtpVerified += (s, e) => ShowLayoutPage();
             MainContent.Content = verifyOtpPage;
         }

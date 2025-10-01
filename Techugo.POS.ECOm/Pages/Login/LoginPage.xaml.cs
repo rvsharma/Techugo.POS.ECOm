@@ -56,7 +56,7 @@ namespace Techugo.POS.ECOm.Pages.Login
         private async void SendOtpButton_Click(object sender, RoutedEventArgs e)
         {
             var data = new { MobileNo = MobileNumberTextBox.Text };
-            LoginResponse result = await _apiService.PostAsync<LoginResponse>("auth/login", data);
+            BaseResponse result = await _apiService.PostAsync<BaseResponse>("auth/login", data);
             if(result !=null)
             {
                 if(result.Success == true)

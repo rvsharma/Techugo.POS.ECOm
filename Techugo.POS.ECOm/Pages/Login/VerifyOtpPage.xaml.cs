@@ -1,21 +1,33 @@
+using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Techugo.POS.ECom.Model;
+using Techugo.POS.ECOm.ApiClient;
 
 namespace Techugo.POS.ECOm.Pages.Login
 {
     public partial class VerifyOtpPage : UserControl
     {
         public event RoutedEventHandler OtpVerified;
+        private readonly ApiService _apiService;
 
         public string PhoneNumber { get; set; }
+        public string PhoneNumberWithoutCode { get; set; }
 
         public VerifyOtpPage(string phoneNumber)
         {
             InitializeComponent();
-            PhoneNumber = phoneNumber;
+            PhoneNumber = "+91 " + phoneNumber;
+            PhoneNumberWithoutCode = phoneNumber;
             DataContext = this; // For simple binding
+            var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
+            if (apiSettingsOptions == null)
+            {
+                throw new System.Exception("ApiSettings not configured.");
+            }
+            _apiService = new ApiService(apiSettingsOptions, TokenService.BearerToken);
         }
         private void OtpBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -67,19 +79,24 @@ namespace Techugo.POS.ECOm.Pages.Login
             else if (currentBox == OtpBox2) OtpBox1.Focus();
         }
 
-        private void VerifyButton_Click(object sender, RoutedEventArgs e)
+        private async void VerifyButton_Click(object sender, RoutedEventArgs e)
         {
             string otp = $"{OtpBox1.Text}{OtpBox2.Text}{OtpBox3.Text}{OtpBox4.Text}{OtpBox5.Text}{OtpBox6.Text}";
 
-            // Replace this with your actual API call to verify OTP and get token
-            string token = null;
             if (otp == "123456")
             {
-                // Simulate token retrieval from API
-                token = "your_token_from_api"; // Replace with actual token from API response
-
-                // Store token globally
-                TokenService.BearerToken = token;
+                var data = new { MobileNo = PhoneNumberWithoutCode, OTP = otp };
+                OTPVerifiedResponse result = await _apiService.PostAsync<OTPVerifiedResponse>("auth/verify-otp", data);
+                if (result != null)
+                {
+                    if (result.Success == true)
+                    {
+                        TokenService.BearerToken = result.Data.Token;
+                        OtpVerified?.Invoke(this, new RoutedEventArgs());
+                    }
+                }
+               
+                
 
                 OtpVerified?.Invoke(this, new RoutedEventArgs());
             }

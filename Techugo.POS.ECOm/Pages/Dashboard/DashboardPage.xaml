@@ -68,12 +68,43 @@
                             <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
                                        VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
-                        <TextBlock Text="6" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="{Binding orderData.TotalOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="5 processed, 1 pending" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
             </Border>
-            <!-- Pick List -->
+            <!-- Pending Request -->
+            <Border
+                Background="#fff7ed"
+                BorderBrush="#e0e0e0"
+                BorderThickness="1"
+                CornerRadius="20"
+                Margin="8"
+                Padding="0"
+                Height="150"
+                MouseLeftButtonUp="PendingDelivery_Click"
+                TouchUp="PendingDelivery_Click">
+                            <Border
+                    Background="#fff7ed"
+                    BorderBrush="#ff6900"
+                    BorderThickness="4,0,0,0"
+                    CornerRadius="20">
+                    <StackPanel Margin="24">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Pending Request" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="{Binding orderData.PendingRequest}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="Orders in transit" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Border>
+            <!-- Pick List Order-->
             <Border
                 Background="#fefce8"
                 BorderBrush="#e0e0e0"
@@ -95,12 +126,74 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Pick List" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="Pick List Order" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
                                        VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
-                        <TextBlock Text="0" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="{Binding orderData.PickListOrder}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="Orders ready for picking" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Border>
+            <!-- Subscription Orders Orders -->
+            <Border
+                Background="#f3f8ff"
+                BorderBrush="#e0e0e0"
+                BorderThickness="1"
+                CornerRadius="20"
+                Margin="8"
+                Padding="0"
+                Height="150"
+                MouseLeftButtonUp="TotalOrders_Click"
+                TouchUp="TotalOrders_Click">
+                            <Border
+                    Background="#f3f8ff"
+                    BorderBrush="#2b7fff"
+                    BorderThickness="4,0,0,0"
+                    CornerRadius="20">
+                    <StackPanel Margin="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Subscription Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="{Binding orderData.SubscriptionOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="5 processed, 1 pending" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Border>
+            <!-- Delivered -->
+            <Border
+                Background="#f0fdf4"
+                BorderBrush="#e0e0e0"
+                BorderThickness="1"
+                CornerRadius="20"
+                Margin="8"
+                Padding="0"
+                Height="150"
+                MouseLeftButtonUp="Delivered_Click"
+                TouchUp="Delivered_Click">
+                            <Border
+                    Background="#f0fdf4"
+                    BorderBrush="#00c951"
+                    BorderThickness="4,0,0,0"
+                    CornerRadius="20">
+                    <StackPanel Margin="24">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Delivered Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE001;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                        </Grid>
+                        <TextBlock Text="{Binding orderData.DeliveredOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="Successfully delivered" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
             </Border>
@@ -130,12 +223,12 @@
                             <TextBlock Grid.Column="1" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="Black"
                                        VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
-                        <TextBlock Text="0" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="{Binding orderData.AssignRider}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="Ready for rider assignment" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
             </Border>
-            <!-- Pending Delivery -->
+            <!-- Order Tracking -->
             <Border
                 Background="#fff7ed"
                 BorderBrush="#e0e0e0"
@@ -144,9 +237,9 @@
                 Margin="8"
                 Padding="0"
                 Height="150"
-                MouseLeftButtonUp="PendingDelivery_Click"
-                TouchUp="PendingDelivery_Click">
-                <Border
+                MouseLeftButtonUp="CarryForward_Click"
+                TouchUp="CarryForward_Click">
+                            <Border
                     Background="#fff7ed"
                     BorderBrush="#ff6900"
                     BorderThickness="4,0,0,0"
@@ -157,78 +250,16 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Pending Delivery" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#297EFF"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <TextBlock Grid.Column="0" Text="Order Tracking" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
-                        <TextBlock Text="1" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
-                        <TextBlock Text="Orders in transit" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
+                        <TextBlock Text="{Binding orderData.OrderTracking}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="Orders received after 9PM &#x0a; cutoff" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
             </Border>
-            <!-- Delivered -->
-            <Border
-                Background="#f0fdf4"
-                BorderBrush="#e0e0e0"
-                BorderThickness="1"
-                CornerRadius="20"
-                Margin="8"
-                Padding="0"
-                Height="150"
-                MouseLeftButtonUp="Delivered_Click"
-                TouchUp="Delivered_Click">
-                <Border
-                    Background="#f0fdf4"
-                    BorderBrush="#00c951"
-                    BorderThickness="4,0,0,0"
-                    CornerRadius="20">
-                    <StackPanel Margin="24">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Delivered" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE001;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
-                        </Grid>
-                        <TextBlock Text="3" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
-                        <TextBlock Text="Successfully delivered" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
-                    </StackPanel>
-                </Border>
-            </Border>
-            <!-- Rejected -->
-            <Border
-                Background="#fef2f2"
-                BorderBrush="#e0e0e0"
-                BorderThickness="1"
-                CornerRadius="20"
-                Margin="8"
-                Padding="0"
-                Height="150"
-                MouseLeftButtonUp="Rejected_Click"
-                TouchUp="Rejected_Click">
-                <Border
-                    Background="#fef2f2"
-                    BorderBrush="#fb2c36"
-                    BorderThickness="4,0,0,0"
-                    CornerRadius="20">
-                    <StackPanel Margin="24">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Rejected" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
-                        </Grid>
-                        <TextBlock Text="0" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
-                        <TextBlock Text="Cancelled or failed delivery" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
-                    </StackPanel>
-                </Border>
-            </Border>
-            <!-- Partial Returns -->
+            <!-- Return Requests -->
             <Border
                 Background="#eef2ff"
                 BorderBrush="#e0e0e0"
@@ -250,29 +281,29 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Partial Returns" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="Return Requests" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="1" Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
-                                       VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
-                        <TextBlock Text="2" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="{Binding orderData.ReturnRequests}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <TextBlock Text="450 refund amound" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
             </Border>
-            <!-- Previous Day Carry-Forward -->
+            <!-- Cancelled Orders -->
             <Border
-                Background="#fff7ed"
+                Background="#fef2f2"
                 BorderBrush="#e0e0e0"
                 BorderThickness="1"
                 CornerRadius="20"
                 Margin="8"
                 Padding="0"
                 Height="150"
-                MouseLeftButtonUp="CarryForward_Click"
-                TouchUp="CarryForward_Click">
+                MouseLeftButtonUp="Rejected_Click"
+                TouchUp="Rejected_Click">
                 <Border
-                    Background="#fff7ed"
-                    BorderBrush="#ff6900"
+                    Background="#fef2f2"
+                    BorderBrush="#fb2c36"
                     BorderThickness="4,0,0,0"
                     CornerRadius="20">
                     <StackPanel Margin="24">
@@ -281,15 +312,17 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Previous Day Carry- &#x0a;Forward" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
+                            <TextBlock Grid.Column="0" Text="Cancelled Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="#297EFF"
                                        VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
-                        <TextBlock Text="0" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
-                        <TextBlock Text="Orders received after 9PM &#x0a; cutoff" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
+                        <TextBlock Text="{Binding orderData.CancelledOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                        <TextBlock Text="Cancelled or failed delivery" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
             </Border>
+            
+            
             <!-- Repeat for other tiles, each with its own Click handler -->
         </UniformGrid>
     </StackPanel>

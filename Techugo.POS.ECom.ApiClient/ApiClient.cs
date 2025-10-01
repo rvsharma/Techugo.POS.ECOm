@@ -20,11 +20,15 @@ namespace Techugo.POS.ECOm.ApiClient
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
         }
 
-        public async Task<string> GetAsync(string endpoint)
+        public async Task<T> GetAsync<T>(string endpoint)
         {
             var response = await _httpClient.GetAsync(endpoint);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var result = System.Text.Json.JsonSerializer.Deserialize<T>(responseString);
+            if (result is null)
+                throw new System.InvalidOperationException("Deserialization returned null.");
+            return result;
         }
 
         public async Task<T> PostAsync<T>(string endpoint, object data)
@@ -34,7 +38,7 @@ namespace Techugo.POS.ECOm.ApiClient
             {
                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
             };
-            request.Headers.Add("Accept-Language", "en");
+            // request.Headers.Add("Accept-Language", "en");
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
