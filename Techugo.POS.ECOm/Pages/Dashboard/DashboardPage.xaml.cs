@@ -40,15 +40,7 @@ namespace Techugo.POS.ECOm.Pages
         {
             InitializeComponent();
             DataContext = this;
-            // Get ApiSettings from DI container
-            var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
-            if (apiSettingsOptions == null)
-            {
-                throw new System.Exception("ApiSettings not configured.");
-            }
-
-            // Use the token stored in TokenService
-            _apiService = new ApiService(apiSettingsOptions, TokenService.BearerToken);
+            _apiService = ApiServiceFactory.Create();
 
             LoadDashboardData();
         }

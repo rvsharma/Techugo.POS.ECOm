@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using Techugo.POS.ECom.Model;
+using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
 
 namespace Techugo.POS.ECOm.Pages
@@ -13,8 +14,8 @@ namespace Techugo.POS.ECOm.Pages
         public event RoutedEventHandler BackRequested;
         private readonly ApiService _apiService;
         public event PropertyChangedEventHandler PropertyChanged;
-        private ObservableCollection<Order> _orderData;
-        public ObservableCollection<Order> orderData
+        private ObservableCollection<OrderDetailVM> _orderData;
+        public ObservableCollection<OrderDetailVM> orderData
         {
             get => _orderData;
             set
@@ -38,38 +39,53 @@ namespace Techugo.POS.ECOm.Pages
         {
             InitializeComponent();
             DataContext = this;
-            orderData = new ObservableCollection<Order>();
-            // Get ApiSettings from DI container
-            var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
-            if (apiSettingsOptions == null)
-            {
-                throw new System.Exception("ApiSettings not configured.");
-            }
-
-            // Use the token stored in TokenService
-            _apiService = new ApiService(apiSettingsOptions, TokenService.BearerToken);
+            orderData = new ObservableCollection<OrderDetailVM>();
+            _apiService = ApiServiceFactory.Create();
             LoadOrdersData();
         }
 
         private async void LoadOrdersData()
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            OrdersResponse data = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=TotalOrders&Date=" + formattedDate + "");
-            if (data != null)
+            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=TotalOrders&Date=" + formattedDate + "");
+            if (orderResponse != null)
             {
                 
                 orderData.Clear();
-                foreach (var order in data.Data) // assuming your API returns a list
+                foreach (var or in orderResponse.Data)
                 {
-                    orderData.Add(order);
+                    OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + or.OrderID);
+                    
+                    if (orderDetails.Data != null)
+                    {
+                        var data = orderDetails.Data;
+                        OrderDetailVM order = new OrderDetailVM();
+                        order.OrderID = data.OrderID;
+                        order.OrderNo = data.OrderNo;
+                        order.createdAt = data.createdAt;
+                        order.ExpectedDeliveryDate = data.ExpectedDeliveryDate;
+                        order.TotalAmount = data.TotalAmount;
+                        order.PaidAmount = data.PaidAmount;
+                        order.Status = data.Status;
+                        order.Address = data.AddressList.HouseNo.ToString() + ", " 
+                                        + data.AddressList.StreetNo.ToString() + ", " 
+                                        + data.AddressList.State.ToString() + ", " 
+                                        + data.AddressList.City.ToString() + ", " 
+                                        + data.AddressList.Pincode.ToString();
+                        order.PaymentMode = data.PaymentMode;
+                        order.Subscription = data.Subscription;
+                        order.OrderDetails  = data.OrderDetails;
+                        order.Customer = data.Customer;
+                        order.BranchDeliverySlot =or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
+                        order.ItemImages = or.ItemImages;
+                        orderData.Add(order);
+                    }
+                    
                 }
-                // Update TotalOrdersText on the UI thread
                
-                    TotalOrdersText = $"All Orders ({data.TotalItems} orders)";
+                 TotalOrdersText = $"All Orders ({orderResponse.TotalItems} orders)";
                
-                //orderData = data.Data;
             }
-            // TODO: Parse and display data in your dashboard UI
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

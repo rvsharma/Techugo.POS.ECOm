@@ -52,13 +52,36 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Order ID" Width="120" DisplayMemberBinding="{Binding OrderNo}" />
-                                <GridViewColumn Header="Customer" Width="180" DisplayMemberBinding="{Binding Customer}" />
-                                <GridViewColumn Header="Contact" Width="120" DisplayMemberBinding="{Binding Contact}" />
-                                <GridViewColumn Header="Address" Width="180" DisplayMemberBinding="{Binding Address}" />
-                                <GridViewColumn Header="Items" Width="120" DisplayMemberBinding="{Binding Items}" />
+                                <GridViewColumn Header="Customer" Width="120" DisplayMemberBinding="{Binding Customer.CustomerName}" />
+                                <GridViewColumn Header="Contact" Width="120" DisplayMemberBinding="{Binding Customer.MobileNo}" />
+                                <GridViewColumn Header="Address" Width="240">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Address}" TextWrapping="Wrap" Width="170"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Items" Width="200">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ItemsControl ItemsSource="{Binding ItemImages}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Vertical"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Image Source="{Binding}" Width="36" Height="36" Margin="0,2,0,2"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Total Amount" Width="140" DisplayMemberBinding="{Binding TotalAmount}" />
                                 <GridViewColumn Header="Payment" Width="120" DisplayMemberBinding="{Binding PaidAmount}" />
-                                <GridViewColumn Header="Schedule" Width="120" DisplayMemberBinding="{Binding ExpectedDeliveryDate}" />
+                                <GridViewColumn Header="Schedule" Width="120" DisplayMemberBinding="{Binding BranchDeliverySlot}" />
                                 <GridViewColumn Header="Actions" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
