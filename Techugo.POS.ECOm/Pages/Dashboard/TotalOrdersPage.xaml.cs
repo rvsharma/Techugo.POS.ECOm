@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Pages.Dashboard;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -15,6 +17,7 @@ namespace Techugo.POS.ECOm.Pages
         private readonly ApiService _apiService;
         public event PropertyChangedEventHandler PropertyChanged;
         private ObservableCollection<OrderDetailVM> _orderData;
+        private Window _orderDetailsPopUpWindow;
         public ObservableCollection<OrderDetailVM> orderData
         {
             get => _orderData;
@@ -91,6 +94,46 @@ namespace Techugo.POS.ECOm.Pages
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             BackRequested?.Invoke(this, new RoutedEventArgs());
+        }
+
+        private void OpenOrderDetailPoPUp_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var orderItem = button?.DataContext as OrderDetailVM;
+            if (orderItem == null)
+                return;
+
+            var popup = new OrderDetailsPopUp(orderItem);
+            popup.CloseClicked += CloseOrderDetailsPopUp;
+
+            // Option 1: Show as overlay in PageContent (replace current content)
+            // SetPageContent(popup);
+
+            // Option 2: Show as a dialog/modal (recommended for popups)
+            // If you want a true modal, consider using a Window or a custom overlay.
+            // Example:
+            _orderDetailsPopUpWindow = new Window
+            {
+                Content = popup,
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                Background = Brushes.Transparent,
+                Owner = Application.Current.MainWindow,
+                Width = 800,
+                Height = 420,
+                ShowInTaskbar = false,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            _orderDetailsPopUpWindow.ShowDialog();
+        }
+
+        private void CloseOrderDetailsPopUp(object sender, RoutedEventArgs e)
+        {
+            if (_orderDetailsPopUpWindow != null)
+            {
+                _orderDetailsPopUpWindow.Close();
+                _orderDetailsPopUpWindow = null;
+            }
         }
     }
 }

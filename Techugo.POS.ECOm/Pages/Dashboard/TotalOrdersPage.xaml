@@ -35,7 +35,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                         <TextBlock Text="{Binding TotalOrdersText}" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                     <!-- Table Header -->
-                    <ListView ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0">
+                    <ListView x:Name="OrdersListView" ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0" SelectionMode="Single">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="Background" Value="White"/>
@@ -85,12 +85,27 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <GridViewColumn Header="Actions" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Content="View" Width="60" Height="28"/>
+                                            <Button Content="View" Width="60" Height="28" Click="OpenOrderDetailPoPUp_Click"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
                             </GridView>
                         </ListView.View>
+                        <ListView.Resources>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Height" Value="48"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="BorderBrush" Value="#e3e3e3"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Style.Triggers>
+                                    <!-- Remove default hover style by not setting any property on IsMouseOver -->
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.Resources>
                     </ListView>
                 </StackPanel>
             </Border>
