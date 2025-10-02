@@ -55,15 +55,17 @@
                                Foreground="#222"
                                Margin="0,0,0,0"/>
                     <ComboBox x:Name="RiderComboBox"
-          ItemsSource="{Binding RiderList}"
-          SelectedValuePath="RiderID"
-          FontSize="16"
-          Height="36"
-          Margin="0,8,0,0"
-          Padding="12,0"
-          Background="{DynamicResource MaterialDesignPaper}"
-          BorderBrush="{DynamicResource MaterialDesignDivider}"
-          materialDesign:HintAssist.Hint="Select a rider">
+                              ItemsSource="{Binding RiderList}"
+                              SelectedValuePath="RiderID"
+                              SelectedValue="{Binding SelectedRiderId, Mode=TwoWay}"
+                              SelectionChanged="RiderComboBox_SelectionChanged"
+                              FontSize="16"
+                              Height="36"
+                              Margin="0,8,0,0"
+                              Padding="12,0"
+                              Background="{DynamicResource MaterialDesignPaper}"
+                              BorderBrush="{DynamicResource MaterialDesignDivider}"
+                              materialDesign:HintAssist.Hint="Select a rider">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

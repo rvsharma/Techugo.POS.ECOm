@@ -173,6 +173,11 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 _assignRiderPopUpWindow.Close();
                 _assignRiderPopUpWindow = null;
             }
+            ShowSuccessSnackbar("Rider assigned successfully!");
+        }
+        private void ShowSuccessSnackbar(string message)
+        {
+            SuccessSnackbar.MessageQueue?.Enqueue(message);
         }
     }
 }

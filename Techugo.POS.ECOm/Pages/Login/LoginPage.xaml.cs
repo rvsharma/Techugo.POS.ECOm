@@ -1,3 +1,4 @@
+using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -12,10 +13,13 @@ namespace Techugo.POS.ECOm.Pages.Login
     {
         public event RoutedEventHandler OtpRequested;
         private readonly ApiService _apiService;
+        private readonly SnackbarMessageQueue _messageQueue = new SnackbarMessageQueue(TimeSpan.FromSeconds(3));
 
         public LoginPage()
         {
             InitializeComponent();
+            SuccessSnackbar.MessageQueue = _messageQueue;
+
             // Get ApiSettings from DI container
             var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
             if (apiSettingsOptions == null)
@@ -57,11 +61,12 @@ namespace Techugo.POS.ECOm.Pages.Login
         {
             var data = new { MobileNo = MobileNumberTextBox.Text };
             BaseResponse result = await _apiService.PostAsync<BaseResponse>("auth/login", data);
-            if(result !=null)
+            if(result != null)
             {
                 if(result.Success == true)
                 {
-
+                    ShowSuccessSnackbar("OTP sent successfully!");
+                    await Task.Delay(3000); // Wait for 3 seconds
                     OtpRequested?.Invoke(this, new RoutedEventArgs());
                 }
             }
@@ -98,7 +103,10 @@ namespace Techugo.POS.ECOm.Pages.Login
                 MobilePreviewTextBlock.Text = "";
             }
         }
-
+        private void ShowSuccessSnackbar(string message)
+        {
+            _messageQueue.Enqueue(message);
+        }
         // Expose entered phone number
         public string EnteredPhoneNumber => MobileNumberTextBox.Text;
     }

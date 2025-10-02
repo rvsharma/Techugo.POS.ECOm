@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="Techugo.POS.ECOm.Pages.Dashboard.AssignRider"
                           xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-Height="Auto" Width="Auto">
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Height="Auto" Width="Auto">
     <Grid Background="#FCFAFB">
         <StackPanel Margin="32,24,32,0">
             <!-- Title Row: Back Button and All Orders side by side -->
@@ -110,5 +110,10 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                 </StackPanel>
             </Border>
         </StackPanel>
+        <materialDesign:Snackbar x:Name="SuccessSnackbar"
+                          MessageQueue="{materialDesign:MessageQueue}" 
+                          VerticalAlignment="Bottom"
+                          HorizontalAlignment="Right"
+                          Margin="0,0,24,24"/>
     </Grid>
 </UserControl>

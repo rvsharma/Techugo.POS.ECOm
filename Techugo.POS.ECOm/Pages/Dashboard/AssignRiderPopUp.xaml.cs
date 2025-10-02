@@ -28,10 +28,31 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RiderList)));
             }
         }
+        private int _selectedRiderId;
+        public int SelectedRiderId
+        {
+            get => _selectedRiderId;
+            set
+            {
+                _selectedRiderId = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedRiderId)));
+            }
+        }
+        private OrderDetailVM _orderDetails;
+        public OrderDetailVM OrderDetails
+        {
+            get => _orderDetails;
+            set
+            {
+                _orderDetails = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OrderDetails)));
+            }
+        }
         public AssignRiderPopUp(OrderDetailVM orderDetail)
         {
             InitializeComponent();
             DataContext = this;
+            OrderDetails = orderDetail;
             _apiService = ApiServiceFactory.Create();
             GetRiders();
         }
@@ -39,18 +60,34 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         {
             CloseClicked?.Invoke(this, new RoutedEventArgs());
         }
-        private void AssignRider_Click(object sender, RoutedEventArgs e)
+        private async void AssignRider_Click(object sender, RoutedEventArgs e)
         {
-            AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
+            var data = new { RiderID = SelectedRiderId, OrderIDs = new[] { OrderDetails.OrderID } };
+            BaseResponse result = await _apiService.PutAsync<BaseResponse>("rider/assign-rider", data);
+            if (result != null)
+            {
+                if (result.Success == true)
+                {
+
+                    AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
+                }
+            }
+            
         }
 
         private async void GetRiders()
         {
             RiderListResponse riderListResponse = await _apiService.GetAsync<RiderListResponse>("rider/rider-list?page=1&limit=10&filter=All");
             var list = riderListResponse?.Data ?? new List<RiderVM>();
-            //// Insert placeholder at the top
-            //list.Insert(0, new RiderVM { RiderID = 0, Name = "Select va rider" });
+
             RiderList = new ObservableCollection<RiderVM>(list);
+        }
+        private void RiderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (RiderComboBox.SelectedValue is int riderId)
+            {
+                SelectedRiderId = riderId;
+            }
         }
     }
 }
