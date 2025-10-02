@@ -3,31 +3,118 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Techugo.POS.ECOm.Pages.Dashboard"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:convertors="clr-namespace:Techugo.POS.ECOm.Convertors"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="225" d:DesignWidth="450"
+             Background="Transparent">
+    <UserControl.Resources>
+        <convertors:OnlineStatusConverter x:Key="OnlineStatusConverter"/>
+        <convertors:OnlineStatusColorConverter x:Key="OnlineStatusColorConverter"/>
+    </UserControl.Resources>
     <Grid>
-        <TextBlock Text="Assign Rider Pop-Up Content Goes Here" 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center" 
-                       FontSize="16" 
-                       FontWeight="Bold"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20" >
-            <!-- Add your pop-up content here -->
-            <Button x:Name="Cancel" Content="Cancel" 
-                Width="80" 
-                Height="30" 
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Top" 
-                Margin="0,10,10,0"
-                Click="Cancel_Click"/>
-            <Button x:Name="Assign" Content="Assign Rider" 
-        Width="80" 
-        Height="30" 
-        HorizontalAlignment="Right" 
-        VerticalAlignment="Top" 
-        Margin="0,10,10,0"
-        Click="AssignRider_Click"/>
-        </StackPanel>
+        <!-- Overlay -->
+        <Rectangle Fill="#AA888888" Opacity="0.6"/>
+        <!-- Centered Popup -->
+        <Border
+            Background="White"
+            CornerRadius="16"
+            Padding="16"
+            BorderBrush="#FF868686"
+            BorderThickness="0.5"
+            >
+            <Border.Effect>
+                <DropShadowEffect Color="#888" BlurRadius="16" ShadowDepth="0" Opacity="0.4"/>
+            </Border.Effect>
+            <Grid>
+                <!-- Close Button -->
+                <Button Content="✕"
+                        Width="32"
+                        Height="32"
+                        
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="18"
+                        Foreground="#888"
+                        Click="Cancel_Click"/>
+                <StackPanel Margin="0,0,0,0">
+                    <TextBlock Text="Assign Rider"
+                               FontSize="18"
+                               FontWeight="DemiBold"
+                               Foreground="#222"
+                               Margin="0,0,0,8"/>
+                    <TextBlock Text="Select a rider to assign to order ORD-001"
+                               FontSize="14"
+                               Foreground="#555"
+                               Margin="0,0,0,24"/>
+                    <TextBlock Text="Available Riders"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="#222"
+                               Margin="0,0,0,0"/>
+                    <ComboBox x:Name="RiderComboBox"
+          ItemsSource="{Binding RiderList}"
+          SelectedValuePath="RiderID"
+          FontSize="16"
+          Height="36"
+          Margin="0,8,0,0"
+          Padding="12,0"
+          Background="{DynamicResource MaterialDesignPaper}"
+          BorderBrush="{DynamicResource MaterialDesignDivider}"
+          materialDesign:HintAssist.Hint="Select a rider">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding IsOnline, Converter={StaticResource OnlineStatusConverter}}" 
+                           Foreground="{Binding IsOnline, Converter={StaticResource OnlineStatusColorConverter}}"
+                           FontWeight="Regular" FontSize="12"
+                           Margin="0,4,8,0"/>
+                                    
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="Height" Value="40"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsOnline}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Foreground" Value="#888"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,0">
+                        <Button Content="Cancel"
+                                Width="Auto"
+                                Height="36"
+                                Padding="16,0"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Background="#F5F5F7"
+                                Foreground="#222"
+                                BorderBrush="#F5F5F7"
+                                BorderThickness="2"
+                                Margin="0,0,16,0"
+                                Click="Cancel_Click"/>
+                        <Button Content="Assign Rider"
+                                Width="Auto"
+                                Height="36"
+                                Padding="16,0"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Background="#8B8B96"
+                                Foreground="White"
+                                BorderBrush="#8B8B96"
+                                BorderThickness="2"
+                                Click="AssignRider_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

@@ -30,6 +30,16 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         public event PropertyChangedEventHandler PropertyChanged;
         private ObservableCollection<OrderDetailVM> _orderData;
         private Window _assignRiderPopUpWindow;
+        private ObservableCollection<SocietyOrderGroup> _groupedOrders;
+        public ObservableCollection<SocietyOrderGroup> GroupedOrders
+        {
+            get => _groupedOrders;
+            set
+            {
+                _groupedOrders = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GroupedOrders)));
+            }
+        }
         public ObservableCollection<OrderDetailVM> orderData
         {
             get => _orderData;
@@ -54,50 +64,60 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         {
             InitializeComponent();
             DataContext = this;
+            GroupedOrders = new ObservableCollection<SocietyOrderGroup>();
             orderData = new ObservableCollection<OrderDetailVM>();
             _apiService = ApiServiceFactory.Create();
             LoadOrdersData();
         }
         private async void LoadOrdersData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=AssignRider&Date=" + formattedDate + "");
-            if (orderResponse != null)
+            //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string formattedDate = "2025-09-30";
+
+            AssignRiderOrdersResponse assignRiderOrdersResponse = await _apiService.GetAsync<AssignRiderOrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=AssignRider&Date=" + formattedDate + "");
+            if (assignRiderOrdersResponse != null)
             {
 
-                orderData.Clear();
-                foreach (var or in orderResponse.Data)
-                {
-                    OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + or.OrderID);
+                var grouped = assignRiderOrdersResponse.Data
+             .GroupBy(g => g.Society)
+             .Select(grp => new SocietyOrderGroup
+             {
+                 Society = grp.Key,
+                 Type = grp.First().Type,
+                 Zone = grp.First().Zone,
+                 Orders = grp.SelectMany(x => x.Orders).ToList()
+             })
+             .ToList();
 
-                    if (orderDetails.Data != null)
+                GroupedOrders = new ObservableCollection<SocietyOrderGroup>(grouped);
+                orderData.Clear();
+                foreach (var groupedOrder in GroupedOrders)
+                {
+                    foreach (var o in groupedOrder.Orders)
                     {
-                        var data = orderDetails.Data;
                         OrderDetailVM order = new OrderDetailVM();
-                        order.OrderID = data.OrderID;
-                        order.OrderNo = data.OrderNo;
-                        order.createdAt = data.createdAt;
-                        order.ExpectedDeliveryDate = data.ExpectedDeliveryDate;
-                        order.TotalAmount = data.TotalAmount;
-                        order.PaidAmount = data.PaidAmount;
-                        order.Status = data.Status;
-                        order.Address = data.AddressList.HouseNo.ToString() + ", "
-                                        + data.AddressList.StreetNo.ToString() + ", "
-                                        + data.AddressList.State.ToString() + ", "
-                                        + data.AddressList.City.ToString() + ", "
-                                        + data.AddressList.Pincode.ToString();
-                        order.PaymentMode = data.PaymentMode;
-                        order.Subscription = data.Subscription;
-                        order.OrderDetails = data.OrderDetails;
-                        order.Customer = data.Customer;
-                        order.BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
-                        order.ItemImages = or.ItemImages;
+                        order.OrderID = o.OrderID;
+                        order.OrderNo = o.OrderNo;
+                        order.createdAt = o.CreatedAt;
+                        order.ExpectedDeliveryDate = o.ExpectedDeliveryDate;
+                        order.TotalAmount = o.TotalAmount;
+                        order.PaidAmount = o.PaidAmount;
+                        order.Status = o.Status;
+                        order.Address = o.AddressList.HouseNo.ToString() + ", "
+                                        + o.AddressList.StreetNo.ToString() + ", "
+                                        + o.AddressList.City.ToString() + ", "
+                                        + o.AddressList.Pincode.ToString();
+                        order.PaymentMode = o.PaymentMode;
+                        order.Subscription = o.Subscription;
+                        order.Customer = new CustomerDetails { CustomerName = o.AddressList.Name, MobileNo = "34234" };
+                        order.BranchDeliverySlot = o.BranchDeliverySlot.StartTime + " - " + o.BranchDeliverySlot.EndTime;
+                        order.ItemImages = o.ItemImages;
                         orderData.Add(order);
                     }
-
+                    
                 }
 
-                AssignRiderText = $"Assign Rider Orders ({orderResponse.TotalItems} orders)";
+                AssignRiderText = $"Assign Rider Orders ({assignRiderOrdersResponse.TotalItems} orders)";
 
             }
         }
@@ -129,8 +149,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 AllowsTransparency = true,
                 Background = Brushes.Transparent,
                 Owner = Application.Current.MainWindow,
-                Width = 800,
-                Height = 420,
+                Width = 420,
+                Height = 230,
                 ShowInTaskbar = false,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
