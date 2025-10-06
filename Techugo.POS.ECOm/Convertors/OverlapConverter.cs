@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Techugo.POS.ECOm.Helper
+namespace Techugo.POS.ECOm.Convertors
 {
     public class OverlapConverter : IValueConverter
     {

@@ -20,15 +20,7 @@ namespace Techugo.POS.ECOm.Pages.Login
             InitializeComponent();
             SuccessSnackbar.MessageQueue = _messageQueue;
 
-            // Get ApiSettings from DI container
-            var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
-            if (apiSettingsOptions == null)
-            {
-                throw new System.Exception("ApiSettings not configured.");
-            }
-
-            // Use the token stored in TokenService
-            _apiService = new ApiService(apiSettingsOptions, TokenService.BearerToken);
+            _apiService = ApiServiceFactory.Create();
             MobileNumberTextBox.PreviewTextInput += MobileNumberTextBox_PreviewTextInput;
             MobileNumberTextBox.TextChanged += MobileNumberTextBox_TextChanged;
             DataObject.AddPastingHandler(MobileNumberTextBox, OnPaste);
@@ -59,14 +51,19 @@ namespace Techugo.POS.ECOm.Pages.Login
 
         private async void SendOtpButton_Click(object sender, RoutedEventArgs e)
         {
-            var data = new { MobileNo = MobileNumberTextBox.Text };
+            // var data = new { MobileNo = MobileNumberTextBox.Text };
+            var data = new { MobileNo = "7053915310" };
             BaseResponse result = await _apiService.PostAsync<BaseResponse>("auth/login", data);
-            if(result != null)
+            //ShowSuccessSnackbar("OTP sent successfully!");
+            //await Task.Delay(3000); // Wait for 3 seconds
+            //OtpRequested?.Invoke(this, new RoutedEventArgs());
+
+            if (result != null)
             {
-                if(result.Success == true)
+                if (result.Success == true)
                 {
                     ShowSuccessSnackbar("OTP sent successfully!");
-                    await Task.Delay(3000); // Wait for 3 seconds
+                    // await Task.Delay(3000); // Wait for 3 seconds
                     OtpRequested?.Invoke(this, new RoutedEventArgs());
                 }
             }

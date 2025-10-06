@@ -22,12 +22,7 @@ namespace Techugo.POS.ECOm.Pages.Login
             PhoneNumber = "+91 " + phoneNumber;
             PhoneNumberWithoutCode = phoneNumber;
             DataContext = this; // For simple binding
-            var apiSettingsOptions = App.ServiceProvider?.GetService(typeof(IOptions<ApiSettings>)) is IOptions<ApiSettings> options ? options : null;
-            if (apiSettingsOptions == null)
-            {
-                throw new System.Exception("ApiSettings not configured.");
-            }
-            _apiService = new ApiService(apiSettingsOptions, TokenService.BearerToken);
+            _apiService = ApiServiceFactory.Create();
         }
         private void OtpBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -85,20 +80,24 @@ namespace Techugo.POS.ECOm.Pages.Login
 
             if (otp == "123456")
             {
-                var data = new { MobileNo = PhoneNumberWithoutCode, OTP = otp };
-                OTPVerifiedResponse result = await _apiService.PostAsync<OTPVerifiedResponse>("auth/verify-otp", data);
-                if (result != null)
+                // var data = new { MobileNo = PhoneNumberWithoutCode, OTP = otp };
+                var data = new { MobileNo = "7053915310", OTP = otp };
+                try
                 {
-                    if (result.Success == true)
+                    OTPVerifiedResponse result = await _apiService.PostAsync<OTPVerifiedResponse>("auth/verify-otp", data);
+                    if (result != null)
                     {
-                        TokenService.BearerToken = result.Data.Token;
-                        OtpVerified?.Invoke(this, new RoutedEventArgs());
+                        if (result.Success == true)
+                        {
+                            TokenService.BearerToken = result.Data.Token;
+                            OtpVerified?.Invoke(this, new RoutedEventArgs());
+                        }
                     }
-                }
-               
-                
 
-                OtpVerified?.Invoke(this, new RoutedEventArgs());
+                }
+                catch {
+                    // OtpVerified?.Invoke(this, new RoutedEventArgs());
+                }   
             }
             else
             {

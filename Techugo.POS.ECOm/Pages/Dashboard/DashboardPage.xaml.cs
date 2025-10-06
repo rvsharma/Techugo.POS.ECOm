@@ -48,11 +48,16 @@ namespace Techugo.POS.ECOm.Pages
         private async void LoadDashboardData()
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            DashboardResponse data = await _apiService.GetAsync<DashboardResponse>("order/dashboard?Date=" + formattedDate + "");
-            if (data != null)
+            try
             {
-                orderData = data.Data;
+                DashboardResponse data = await _apiService.GetAsync<DashboardResponse>("order/dashboard?Date=" + formattedDate + "");
+                if (data != null)
+                {
+                    orderData = data.Data;
+                }
+
             }
+            catch (Exception ex) { }
             // TODO: Parse and display data in your dashboard UI
         }
 
