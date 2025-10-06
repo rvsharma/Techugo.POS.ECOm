@@ -1,99 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Techugo.POS.ECom.Model;
+using Techugo.POS.ECom.Model.ViewModel;
+using Techugo.POS.ECOm.ApiClient;
 
 namespace Techugo.POS.ECOm.Pages
 {
     /// <summary>
     /// Interaction logic for PickListPage.xaml
     /// </summary>
-    public partial class PickListPage : UserControl
+    public partial class PickListPage : UserControl, INotifyPropertyChanged
     {
         public event RoutedEventHandler BackRequested;
-        public ObservableCollection<PickListOrder> PickListOrders { get; set; } = new();
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly ApiService _apiService;
+        // public ObservableCollection<PickListOrder> PickListOrders { get; set; } = new();
+        private ObservableCollection<PickListOrder> _pickListOrders;
+        private ObservableCollection<SocietyOrderGroup> _groupedOrders;
+
+        public ObservableCollection<SocietyOrderGroup> GroupedOrders
+        {
+            get => _groupedOrders;
+            set
+            {
+                _groupedOrders = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GroupedOrders)));
+            }
+        }
+        public ObservableCollection<PickListOrder> PickListOrders
+        {
+            get => _pickListOrders;
+            set
+            {
+                _pickListOrders = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PickListOrders)));
+            }
+        }
+        private string _pickListOrderText;
+        public string PickListOrderText
+        {
+            get => _pickListOrderText;
+            set
+            {
+                _pickListOrderText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PickListOrderText)));
+            }
+        }
         public PickListPage()
         {
             InitializeComponent();
             DataContext = this;
-
-            PickListOrders.Add(new PickListOrder
-            {
-                OrderNo = "ORD-001",
-                CustomerName = "Rahul Sharma",
-                TotalItems = 2,
-                OrderValue = 790,
-                //ActionsText = "Collapse Details",
-                IsExpanded = true,
-                Items = new List<PickListItem>
-                {
-                    new PickListItem
-                    {
-                        ItemName = "Cooking Oil - Sunflower",
-                        Size = "1L",
-                        Qty = 2,
-                        EditQty = 2,
-                        Weight = 1.80,
-                        Rate = 170,
-                        Total = 340
-                    },
-                    new PickListItem
-                    {
-                        ItemName = "Basmati Rice Premium",
-                        Size = "5kg",
-                        Qty = 1,
-                        EditQty = 1,
-                        Weight = 4.80,
-                        Rate = 450,
-                        Total = 450
-                    }
-                }
-            });
-
-            PickListOrders.Add(new PickListOrder
-            {
-                OrderNo = "ORD-002",
-                CustomerName = "Priya Patel",
-                TotalItems = 2,
-                OrderValue = 275,
-                //ActionsText = "Expand Details",
-                IsExpanded = false,
-                Items = new List<PickListItem>
-                {
-                    new PickListItem
-                    {
-                        ItemName = "Sugar",
-                        Size = "1kg",
-                        Qty = 1,
-                        EditQty = 1,
-                        Weight = 1.00,
-                        Rate = 50,
-                        Total = 50
-                    },
-                    new PickListItem
-                    {
-                        ItemName = "Salt",
-                        Size = "1kg",
-                        Qty = 1,
-                        EditQty = 1,
-                        Weight = 1.00,
-                        Rate = 25,
-                        Total = 25
-                    }
-                }
-            });
+            PickListOrders = new ObservableCollection<PickListOrder>();
+            _apiService = ApiServiceFactory.Create();
+            LoadPickListData();
         }
 
+        private async void LoadPickListData()
+        {
+            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            //string formattedDate = "2025-09-30";
+
+            AssignRiderOrdersResponse assignRiderOrdersResponse = await _apiService.GetAsync<AssignRiderOrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=PickListOrder&Date=" + formattedDate + "");
+            if (assignRiderOrdersResponse != null)
+            {
+
+                var grouped = assignRiderOrdersResponse.Data
+             .GroupBy(g => g.Society)
+             .Select(grp => new SocietyOrderGroup
+             {
+                 Society = grp.Key,
+                 Type = grp.First().Type,
+                 Zone = grp.First().Zone,
+                 Orders = grp.SelectMany(x => x.Orders).ToList()
+             })
+             .ToList();
+
+                GroupedOrders = new ObservableCollection<SocietyOrderGroup>(grouped);
+                PickListOrders.Clear();
+                foreach (var groupedOrder in GroupedOrders)
+                {
+                    foreach (var o in groupedOrder.Orders)
+                    {
+                        OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + o.OrderID);
+                        if (orderDetails.Data != null)
+                        {
+                            PickListOrders.Add(new PickListOrder
+                            {
+                                OrderID = orderDetails.Data.OrderID,
+                                OrderNo = orderDetails.Data.OrderNo,
+                                CustomerName = orderDetails.Data.Customer.CustomerName,
+                                TotalItems = orderDetails.Data.OrderDetails.Count,
+                                OrderValue = orderDetails.Data.TotalAmount,
+                                //ActionsText = "Collapse Details",
+                                IsExpanded = false,
+                                Items = orderDetails.Data.OrderDetails.Select(od => new PickListItem
+                                {
+                                    ItemID = od.ItemID,
+                                    ItemName = od.Item.ItemName,
+                                    Size = od.Size,
+                                    Qty = od.Quantity,
+                                    EditQty = od.Quantity,
+                                    Weight = od.Size,
+                                    UOM = od.UOM,
+                                    Rate = od.Amount,
+                                    Total = od.NetAmount
+                                }).ToList()
+                            });
+                        }
+                    }
+
+                }
+
+                PickListOrderText = $"Pick List Orders ({PickListOrders.Count} orders, {PickListOrders.Sum(o => o.Items?.Count ?? 0)} items)";
+
+            }
+        }
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             BackRequested?.Invoke(this, new RoutedEventArgs());
@@ -102,6 +128,7 @@ namespace Techugo.POS.ECOm.Pages
 
     public class PickListOrder : INotifyPropertyChanged
     {
+        public string OrderID { get; set; }
         public string OrderNo { get; set; }
         public string CustomerName { get; set; }
         public int TotalItems { get; set; }
@@ -140,11 +167,13 @@ namespace Techugo.POS.ECOm.Pages
 
     public class PickListItem
     {
+        public int ItemID { get; set; }
         public string ItemName { get; set; }
         public string Size { get; set; }
         public int Qty { get; set; }
         public int EditQty { get; set; }
-        public double Weight { get; set; }
+        public string Weight { get; set; }
+        public string UOM { get; set; }
         public decimal Rate { get; set; }
         public decimal Total { get; set; }
     }

@@ -25,7 +25,7 @@ namespace Techugo.POS.ECom.Model
         public List<OrderDetail> OrderDetails { get; set; }
         public CustomerDetails Customer { get; set; }
         public AddressDetails AddressList { get; set; }
-        public string Rider { get; set; }
+        public Rider Rider { get; set; }
         public List<OrderTimeline> OrderTimelines { get; set; }
         public string Subscription { get; set; }
         public BranchDeliverySlot BranchDeliverySlot { get; set; }
@@ -83,6 +83,13 @@ namespace Techugo.POS.ECom.Model
         public DateTime? OnTheWayOn { get; set; }
         public DateTime? ReachedOn { get; set; }
         public DateTime? DeliveredOn { get; set; }
+    }
+
+    public class Rider
+    {
+        public string Name { get; set; }
+        public string MobileNo { get; set; }
+        public bool? IsOnline { get; set; }
     }
 
 }
