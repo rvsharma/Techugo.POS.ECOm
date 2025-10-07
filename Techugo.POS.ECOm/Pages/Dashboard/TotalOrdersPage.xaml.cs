@@ -119,8 +119,8 @@ namespace Techugo.POS.ECOm.Pages
                 AllowsTransparency = true,
                 Background = Brushes.Transparent,
                 Owner = Application.Current.MainWindow,
-                Width = 800,
-                Height = 420,
+                Width = SystemParameters.PrimaryScreenWidth,
+                Height = SystemParameters.PrimaryScreenHeight,
                 ShowInTaskbar = false,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };

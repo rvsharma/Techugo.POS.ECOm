@@ -17,6 +17,7 @@
     <None Remove="Assets\Images\delivered.svg" />
     <None Remove="Assets\Images\edit.svg" />
     <None Remove="Assets\Images\expand.svg" />
+    <None Remove="Assets\Images\eye.svg" />
     <None Remove="Assets\Images\mark_ready.svg" />
     <None Remove="Assets\Images\orders.svg" />
     <None Remove="Assets\Images\partial_returns.svg" />
@@ -60,6 +61,7 @@
     <Resource Include="Assets\Images\delivered.svg" />
     <Resource Include="Assets\Images\edit.svg" />
     <Resource Include="Assets\Images\expand.svg" />
+    <Resource Include="Assets\Images\eye.svg" />
     <Resource Include="Assets\Images\mark_ready.svg" />
     <Resource Include="Assets\Images\orders.svg" />
     <Resource Include="Assets\Images\partial_returns.svg" />
