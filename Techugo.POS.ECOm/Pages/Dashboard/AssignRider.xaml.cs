@@ -71,8 +71,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         }
         private async void LoadOrdersData()
         {
-            //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            string formattedDate = "2025-09-30";
+            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            //string formattedDate = "2025-09-30";
 
             AssignRiderOrdersResponse assignRiderOrdersResponse = await _apiService.GetAsync<AssignRiderOrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=AssignRider&Date=" + formattedDate + "");
             if (assignRiderOrdersResponse != null)
