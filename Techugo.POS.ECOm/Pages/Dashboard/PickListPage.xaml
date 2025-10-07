@@ -71,14 +71,14 @@
                 </StackPanel>
 
                 <!-- Simulate Weight Button -->
-                <Button Content="Simulate Weight" Grid.Column="1" Padding="12,4" FontSize="14" Background="#FFF" BorderBrush ="White" BorderThickness="1" Foreground ="Black" FontWeight="SemiBold" HorizontalAlignment="Right">
+                <Button Content="Simulate Weight" Grid.Column="0"  Padding="12,4" FontSize="14" Background="#FFF" BorderBrush ="White" BorderThickness="1" Foreground ="Black" FontWeight="SemiBold" HorizontalAlignment="Right">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="border"
                              Background="white"
                              BorderBrush="LightGray"           
                              BorderThickness="1"
-                             CornerRadius="15"
+                             CornerRadius="8"
                               Padding="10"
                              SnapsToDevicePixels="True">
                                 <ContentPresenter HorizontalAlignment="Center"
@@ -111,16 +111,16 @@
 
                     <!-- Table -->
                     <DataGrid Grid.Row="3"
-              AutoGenerateColumns="False"
-              HeadersVisibility="Column"
-              CanUserAddRows="False"
-              Margin="15"
-              FontSize="14" 
-              FontWeight="SemiBold"
-              BorderBrush="white"
+                      AutoGenerateColumns="False"
+                       HeadersVisibility="Column"
+                      CanUserAddRows="False"
+                        Margin="15"
+                         FontSize="14" 
+                        FontWeight="SemiBold"
+                        BorderBrush="white"
                
-               GridLinesVisibility="None"
-              BorderThickness="0">
+                          GridLinesVisibility="None"
+                          BorderThickness="0">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="Background" Value="white"/>
@@ -136,16 +136,160 @@
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Order Details" Binding="{Binding OrderDetails}" Width="*"/>
-                            <DataGridTextColumn Header="Customer" Binding="{Binding Customer}" Width="*"/>
-                            <DataGridTextColumn Header="Total Items" Binding="{Binding TotalItems}" Width="*"/>
-                            <DataGridTextColumn Header="Order Value" Binding="{Binding OrderValue}" Width="*"/>
-                            <DataGridTextColumn Header="Actions" Binding="{Binding Actions}" Width="*"/>
+                            <DataGridTextColumn Header="Order Details" Binding="{Binding Item1}" Width="*"/>
+                            <DataGridTextColumn Header="Customer" Binding="{Binding Item2}" Width="*"/>
+                            <DataGridTextColumn Header="Total Items" Binding="{Binding Item3}" Width="*"/>
+                            <DataGridTextColumn Header="Order Value" Binding="{Binding Item4}" Width="*"/>
+                            <DataGridTextColumn Header="Actions" Binding="{Binding Item5}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
+               
+                <StackPanel Grid.Row="1" Background="White">
+
+                    <!-- Row with Expand Details -->
+ 
+
+                        <!-- Main Table Row (Expander.Header) -->
+                        
+                            <Grid Background="#FCFCFC" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Orientation="Horizontal" Grid.Column="0">
+
+                           
+                                <ToggleButton x:Name="ArrowToggle" FontSize="14" Background="Transparent" BorderThickness="0" Cursor="Arrow" VerticalAlignment="Center" Padding="0" Width="20">
+                                    <ToggleButton.Style>
+                                        <Style TargetType="ToggleButton">
+                                            <Setter Property="Content" Value=">"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter Property="Content" Value="˅"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToggleButton.Style>
+                                </ToggleButton>
+                                <TextBlock Text="ORD-001" FontSize="14"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Rahul Sharma" Grid.Column="1" FontSize="14"/>
+
+                                <Border Background="#F2F3F5" CornerRadius="8" Padding="5,2"
+                        Grid.Column="2" HorizontalAlignment="Center">
+                                    <TextBlock Text="2 items" FontSize="14"/>
+                                </Border>
+
+                                <TextBlock Text="₹790.00" FontWeight="Bold" Grid.Column="3" FontSize="14"/>
+
+                                <!-- Expand/Collapse Label -->
+
+
+                        <ToggleButton x:Name="ExpandToggle" Grid.Column="4" FontSize="14" Foreground="Black" Background="Transparent" BorderThickness="0" Cursor="Arrow">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton" >
+                                    <Setter Property="Content" Value="Expand Details"/>
+                                   
+                                    <Style.Triggers>
+                                       
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content" Value="Collapse Details"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+
+                    </Grid>
+                    <StackPanel x:Name="DetailsPanel" Background="White" >
+                        
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <!-- Show if either toggle is checked -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsChecked, ElementName=ExpandToggle}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsChecked, ElementName=ArrowToggle}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+
+                            <!-- Collapsible Child Table -->
+                        <StackPanel Background="White" >
+                            <Grid Background="#f9f9f9" Margin="0,4,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Item Name"  Grid.Column="0" Margin="5"/>
+                                <TextBlock Text="Size" Grid.Column="1" Margin="5"/>
+                                <TextBlock Text="Qty"  Grid.Column="2" Margin="5"/>
+                                <TextBlock Text="Edit Qty"  Grid.Column="3" Margin="5"/>
+                                <TextBlock Text="Weight"  Grid.Column="4" Margin="5"/>
+
+                                <TextBlock Text="Rate"  Grid.Column="5" Margin="5"/>
+                                <TextBlock Text="Total" Grid.Column="6" Margin="5"/>
+                            </Grid>
+
+                            <!-- Example Row -->
+                            <Grid Margin="0,2,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Cooking Oil - Sunflower" FontWeight="Bold" Grid.Column="0" Margin="5"/>
+                                <Border   BorderBrush="gray"
+                                 BorderThickness="1" CornerRadius="5" Padding="3,2"
+                              Grid.Column="1" HorizontalAlignment="Center">
+                                    <TextBlock Text="50kg" Grid.Column="1" FontSize ="10" FontWeight="Bold" Margin="3"/>
+                                </Border>
+                                <TextBlock Text="2" Grid.Column="2" FontWeight="Bold" Margin="5"/>
+                                <Border Background="LightGreen"  CornerRadius="5" Padding="5,2"
+                            Grid.Column="3" HorizontalAlignment="Center">
+                                    <TextBlock Text="2" Grid.Column="3" FontWeight="Bold" Margin="5"/>
+                                </Border>
+                                <TextBlock Text="1.80" Grid.Column="4" FontWeight="Bold" Margin="5"/>
+                                <TextBlock Text="₹170" Grid.Column="5" FontWeight="Bold" Margin="5"/>
+                                <TextBlock Text="₹340.00" Grid.Column="6" FontWeight="Bold" Margin="5"/>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+                
+
+
 
             </StackPanel>
+           
         </Border>
     </StackPanel>
 </UserControl>
