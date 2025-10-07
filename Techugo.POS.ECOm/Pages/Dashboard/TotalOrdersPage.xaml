@@ -41,10 +41,15 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <Setter Property="Background" Value="White"/>
                                 <Setter Property="Margin" Value="0,0,0,2"/>
                                 <Setter Property="Padding" Value="0"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#0a0a0a"/>
+                                <Setter Property="FontSize" Value="14"/>
+
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#F3F8FF"/>
+                                        <Setter Property="Background" Value="#ececf0"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -53,7 +58,19 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                             <GridView>
                                 <GridViewColumn Header="Order ID" Width="120" DisplayMemberBinding="{Binding OrderNo}" />
                                 <GridViewColumn Header="Customer" Width="120" DisplayMemberBinding="{Binding Customer.CustomerName}" />
-                                <GridViewColumn Header="Contact" Width="120" DisplayMemberBinding="{Binding Customer.MobileNo}" />
+                                <GridViewColumn Header="Contact" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="+91 {0:00000 00000}">
+                                                        <Binding Path="Customer.MobileNo"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Address" Width="280">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -107,13 +124,22 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                 <Setter Property="FontSize" Value="14"/>
                                 <Setter Property="Background" Value="White"/>
-                                <Setter Property="BorderBrush" Value="#e3e3e3"/>
-                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Style.Triggers>
-                                    <!-- Remove default hover style by not setting any property on IsMouseOver -->
-                                </Style.Triggers>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GridViewColumnHeader">
+                                            <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </ListView.Resources>
                     </ListView>

@@ -28,7 +28,6 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Background="Transparent"
-                        BorderThickness="0"
                         FontSize="18"
                         Foreground="#888"
                         Click="Close_Click"
