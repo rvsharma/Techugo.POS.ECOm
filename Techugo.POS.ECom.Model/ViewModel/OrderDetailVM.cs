@@ -27,5 +27,6 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string Subscription { get; set; }
         public string BranchDeliverySlot { get; set; }
         public List<string> ItemImages { get; set; }
+        public string Items { get; set; }
     }
 }
