@@ -4,9 +4,12 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Pages.Dashboard;
+using Techugo.POS.ECOm.Pages.Dashboard.PickList;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -17,6 +20,7 @@ namespace Techugo.POS.ECOm.Pages
     {
         public event RoutedEventHandler BackRequested;
         public event PropertyChangedEventHandler PropertyChanged;
+        private Window _editPickListPopUpWindow;
 
         private readonly ApiService _apiService;
         // public ObservableCollection<PickListOrder> PickListOrders { get; set; } = new();
@@ -63,7 +67,7 @@ namespace Techugo.POS.ECOm.Pages
         private async void LoadPickListData()
         {
             //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            string formattedDate = "2025-10-04";
+            string formattedDate = "2025-10-08";
 
             AssignRiderOrdersResponse assignRiderOrdersResponse = await _apiService.GetAsync<AssignRiderOrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=PickListOrder&Date=" + formattedDate + "");
             if (assignRiderOrdersResponse != null)
@@ -124,65 +128,79 @@ namespace Techugo.POS.ECOm.Pages
         {
             BackRequested?.Invoke(this, new RoutedEventArgs());
         }
-    }
 
-    public class PickListOrder : INotifyPropertyChanged
-    {
-        public string OrderID { get; set; }
-        public string OrderNo { get; set; }
-        public string CustomerName { get; set; }
-        public int TotalItems { get; set; }
-        public decimal OrderValue { get; set; }
-        public string ActionsText
+        private void EditQty_Click(object sender, RoutedEventArgs e)
         {
-            get => IsExpanded ? "Collapse Details" : "Expand Details";
-        }
-        private bool _isExpanded;
-        public bool IsExpanded
-        {
-            get => _isExpanded;
-            set
+            var button = sender as Button;
+            object candidate = button.DataContext ?? button.CommandParameter ?? button.Tag ?? GetDataContextFromAncestors(button);
+
+            EditQtyViewModel? itemDetails = candidate as EditQtyViewModel;
+
+            if (itemDetails == null && candidate is PickListItem pli)
             {
-                if (_isExpanded != value)
+                itemDetails = new EditQtyViewModel
                 {
-                    _isExpanded = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(ActionsText));
-                }
+                    TitleText = "Edit Qty - " + pli.ItemName,         // use pli, not itemDetails
+                    SKU = "PLI-002",
+                    ItemID = pli.ItemID,
+                    ItemName = pli.ItemName,
+                    OrderedQty = $"{pli.Qty}{pli.UOM}",               // safer formatting
+                    MeasuredQty = pli.EditQty,
+                    MeasuredWeight = pli.Weight,
+                    OUM = pli.UOM,
+                    PricePerKg = pli.Rate
+                };
+            }
+
+            if (itemDetails == null)
+            {
+                // defensive: no valid data to show
+                // log/debug here and return gracefully
+                return;
+            }
+            var popup = new EditPickList(itemDetails);
+            popup.CloseClicked += CloseOrderDetailsPopUp;
+
+            // Option 1: Show as overlay in PageContent (replace current content)
+            // SetPageContent(popup);
+
+            // Option 2: Show as a dialog/modal (recommended for popups)
+            // If you want a true modal, consider using a Window or a custom overlay.
+            // Example:
+            _editPickListPopUpWindow = new Window
+            {
+                Content = popup,
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                Background = Brushes.Transparent,
+                Owner = Application.Current.MainWindow,
+                Width = SystemParameters.PrimaryScreenWidth,
+                Height = SystemParameters.PrimaryScreenHeight,
+                ShowInTaskbar = false,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            _editPickListPopUpWindow.ShowDialog();
+        }
+        private void CloseOrderDetailsPopUp(object sender, RoutedEventArgs e)
+        {
+            if (_editPickListPopUpWindow != null)
+            {
+                _editPickListPopUpWindow.Close();
+                _editPickListPopUpWindow = null;
             }
         }
-        public List<PickListItem> Items { get; set; }
-
-        public ICommand ToggleExpandCommand { get; }
-
-        public PickListOrder()
+        private static object GetDataContextFromAncestors(DependencyObject start)
         {
-            ToggleExpandCommand = new RelayCommand(() => IsExpanded = !IsExpanded);
+            var current = start;
+            while (current != null)
+            {
+                if (current is FrameworkElement fe && fe.DataContext != null)
+                    return fe.DataContext;
+                current = VisualTreeHelper.GetParent(current);
+            }
+            return null;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
-    public class PickListItem
-    {
-        public int ItemID { get; set; }
-        public string ItemName { get; set; }
-        public string Size { get; set; }
-        public int Qty { get; set; }
-        public int EditQty { get; set; }
-        public string Weight { get; set; }
-        public string UOM { get; set; }
-        public decimal Rate { get; set; }
-        public decimal Total { get; set; }
-    }
-    public class RelayCommand : ICommand
-    {
-        private readonly Action _execute;
-        public RelayCommand(Action execute) => _execute = execute;
-        public event EventHandler CanExecuteChanged;
-        public bool CanExecute(object parameter) => true;
-        public void Execute(object parameter) => _execute();
-    }
+
 }
