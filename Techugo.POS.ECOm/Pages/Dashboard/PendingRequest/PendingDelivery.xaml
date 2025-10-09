@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Height="Auto" Width="Auto">
     <Grid Background="#FCFAFB">
-        <StackPanel Margin="32,24,32,0">
+        <StackPanel Margin="16,24,16,0">
             <!-- Title Row: Back Button and All Orders side by side -->
             <Grid Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
@@ -43,6 +43,8 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <Setter Property="Padding" Value="0"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                 <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="MinHeight" Value="64"/>
                                 <Setter Property="BorderBrush" Value="Transparent"/>
                                 <Setter Property="Foreground" Value="#0a0a0a"/>
                                 <Setter Property="FontSize" Value="14"/>
@@ -74,14 +76,14 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <GridViewColumn Header="Address" Width="280">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Address}" TextWrapping="Wrap" Width="170"/>
+                                            <TextBlock Text="{Binding ShortAddress}" TextWrapping="Wrap" Width="170"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
                                 <GridViewColumn Header="Items" Width="80" DisplayMemberBinding="{Binding Items}" />
-                                <GridViewColumn Header="Total Amount" Width="140" DisplayMemberBinding="{Binding TotalAmount, StringFormat=₹{0}}" />
-                                <GridViewColumn Header="Payment" Width="120" DisplayMemberBinding="{Binding PaymentMode}" />
+                                <GridViewColumn Header="Total Amount" Width="100" DisplayMemberBinding="{Binding TotalAmount, StringFormat=₹{0}}" />
+                                <GridViewColumn Header="Payment" Width="100" DisplayMemberBinding="{Binding PaymentMode}" />
                                 <GridViewColumn Header="Schedule" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>

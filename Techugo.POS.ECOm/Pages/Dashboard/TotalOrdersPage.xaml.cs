@@ -62,6 +62,11 @@ namespace Techugo.POS.ECOm.Pages
                     if (orderDetails.Data != null)
                     {
                         var data = orderDetails.Data;
+                        var address = data.AddressList.HouseNo.ToString() + ", "
+                                        + data.AddressList.StreetNo.ToString() + ", "
+                                        + data.AddressList.State.ToString() + ", "
+                                        + data.AddressList.City.ToString() + ", "
+                                        + data.AddressList.Pincode.ToString();
                         OrderDetailVM order = new OrderDetailVM();
                         order.OrderID = data.OrderID;
                         order.OrderNo = data.OrderNo;
@@ -70,12 +75,9 @@ namespace Techugo.POS.ECOm.Pages
                         order.TotalAmount = data.TotalAmount;
                         order.PaidAmount = data.PaidAmount;
                         order.Status = data.Status;
-                        order.Address = data.AddressList.HouseNo.ToString() + ", " 
-                                        + data.AddressList.StreetNo.ToString() + ", " 
-                                        + data.AddressList.State.ToString() + ", " 
-                                        + data.AddressList.City.ToString() + ", " 
-                                        + data.AddressList.Pincode.ToString();
+                        order.Address = address;
                         order.PaymentMode = data.PaymentMode;
+                        order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                         order.Subscription = data.Subscription;
                         order.OrderDetails  = data.OrderDetails;
                         order.Customer = data.Customer;

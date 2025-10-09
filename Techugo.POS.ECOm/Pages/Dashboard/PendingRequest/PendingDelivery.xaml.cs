@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -74,6 +75,11 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                     if (orderDetails.Data != null)
                     {
                         var data = orderDetails.Data;
+                        var address = data.AddressList.HouseNo.ToString() + ", "
+                                        + data.AddressList.StreetNo.ToString() + ", "
+                                        + data.AddressList.State.ToString() + ", "
+                                        + data.AddressList.City.ToString() + ", "
+                                        + data.AddressList.Pincode.ToString();
                         OrderDetailVM order = new OrderDetailVM();
                         order.OrderID = data.OrderID;
                         order.OrderNo = data.OrderNo;
@@ -82,11 +88,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                         order.TotalAmount = data.TotalAmount;
                         order.PaidAmount = data.PaidAmount;
                         order.Status = data.Status;
-                        order.Address = data.AddressList.HouseNo.ToString() + ", "
-                                        + data.AddressList.StreetNo.ToString() + ", "
-                                        + data.AddressList.State.ToString() + ", "
-                                        + data.AddressList.City.ToString() + ", "
-                                        + data.AddressList.Pincode.ToString();
+                        order.Address = address;
+                        order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                         order.PaymentMode = data.PaymentMode;
                         order.Subscription = data.Subscription;
                         order.OrderType = data.Subscription == null ? "One Time Order" : "Subscription Order";
