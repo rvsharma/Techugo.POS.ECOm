@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MaterialDesignThemes.Wpf;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using MaterialDesignThemes.Wpf;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using Techugo.POS.ECom.Model;
 
 namespace Techugo.POS.ECOm
@@ -14,6 +16,18 @@ namespace Techugo.POS.ECOm
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // Set primary color to black at runtime
+            var paletteHelper = new PaletteHelper();
+            var theme = paletteHelper.GetTheme(); // FIX: Use 'var' instead of 'ITheme'
+
+            // SetPrimaryColor extension accepts a Color
+            theme.SetPrimaryColor(Colors.Black);
+
+            // Optional: set secondary/accent to black as well
+            theme.SetSecondaryColor((Color)ColorConverter.ConvertFromString("#FF000000"));
+
+            paletteHelper.SetTheme(theme);
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())

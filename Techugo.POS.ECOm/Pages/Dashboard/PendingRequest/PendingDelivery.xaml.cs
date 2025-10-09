@@ -1,37 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
 
 namespace Techugo.POS.ECOm.Pages.Dashboard
 {
-    /// <summary>
-    /// Interaction logic for PendingDelivery.xaml
-    /// </summary>
     public partial class PendingDelivery : UserControl, INotifyPropertyChanged
     {
         public event RoutedEventHandler BackRequested;
         private readonly ApiService _apiService;
-        public event PropertyChangedEventHandler PropertyChanged;
-        private ObservableCollection<OrderDetailVM> _orderData;
-        private Window _orderDetailsPopUpWindow;
-        public ObservableCollection<OrderDetailVM> orderData
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private ObservableCollection<SelectableOrderDetail> _orderData;
+        private Window? _orderDetailsPopUpWindow;
+
+        public ObservableCollection<SelectableOrderDetail> orderData
         {
             get => _orderData;
             set
@@ -51,22 +39,22 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalOrdersText)));
             }
         }
+
         public PendingDelivery()
         {
             InitializeComponent();
             DataContext = this;
-            orderData = new ObservableCollection<OrderDetailVM>();
+            orderData = new ObservableCollection<SelectableOrderDetail>();
             _apiService = ApiServiceFactory.Create();
             LoadOrdersData();
         }
+
         private async void LoadOrdersData()
         {
             string formattedDate = "2025-10-08";
-            //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
             OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=TotalOrders&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
-
                 orderData.Clear();
                 foreach (var or in orderResponse.Data)
                 {
@@ -80,50 +68,59 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                                         + data.AddressList.State.ToString() + ", "
                                         + data.AddressList.City.ToString() + ", "
                                         + data.AddressList.Pincode.ToString();
-                        OrderDetailVM order = new OrderDetailVM();
-                        order.OrderID = data.OrderID;
-                        order.OrderNo = data.OrderNo;
-                        order.createdAt = data.createdAt;
-                        order.ExpectedDeliveryDate = data.ExpectedDeliveryDate;
-                        order.TotalAmount = data.TotalAmount;
-                        order.PaidAmount = data.PaidAmount;
-                        order.Status = data.Status;
-                        order.Address = address;
-                        order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
-                        order.PaymentMode = data.PaymentMode;
-                        order.Subscription = data.Subscription;
-                        order.OrderType = data.Subscription == null ? "One Time Order" : "Subscription Order";
-                        order.OrderDetails = data.OrderDetails;
-                        order.Customer = data.Customer;
-                        order.BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
-                        order.ItemImages = or.ItemImages;
-                        order.Items = data.OrderDetails.Count + " items(s)";
-                        orderData.Add(order);
-                    }
 
+                        OrderDetailVM order = new OrderDetailVM
+                        {
+                            OrderID = data.OrderID,
+                            OrderNo = data.OrderNo,
+                            createdAt = data.createdAt,
+                            ExpectedDeliveryDate = data.ExpectedDeliveryDate,
+                            TotalAmount = data.TotalAmount,
+                            PaidAmount = data.PaidAmount,
+                            Status = data.Status,
+                            Address = address,
+                            ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address,
+                            PaymentMode = data.PaymentMode,
+                            Subscription = data.Subscription,
+                            OrderType = data.Subscription == null ? "One Time Order" : "Subscription Order",
+                            OrderDetails = data.OrderDetails,
+                            Customer = data.Customer,
+                            BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime,
+                            ItemImages = or.ItemImages,
+                            Items = data.OrderDetails.Count + " items(s)"
+                        };
+
+                        // wrap in selectable container
+                        var selectable = new SelectableOrderDetail(order);
+                        orderData.Add(selectable);
+                    }
                 }
 
                 TotalOrdersText = $"Pending Delivey Orders ({orderResponse.TotalItems} orders)";
-
             }
+        }
+
+        private void SelectAllCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            var cb = sender as CheckBox;
+            if (cb == null) return;
+
+            bool shouldSelect = cb.IsChecked == true;
+            foreach (var s in orderData)
+                s.IsSelected = shouldSelect;
         }
 
         private void OpenOrderDetailPoPUp_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            var orderItem = button?.DataContext as OrderDetailVM;
+            var selectable = button?.DataContext as SelectableOrderDetail;
+            var orderItem = selectable?.Item;
             if (orderItem == null)
                 return;
 
             var popup = new OrderDetailsPopUp(orderItem);
             popup.CloseClicked += CloseOrderDetailsPopUp;
 
-            // Option 1: Show as overlay in PageContent (replace current content)
-            // SetPageContent(popup);
-
-            // Option 2: Show as a dialog/modal (recommended for popups)
-            // If you want a true modal, consider using a Window or a custom overlay.
-            // Example:
             _orderDetailsPopUpWindow = new Window
             {
                 Content = popup,
@@ -138,6 +135,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             };
             _orderDetailsPopUpWindow.ShowDialog();
         }
+
         private void CloseOrderDetailsPopUp(object sender, RoutedEventArgs e)
         {
             if (_orderDetailsPopUpWindow != null)
@@ -146,10 +144,10 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 _orderDetailsPopUpWindow = null;
             }
         }
+
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             BackRequested?.Invoke(this, new RoutedEventArgs());
         }
-
     }
 }

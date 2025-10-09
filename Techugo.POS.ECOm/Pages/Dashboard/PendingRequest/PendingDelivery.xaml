@@ -35,16 +35,16 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                         <TextBlock Text="{Binding TotalOrdersText}" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                     <!-- Table Header -->
-                    <ListView x:Name="OrdersListView" ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0" SelectionMode="Single">
+                    <ListView x:Name="OrdersListView" ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0" SelectionMode="Extended">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="Background" Value="White"/>
                                 <Setter Property="Margin" Value="0,0,0,2"/>
                                 <Setter Property="Padding" Value="0"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                 <Setter Property="MinHeight" Value="64"/>
+                                <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="BorderBrush" Value="Transparent"/>
                                 <Setter Property="Foreground" Value="#0a0a0a"/>
                                 <Setter Property="FontSize" Value="14"/>
@@ -58,48 +58,65 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                         </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Order ID" Width="120" DisplayMemberBinding="{Binding OrderNo}" />
-                                <GridViewColumn Header="Customer" Width="120" DisplayMemberBinding="{Binding Customer.CustomerName}" />
+                                <!-- Select column with header checkbox -->
+                                <GridViewColumn Width="40">
+                                    <GridViewColumn.Header>
+                                        <CheckBox x:Name="SelectAllCheckBox" 
+                                                  Style="{StaticResource MaterialDesignCheckBox}"
+                                                  Click="SelectAllCheckBox_Click" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" 
+                                                      Style="{StaticResource MaterialDesignCheckBox}"
+                                                      VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Header="Order ID" Width="120" DisplayMemberBinding="{Binding Item.OrderNo}" />
+                                <GridViewColumn Header="Customer" Width="120" DisplayMemberBinding="{Binding Item.Customer.CustomerName}" />
                                 <GridViewColumn Header="Contact" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock>
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="+91 {0:00000 00000}">
-                                                        <Binding Path="Customer.MobileNo"/>
+                                                        <Binding Path="Item.Customer.MobileNo"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+
                                 <GridViewColumn Header="Address" Width="280">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding ShortAddress}" TextWrapping="Wrap" Width="170"/>
+                                            <TextBlock Text="{Binding Item.ShortAddress}" TextWrapping="Wrap" Width="170"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Header="Items" Width="80" DisplayMemberBinding="{Binding Items}" />
-                                <GridViewColumn Header="Total Amount" Width="100" DisplayMemberBinding="{Binding TotalAmount, StringFormat=₹{0}}" />
-                                <GridViewColumn Header="Payment" Width="100" DisplayMemberBinding="{Binding PaymentMode}" />
+                                <GridViewColumn Header="Items" Width="80" DisplayMemberBinding="{Binding Item.Items}" />
+                                <GridViewColumn Header="Total Amount" Width="100" DisplayMemberBinding="{Binding Item.TotalAmount, StringFormat=₹{0}}" />
+                                <GridViewColumn Header="Payment" Width="100" DisplayMemberBinding="{Binding Item.PaymentMode}" />
                                 <GridViewColumn Header="Schedule" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding ExpectedDeliveryDate, StringFormat='{}{0:yyyy-MM-dd, hh:mm tt}'}" />
+                                            <TextBlock Text="{Binding Item.ExpectedDeliveryDate, StringFormat='{}{0:yyyy-MM-dd, hh:mm tt}'}" />
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+
                                 <GridViewColumn Header="Order Type" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Border x:Name="Badge" CornerRadius="8" Padding="8,4" Background="#F3F4F6" HorizontalAlignment="Left" Margin="0,6,0,6">
-                                                <TextBlock x:Name="BadgeText" Text="{Binding OrderType}" Foreground="#111827" FontWeight="SemiBold" FontSize="12" />
+                                                <TextBlock x:Name="BadgeText" Text="{Binding Item.OrderType}" Foreground="#111827" FontWeight="SemiBold" FontSize="12" />
                                             </Border>
                                             <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding OrderType}" Value="Subscription Order">
-                                                    <!-- pale purple background and purple text for subscriptions -->
+                                                <DataTrigger Binding="{Binding Item.OrderType}" Value="Subscription Order">
                                                     <Setter TargetName="Badge" Property="Background" Value="#F5E6FF"/>
                                                     <Setter TargetName="BadgeText" Property="Foreground" Value="#8B2BB0"/>
                                                 </DataTrigger>
@@ -107,6 +124,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+
                                 <GridViewColumn Header="Actions" Width="180">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -124,6 +142,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+
                             </GridView>
                         </ListView.View>
                         <ListView.Resources>

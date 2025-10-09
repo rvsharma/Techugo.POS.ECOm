@@ -46,9 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignColors" Version="5.2.1" />
-    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
-    <PackageReference Include="MaterialDesignThemes.Wpf" Version="1.0.1" />
+    <PackageReference Include="MaterialDesignColors" Version="5.3.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
     <PackageReference Include="SharpVectors" Version="1.8.5" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
@@ -80,6 +79,7 @@
     <Resource Include="Assets\Images\refresh.svg" />
     <Resource Include="Assets\Images\rejected.svg" />
     <Resource Include="Assets\Images\total_orders.svg" />
+
   </ItemGroup>
 
   <ItemGroup>
