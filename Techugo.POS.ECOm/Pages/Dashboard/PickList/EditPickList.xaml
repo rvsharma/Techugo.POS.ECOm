@@ -224,7 +224,7 @@
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Measured Weight" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
                             <Border Background="#F3F4F6" CornerRadius="6" Padding="10" Margin="0,0,0,0">
-                                <TextBox Text="{Binding MeasuredWeightDisplay, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding MeasuredWeight, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
                             </Border>
                         </StackPanel>
                     </Grid>

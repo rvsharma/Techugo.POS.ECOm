@@ -2,7 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel;
-using Techugo.POS.ECom.Model.ViewModel; // for PropertyChangedEventArgs
+using System.Globalization;
+using Techugo.POS.ECom.Model.ViewModel; // for EditQtyViewModel
 
 namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 {
@@ -12,6 +13,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
         public event RoutedEventHandler SaveClicked;
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private static readonly Random _random = new();
         private EditQtyViewModel _itemDetails;
         public EditQtyViewModel ItemDetails
         {
@@ -31,7 +33,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
             // initialize measured input UI
             MeasuredQtyTextBox.Text = ItemDetails?.MeasuredQty.ToString() ?? string.Empty;
-            // set initial visibility based on default radio
+            // set initial visibility and initial values based on default radio
             UpdateKeypadVisibility();
         }
 
@@ -50,11 +52,41 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             PosKeypadPanel.Visibility = enterQty ? Visibility.Visible : Visibility.Collapsed;
             WeighCalloutPanel.Visibility = checkWeight ? Visibility.Visible : Visibility.Collapsed;
 
-            // keep measured textbox in sync with model when switching modes
             if (enterQty)
             {
+                // keep measured textbox in sync with model when switching modes
                 MeasuredQtyTextBox.Text = ItemDetails?.MeasuredQty.ToString() ?? string.Empty;
+                // ensure MeasuredAmount reflects current MeasuredQty
+                if (ItemDetails != null)
+                {
+                    ItemDetails.MeasuredAmount = ItemDetails.PricePerKg * ItemDetails.MeasuredQty;
+                    ItemDetails.UpdateDisplays();
+                }
             }
+
+            if (checkWeight)
+            {
+                // generate a random decimal weight and update the model
+                GenerateRandomMeasuredWeight();
+            }
+        }
+
+        private void GenerateRandomMeasuredWeight()
+        {
+            if (ItemDetails == null) return;
+
+            // Example: random weight between 0.10 and 2.50 with 2 decimals
+            double min = 0.10;
+            double max = 2.50;
+            double val = _random.NextDouble() * (max - min) + min;
+            decimal weight = Math.Round((decimal)val, 2);
+
+            // store measured weight as string (with unit if desired)
+            ItemDetails.MeasuredWeight = string.Format(CultureInfo.CurrentCulture, "{0:N2} kg", weight);
+
+            // update measured amount using price per kg
+            ItemDetails.MeasuredAmount = Math.Round(ItemDetails.PricePerKg * weight, 2);
+            ItemDetails.UpdateDisplays();
         }
 
         private void KeypadButton_Click(object sender, RoutedEventArgs e)
@@ -78,6 +110,24 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 // Append digit (prevent leading zeros if desired)
                 MeasuredQtyTextBox.Text += tag;
             }
+
+            // Live-update the numeric model when in Enter Measured Qty mode
+            if (RbEnterQty?.IsChecked == true && ItemDetails != null)
+            {
+                if (int.TryParse(MeasuredQtyTextBox.Text, out int measuredInt))
+                {
+                    ItemDetails.MeasuredQty = measuredInt;
+                    ItemDetails.MeasuredAmount = Math.Round(ItemDetails.PricePerKg * measuredInt, 2);
+                    ItemDetails.UpdateDisplays();
+                }
+                else
+                {
+                    // clear measured qty if textbox not parseable
+                    ItemDetails.MeasuredQty = 0;
+                    ItemDetails.MeasuredAmount = 0;
+                    ItemDetails.UpdateDisplays();
+                }
+            }
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
@@ -94,13 +144,18 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
         {
             if (ItemDetails == null) return;
 
-            // parse measured quantity (integer). adjust parsing if decimals are needed.
-            if (int.TryParse(MeasuredQtyTextBox.Text, out int measured))
+            // If Enter Measured Qty mode, parse and persist MeasuredQty (already updated live)
+            if (RbEnterQty?.IsChecked == true)
             {
-                ItemDetails.MeasuredQty = measured;
-                // optionally compute MeasuredAmount and OriginalAmount here and call UpdateDisplays
-                ItemDetails.UpdateDisplays();
+                if (int.TryParse(MeasuredQtyTextBox.Text, out int measured))
+                {
+                    ItemDetails.MeasuredQty = measured;
+                    ItemDetails.MeasuredAmount = Math.Round(ItemDetails.PricePerKg * measured, 2);
+                    ItemDetails.UpdateDisplays();
+                }
             }
+
+            // If Check Weight mode, MeasuredWeight and MeasuredAmount are already set by GenerateRandomMeasuredWeight
 
             SaveClicked?.Invoke(this, new RoutedEventArgs());
         }
