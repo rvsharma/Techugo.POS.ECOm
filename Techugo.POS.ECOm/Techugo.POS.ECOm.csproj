@@ -16,6 +16,7 @@
     <None Remove="appsettings.json" />
     <None Remove="Assets\Images\assign_rider.svg" />
     <None Remove="Assets\Images\back.svg" />
+    <None Remove="Assets\Images\balance.svg" />
     <None Remove="Assets\Images\carry_forward.svg" />
     <None Remove="Assets\Images\collapse.svg" />
     <None Remove="Assets\Images\delivered.svg" />
@@ -60,6 +61,7 @@
   <ItemGroup>
     <Resource Include="Assets\Images\assign_rider.svg" />
     <Resource Include="Assets\Images\back.svg" />
+    <Resource Include="Assets\Images\balance.svg" />
     <Resource Include="Assets\Images\carry_forward.svg" />
     <Resource Include="Assets\Images\collapse.svg" />
     <Resource Include="Assets\Images\delivered.svg" />

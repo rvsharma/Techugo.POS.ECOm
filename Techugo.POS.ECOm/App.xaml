@@ -11,7 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="RoundedWhiteButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="White"/>
-                <Setter Property="BorderBrush" Value="White"/>
+                <Setter Property="BorderBrush" Value="#d4d4d4"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
@@ -29,7 +29,7 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="LightGray"/>
+                                    <Setter TargetName="border" Property="Background" Value="#e9ebef"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
