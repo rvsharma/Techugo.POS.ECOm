@@ -42,9 +42,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             // If a measured weight exists like "1.23 kg", return numeric part; otherwise fall back to MeasuredQty
             if (!string.IsNullOrWhiteSpace(ItemDetails?.MeasuredWeight))
             {
-                // remove non-numeric trailing unit and parse using current culture
                 var s = ItemDetails.MeasuredWeight.Trim();
-                // remove "kg" (case-insensitive) and whitespace
                 if (s.EndsWith("kg", StringComparison.OrdinalIgnoreCase))
                     s = s.Substring(0, s.Length - 2).Trim();
                 return s;
@@ -76,18 +74,16 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 // ensure MeasuredAmount reflects current MeasuredQty/MeasuredWeight
                 if (ItemDetails != null)
                 {
-                    // try parse MeasuredWeight numeric part
                     if (TryParseInputAsDecimal(MeasuredQtyTextBox.Text, out decimal wt))
                     {
                         ItemDetails.MeasuredWeight = string.Format(CultureInfo.CurrentCulture, "{0:N2} kg", wt);
                         ItemDetails.MeasuredAmount = Math.Round(ItemDetails.PricePerKg * wt, 2);
                     }
-                    else
-                    {
-                        // fallback to existing values
-                        // keep existing ItemDetails.MeasuredWeight / MeasuredAmount
-                    }
                     ItemDetails.UpdateDisplays();
+
+                    // immediate UI update for the display textbox
+                    if (MeasuredWeightDisplayTextBox != null)
+                        MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;
                 }
             }
 
@@ -115,8 +111,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             ItemDetails.MeasuredAmount = Math.Round(ItemDetails.PricePerKg * weight, 2);
             ItemDetails.UpdateDisplays();
 
-            // also reflect numeric value in input textbox when showing keypad
+            // reflect numeric value in input textbox when showing keypad
             MeasuredQtyTextBox.Text = weight.ToString(CultureInfo.CurrentCulture);
+
+            // immediate UI update for the display textbox
+            if (MeasuredWeightDisplayTextBox != null)
+                MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;
         }
 
         private bool TryParseInputAsDecimal(string input, out decimal value)
@@ -158,7 +158,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 MeasuredQtyTextBox.Text += tag;
             }
 
-            // Live-update the numeric model when in Enter Measured Qty mode
+            // Live-update the numeric model and display when in Enter Measured Qty mode
             if (RbEnterQty?.IsChecked == true && ItemDetails != null)
             {
                 if (TryParseInputAsDecimal(MeasuredQtyTextBox.Text, out decimal measuredDecimal))
@@ -172,12 +172,19 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                         ItemDetails.MeasuredQty = (int)measuredDecimal;
 
                     ItemDetails.UpdateDisplays();
+
+                    // immediate UI update for the display textbox
+                    if (MeasuredWeightDisplayTextBox != null)
+                        MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;
                 }
                 else
                 {
                     // not parseable; clear numeric model but keep typed input
                     ItemDetails.MeasuredAmount = 0;
                     ItemDetails.UpdateDisplays();
+
+                    if (MeasuredWeightDisplayTextBox != null)
+                        MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;
                 }
             }
         }
@@ -213,6 +220,11 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             // If Check Weight mode, MeasuredWeight and MeasuredAmount are already set by GenerateRandomMeasuredWeight
 
             ItemDetails.UpdateDisplays();
+
+            // ensure UI display text is current
+            if (MeasuredWeightDisplayTextBox != null)
+                MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;
+
             SaveClicked?.Invoke(this, new RoutedEventArgs());
         }
     }
