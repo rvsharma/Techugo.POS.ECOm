@@ -4,7 +4,7 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              Height="Auto" Width="Auto">
     <Grid Background="#FCFAFB">
-        <StackPanel Margin="32,24,32,0">
+        <StackPanel Margin="16,24,16,0">
             <!-- Title Row: Back Button and All Orders side by side -->
             <Grid Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>

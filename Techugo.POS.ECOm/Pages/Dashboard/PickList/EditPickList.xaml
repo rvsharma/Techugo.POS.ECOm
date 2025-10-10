@@ -1,0 +1,309 @@
+﻿<UserControl x:Class="Techugo.POS.ECOm.Pages.Dashboard.PickList.EditPickList"
+        xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Techugo.POS.ECOm.Pages.Dashboard.PickList" Height="Auto" Width="Auto">
+    <UserControl.Resources>
+        <!-- Implicit style that makes RadioButton outer border invisible while keeping a checked indicator -->
+        <Style TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="{TemplateBinding Padding}">
+                            <!-- Outer circle with transparent stroke -->
+                            <Grid Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Ellipse Fill="Transparent" Stroke="Transparent" />
+                                <!-- inner dot, shown when checked -->
+                                <Ellipse x:Name="Dot" Width="7" Height="7" Fill="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <ContentPresenter x:Name="contentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Margin="6,0,0,0"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True"/>
+                        </StackPanel>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Dot" Property="Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Foreground}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="contentPresenter" Property="Opacity" Value="0.6"/>
+                                <Setter TargetName="Dot" Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <!-- Full screen overlay -->
+        <Rectangle Fill="#AA888888" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <!-- Centered popup -->
+        <Border Width="510" Padding="20" CornerRadius="12" Background="White"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            BorderBrush="#E2E6EA" BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect Color="#888" BlurRadius="16" ShadowDepth="0" Opacity="0.5"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding TitleText}" FontSize="16" FontWeight="DemiBold" Foreground="#111"/>
+                        <TextBlock Text="Measure and verify the actual quantity" FontSize="13" Foreground="#717182" Margin="0,6,0,0"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1" Width="36" Height="36" 
+                        Background="Transparent" BorderThickness="0" Foreground="#666"
+                        Click="Close_Click" Style="{StaticResource RoundedWhiteButtonStyle}">✕</Button>
+                </Grid>
+
+                <!-- SKU / Ordered Qty -->
+                <Grid Grid.Row="1" Margin="0,16,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="SKU" FontSize="12" Foreground="#666" Margin="4,0,0,4"/>
+                        <Border Background="#F3F4F6" CornerRadius="6" Padding="10">
+                            <TextBox Text="{Binding SKU}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Ordered Quantity" FontSize="12" Foreground="#666" Margin="4,0,0,4"/>
+                        <Border Background="#F3F4F6" CornerRadius="6" Padding="10">
+                            <TextBox Text="{Binding OrderedQty}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Body -->
+                <StackPanel Grid.Row="2" Orientation="Vertical" VerticalAlignment="Top" >
+
+                    <!-- POS steps -->
+                    <Border Background="#EDF6FF" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="POS" Foreground="#1c398e" FontWeight="Bold" Margin="0,0,0,8"/>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal" Margin="4,2">
+                                    <RadioButton x:Name="RbCheckWeight" IsChecked="True" GroupName="Mode" VerticalAlignment="Center" Content="1. Check Weight" Checked="ModeRadio_Checked"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="4,2">
+                                    <RadioButton x:Name="RbEnterQty" GroupName="Mode" VerticalAlignment="Center" Content="2. Enter Measured Qty (POS)" Checked="ModeRadio_Checked"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Callout (shown only for Check Weight) -->
+                    <Border x:Name="WeighCalloutPanel" Background="#fefce8" BorderBrush="#fff085" BorderThickness="2" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                        <StackPanel Orientation="Horizontal">
+                            <svg:SvgViewbox Source="/Assets/Images/balance.svg" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <StackPanel>
+                                <TextBlock Text="Put your item in machine to measure" FontWeight="SemiBold" Foreground="#733e0a"/>
+                                <TextBlock Text="Place the item on the weighing scale" Foreground="#a65f00" Opacity="0.8" FontSize="12"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Measured Qty input (visible only for Enter Measured Qty) -->
+                    <StackPanel x:Name="PosKeypadPanel" Orientation="Vertical" Visibility="Collapsed" Margin="0,0,0,12">
+                        <TextBlock Text="Enter Measured Qty (POS)" FontSize="12" Foreground="#666" Margin="0,0,6,6"/>
+                        <Border Background="#F3F4F6" CornerRadius="8" Padding="6" Margin="0,0,0,12">
+                            <TextBox x:Name="MeasuredQtyTextBox" TextAlignment="Center" FontSize="18" FontWeight="SemiBold"
+                                     Background="Transparent" BorderThickness="0" CaretBrush="Black"
+                                     IsReadOnly="True"/>
+                        </Border>
+
+                        <!-- Keypad -->
+                        <UniformGrid Columns="3" Rows="4" Margin="0,0,0,12" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
+                            <Button Tag="1" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">1</Button>
+                            <Button Tag="2" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">2</Button>
+                            <Button Tag="3" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">3</Button>
+
+                            <Button Tag="4" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">4</Button>
+                            <Button Tag="5" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">5</Button>
+                            <Button Tag="6" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">6</Button>
+
+                            <Button Tag="7" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">7</Button>
+                            <Button Tag="8" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">8</Button>
+                            <Button Tag="9" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">9</Button>
+
+                            <Button Tag="CLEAR" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">.</Button>
+                            <Button Tag="0" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12" Style="{StaticResource RoundedWhiteButtonStyle}">0</Button>
+                            <Button Tag="BACK" Click="KeypadButton_Click" Margin="6" FontSize="18" Padding="12">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="#d4183d"/>
+                                        <Setter Property="BorderBrush" Value="#d4183d"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Padding" Value="12"/>
+                                        <Setter Property="MinHeight" Value="48"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                            MinHeight="{TemplateBinding MinHeight}"
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="#e23b53"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="border" Property="Background" Value="#a3132a"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter TargetName="border" Property="Opacity" Value="0.6"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+
+                                ⌫
+                            </Button>
+                        </UniformGrid>
+                    </StackPanel>
+
+                    <!-- Two-column: Price per KG and Measured Weight -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="20" />
+                            <!-- spacer -->
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Price per KG (left column) -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Price per KG" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
+                            <Border Background="#F3F4F6" CornerRadius="6" Padding="10" Margin="0,0,0,0">
+                                <TextBox Text="{Binding PricePerKgDisplay, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Measured Weight (right column) -->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Measured Weight" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
+                            <Border Background="#F3F4F6" CornerRadius="6" Padding="10" Margin="0,0,0,0">
+                                <TextBox Text="{Binding MeasuredWeight, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Original / Measured / Diff -->
+                    <Grid Margin="0,8,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Left" Margin="0,0,8,0">
+                            <TextBlock Text="Original Amount" FontSize="12" Foreground="#4a5565" Margin="0,0,0,6"/>
+                            <Border Background="#EDF7FF" Padding="10" CornerRadius="6">
+                                <TextBlock Text="{Binding OriginalAmountDisplay}" FontWeight="SemiBold" Foreground="#0A5BB7"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,8,0">
+                            <TextBlock Text="Measured Amount (POS)" FontSize="12" Foreground="#4a5565" Margin="0,0,0,6"/>
+                            <Border Background="#E8FFF1" Padding="10" CornerRadius="6">
+                                <TextBlock Text="{Binding MeasuredAmountDisplay}" FontWeight="SemiBold" Foreground="#0A7F3A"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                            <TextBlock Text="Difference" FontSize="12" Foreground="#4a5565" Margin="0,0,0,6"/>
+                            <Border Background="#E9FFEE" Padding="10" CornerRadius="6">
+                                <TextBlock Text="{Binding DifferenceDisplay}" FontWeight="SemiBold" Foreground="#0A7F3A"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                </StackPanel>
+
+                <!-- Footer buttons -->
+                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+                    <Button Width="120" Height="40" Margin="0,0,12,0" Click="Cancel_Click"
+                        FontWeight="SemiBold" Style="{StaticResource RoundedWhiteButtonStyle}">Cancel</Button>
+                    <Button Width="120" Height="40" Click="Save_Click" FontSize="16">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#030213"/>
+                                <Setter Property="BorderBrush" Value="#030213"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="12"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border"
+Background="{TemplateBinding Background}"
+BorderBrush="{TemplateBinding BorderBrush}"
+BorderThickness="{TemplateBinding BorderThickness}"
+CornerRadius="8"
+SnapsToDevicePixels="True">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="#030213"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="#030213"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="border" Property="Opacity" Value="0.6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                        Save</Button>
+                </StackPanel>
+
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -274,7 +274,8 @@
                                                     </StackPanel>
                                                     <TextBlock Text="{Binding Rate, StringFormat=₹{0}}" FontSize="15" Grid.Column="5" VerticalAlignment="Center"/>
                                                     <TextBlock Text="{Binding Total, StringFormat=₹{0:N2}}" FontWeight="Bold" FontSize="15" Grid.Column="6" VerticalAlignment="Center"/>
-                                                    <Button Grid.Column="7" Height="32" Padding="12,0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"  HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                    <Button Grid.Column="7" Height="32" Padding="12,0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                            Click="EditQty_Click">
                                                         <Button.Template>
                                                             <ControlTemplate TargetType="Button">
                                                                 <Border x:Name="border"

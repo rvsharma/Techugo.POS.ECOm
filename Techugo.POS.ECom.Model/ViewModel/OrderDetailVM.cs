@@ -22,9 +22,11 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public List<OrderDetail> OrderDetails { get; set; }
         public CustomerDetails Customer { get; set; }
         public string Address { get; set; }
+        public string ShortAddress { get; set; }
         public string Rider { get; set; }
         public List<OrderTimeline> OrderTimelines { get; set; }
         public string Subscription { get; set; }
+        public string OrderType { get; set; }
         public string BranchDeliverySlot { get; set; }
         public List<string> ItemImages { get; set; }
     }
