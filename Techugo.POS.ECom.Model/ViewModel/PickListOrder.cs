@@ -55,7 +55,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string Size { get; set; }
         public int Qty { get; set; }
         public int EditQty { get; set; }
-        public string Weight { get; set; }
+        public decimal Weight { get; set; }
         public string UOM { get; set; }
         public decimal Rate { get; set; }
         public decimal Total { get; set; }

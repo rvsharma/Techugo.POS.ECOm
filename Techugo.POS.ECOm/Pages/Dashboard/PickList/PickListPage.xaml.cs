@@ -109,7 +109,7 @@ namespace Techugo.POS.ECOm.Pages
                                     Size = od.Size,
                                     Qty = od.Quantity,
                                     EditQty = od.Quantity,
-                                    Weight = od.Size,
+                                    Weight = Convert.ToDecimal(od.Size),
                                     UOM = od.UOM,
                                     Rate = od.Amount,
                                     Total = od.NetAmount
@@ -146,7 +146,7 @@ namespace Techugo.POS.ECOm.Pages
                     ItemName = pli.ItemName,
                     OrderedQty = $"{pli.Qty}{pli.UOM}",               // safer formatting
                     MeasuredQty = pli.EditQty,
-                    MeasuredWeight = pli.Weight,
+                    MeasuredWeight = pli.Weight.ToString(),
                     OUM = pli.UOM,
                     PricePerKg = pli.Rate
                 };
