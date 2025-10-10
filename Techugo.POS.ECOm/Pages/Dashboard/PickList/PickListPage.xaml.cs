@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.PickList;
+using Techugo.POS.ECOm.Services;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -109,7 +111,7 @@ namespace Techugo.POS.ECOm.Pages
                                     Size = od.Size,
                                     Qty = od.Quantity,
                                     EditQty = od.Quantity,
-                                    Weight = od.Size,
+                                    Weight = Convert.ToDecimal(od.Size),
                                     UOM = od.UOM,
                                     Rate = od.Amount,
                                     Total = od.NetAmount
@@ -140,13 +142,13 @@ namespace Techugo.POS.ECOm.Pages
             {
                 itemDetails = new EditQtyViewModel
                 {
-                    TitleText = "Edit Qty - " + pli.ItemName,         // use pli, not itemDetails
+                    TitleText = "Edit Qty - " + pli.ItemName,
                     SKU = "PLI-002",
                     ItemID = pli.ItemID,
                     ItemName = pli.ItemName,
-                    OrderedQty = $"{pli.Qty}{pli.UOM}",               // safer formatting
+                    OrderedQty = $"{pli.Qty}{pli.UOM}",
                     MeasuredQty = pli.EditQty,
-                    MeasuredWeight = pli.Weight,
+                    MeasuredWeight = pli.Weight.ToString(CultureInfo.CurrentCulture),
                     OUM = pli.UOM,
                     PricePerKg = pli.Rate
                 };
@@ -154,19 +156,15 @@ namespace Techugo.POS.ECOm.Pages
 
             if (itemDetails == null)
             {
-                // defensive: no valid data to show
-                // log/debug here and return gracefully
                 return;
             }
+
             var popup = new EditPickList(itemDetails);
             popup.CloseClicked += CloseOrderDetailsPopUp;
 
-            // Option 1: Show as overlay in PageContent (replace current content)
-            // SetPageContent(popup);
+            // subscribe to SaveClicked to receive the updated model when Save is pressed
+            popup.SaveClicked += Popup_SaveClicked;
 
-            // Option 2: Show as a dialog/modal (recommended for popups)
-            // If you want a true modal, consider using a Window or a custom overlay.
-            // Example:
             _editPickListPopUpWindow = new Window
             {
                 Content = popup,
@@ -181,6 +179,7 @@ namespace Techugo.POS.ECOm.Pages
             };
             _editPickListPopUpWindow.ShowDialog();
         }
+
         private void CloseOrderDetailsPopUp(object sender, RoutedEventArgs e)
         {
             if (_editPickListPopUpWindow != null)
@@ -199,6 +198,89 @@ namespace Techugo.POS.ECOm.Pages
                 current = VisualTreeHelper.GetParent(current);
             }
             return null;
+        }
+
+        private async void Popup_SaveClicked(object? sender, RoutedEventArgs e)
+        {
+            // sender should be the EditPickList control
+            if (sender is not EditPickList popup) return;
+            var vm = popup.ItemDetails;
+            if (vm == null) return;
+
+            // parse numeric weight from vm.MeasuredWeight (it may be "1.23 kg" or "1.23")
+            string weightText = vm.MeasuredWeight ?? string.Empty;
+            if (weightText.EndsWith("kg", StringComparison.OrdinalIgnoreCase))
+                weightText = weightText.Substring(0, weightText.Length - 2).Trim();
+
+            if (!decimal.TryParse(weightText, NumberStyles.Number, CultureInfo.CurrentCulture, out decimal newWeight))
+            {
+                // If parsing fails, you can notify user — for now just return
+                MessageBox.Show("Invalid weight entered", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Find the PickListOrder and PickListItem that match the edited ItemID
+            PickListItem? targetItem = null;
+            PickListOrder? parentOrder = null;
+
+            foreach (var order in PickListOrders)
+            {
+                var match = order.Items?.FirstOrDefault(i => i.ItemID == vm.ItemID);
+                if (match != null)
+                {
+                    targetItem = match;
+                    parentOrder = order;
+                    break;
+                }
+            }
+
+            if (targetItem == null || parentOrder == null)
+            {
+                // Could not find item in current in-memory list; still attempt API or notify
+                MessageBox.Show("Could not locate the item to update in the current list.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                // Close popup anyway
+                CloseOrderDetailsPopUp(popup, new RoutedEventArgs());
+                return;
+            }
+
+            // Update in-memory model
+            targetItem.Weight = newWeight;
+
+            // Recalculate any totals if needed (e.g., Total) — adjust based on your model
+            // Example: targetItem.Total = targetItem.Rate * targetItem.Qty; // if applicable
+
+            // Refresh UI by notifying property change for the collection
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PickListOrders)));
+
+            // Prepare payload for API — replace with your actual expected schema
+            var payload = new
+            {
+                OrderID = parentOrder.OrderID,
+                ItemID = targetItem.ItemID,
+                MeasuredWeight = newWeight,
+                MeasuredQty = vm.MeasuredQty,           // may be int or decimal per your API
+                MeasuredAmount = vm.MeasuredAmount
+            };
+
+            try
+            {
+                var result = await _apiService.PutAsync<BaseResponse>($"order/update-item/{parentOrder.OrderID}/{targetItem.ItemID}", payload);
+                if (result != null && result.Success)
+                {
+                    SnackbarService.Enqueue("Item updated");
+                }
+                else
+                {
+                    SnackbarService.Enqueue($"Failed to update item: {(result?.Message ?? "Unknown error")}");
+                }
+            }
+            catch (Exception ex)
+            {
+                SnackbarService.Enqueue($"Error updating item: {ex.Message}");
+            }
+
+            // Close popup window
+            CloseOrderDetailsPopUp(popup, new RoutedEventArgs());
         }
     }
 
