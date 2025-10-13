@@ -15,43 +15,13 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Content="Back to Dashboard"
-                    Grid.Column="0"
-                    Height="34"
-                    Padding="12,4"
-                    Click="BackButton_Click"
-                    HorizontalAlignment="Left"
-                    FontSize="14"
-                    FontWeight="SemiBold">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border"
-                         Background="white"
-                         BorderBrush="white"
-                         BorderThickness="1"
-                          CornerRadius="8"
-                          Padding="10"
-                          SnapsToDevicePixels="True">
-                            <ContentPresenter HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <!-- Hover -->
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="LightGray"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-                <Button.ContentTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </Button.ContentTemplate>
-            </Button>
+                            <Border Grid.Column="0" Width="Auto" Height="36" Padding="8,0,12,0" Background="#fff" BorderBrush="#e3e3e3" CornerRadius="8" BorderThickness="1" MouseLeftButtonUp="BackButton_Click"
+TouchUp="BackButton_Click" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <svg:SvgViewbox Source="/Assets/Images/back.svg" Width="12" Height="12" VerticalAlignment="Center" Margin="8,0,8,0"/>
+                        <TextBlock Text="Back to Dashboard" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
 
             <StackPanel Grid.Column="1" Margin="24,0,0,0" >
                 <TextBlock Text="Pick List Orders" FontSize="24" FontWeight="Bold" Margin="0,0,0,4"/>
@@ -60,14 +30,14 @@
         </Grid>
 
         <!-- Weighing Scale Section -->
-        <Border Background="#F0F8FF" BorderThickness="1" BorderBrush="#ADD8E6" CornerRadius="8" Padding="18" Margin="0,24,0,0">
+        <!--<Border Background="#F0F8FF" BorderThickness="1" BorderBrush="#ADD8E6" CornerRadius="8" Padding="18" Margin="0,24,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Weighing Scale Info -->
+        
                 <StackPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE998;" FontFamily="Segoe MDL2 Assets" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
@@ -76,7 +46,7 @@
                     <TextBlock Text="Real-time weight: 0.00 kg" FontSize="14" Foreground="#2196F3" Margin="24,4,0,0"/>
                 </StackPanel>
 
-                <!-- Simulate Weight Button -->
+           
                 <Button Content="Simulate Weight" Grid.Column="1" Padding="12,4" FontSize="14" Background="#FFF" BorderBrush ="White" BorderThickness="1" Foreground ="Black" FontWeight="SemiBold" HorizontalAlignment="Right">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
@@ -91,7 +61,7 @@
                                 VerticalAlignment="Center"/>
                             </Border>
                             <ControlTemplate.Triggers>
-                                <!-- Hover -->
+                  
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="border" Property="Background" Value="LightGray"/>
                                 </Trigger>
@@ -101,7 +71,7 @@
 
                 </Button>
             </Grid>
-        </Border>
+        </Border>-->
 
         <Border Background="White" BorderThickness="1" BorderBrush="#E0E0E0" CornerRadius="8" Padding="18" Margin="0,24,0,0">
             <StackPanel>

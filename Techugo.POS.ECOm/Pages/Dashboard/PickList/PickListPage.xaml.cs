@@ -68,8 +68,8 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void LoadPickListData()
         {
-            //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            string formattedDate = "2025-10-08";
+            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            // string formattedDate = "2025-10-08";
 
             AssignRiderOrdersResponse assignRiderOrdersResponse = await _apiService.GetAsync<AssignRiderOrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=PickListOrder&Date=" + formattedDate + "");
             if (assignRiderOrdersResponse != null)

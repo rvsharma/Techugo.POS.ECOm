@@ -14,7 +14,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
     /// <summary>
     /// Interaction logic for Delivered.xaml
     /// </summary>
-    public partial class Delivered : UserControl
+    public partial class Delivered : UserControl, INotifyPropertyChanged
     {
         public event RoutedEventHandler BackRequested;
         private readonly ApiService _apiService;
@@ -31,14 +31,14 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(orderData)));
             }
         }
-        private string _totalOrdersText;
-        public string TotalOrdersText
+        private string _deliveredOrdersText;
+        public string DeliverdOrdersText
         {
-            get => _totalOrdersText;
+            get => _deliveredOrdersText;
             set
             {
-                _totalOrdersText = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalOrdersText)));
+                _deliveredOrdersText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeliverdOrdersText)));
             }
         }
 
@@ -53,7 +53,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         private async void LoadOrdersData()
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=TotalOrders&Date=" + formattedDate + "");
+            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=DeliveredOrders&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
 
@@ -84,15 +84,14 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                         order.Customer = data.Customer;
                         order.BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
                         order.ItemImages = or.ItemImages;
+                        order.Status = or.Status;
                         order.Items = data.OrderDetails.Count + " items(s)";
                         orderData.Add(order);
                     }
-
                 }
-
-                TotalOrdersText = $"All Orders ({orderResponse.TotalItems} orders)";
-
+                DeliverdOrdersText = $"Delivered Orders ({orderResponse?.TotalItems} orders)";
             }
+           
         }
         private void OpenOrderDetailPoPUp_Click(object sender, RoutedEventArgs e)
         {

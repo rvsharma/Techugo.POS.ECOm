@@ -32,8 +32,8 @@
             <Border Background="#fff" BorderBrush="#e3e3e3" BorderThickness="1" CornerRadius="20" Padding="24" Margin="0,24,0,0">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <svg:SvgViewbox Source="/Assets/Images/orders.svg" Width="18" Height="24" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding TotalOrdersText}" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                        <svg:SvgViewbox Source="/Assets/Images/circle_check_green.svg" Width="18" Height="24" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding DeliverdOrdersText}" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                     <!-- Table Header -->
                     <ListView x:Name="OrdersListView" ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0" SelectionMode="Single">
@@ -83,10 +83,20 @@
                                 <GridViewColumn Header="Items" Width="80" DisplayMemberBinding="{Binding Items}" />
                                 <GridViewColumn Header="Total Amount" Width="140" DisplayMemberBinding="{Binding TotalAmount, StringFormat=₹{0}}" />
                                 <GridViewColumn Header="Payment" Width="120" DisplayMemberBinding="{Binding PaymentMode}" />
-                                <GridViewColumn Header="Schedule" Width="150">
+                                <GridViewColumn Header="Delivery Time" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding ExpectedDeliveryDate, StringFormat='{}{0:yyyy-MM-dd, hh:mm tt}'}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Status" Width="80">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border x:Name="Badge" CornerRadius="8" Padding="8,4" Background="#dcfce7" HorizontalAlignment="Left" Margin="0,6,0,6">
+                                                <TextBlock x:Name="BadgeText" Text="{Binding Status}" Foreground="#016630" FontWeight="SemiBold" FontSize="12" />
+                                            </Border>
+                                            
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

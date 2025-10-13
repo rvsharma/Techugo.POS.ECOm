@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+<Title>MotherDairyPOS</Title>
+<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+<InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.Extensions.Configuration.Binder.SourceGeneration</InterceptorsNamespaces>
+  
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +18,9 @@
     <None Remove="Assets\Images\back.svg" />
     <None Remove="Assets\Images\balance.svg" />
     <None Remove="Assets\Images\carry_forward.svg" />
+    <None Remove="Assets\Images\circle_check_green.svg" />
     <None Remove="Assets\Images\circle_cross.svg" />
+    <None Remove="Assets\Images\circle_cross_red.svg" />
     <None Remove="Assets\Images\collapse.svg" />
     <None Remove="Assets\Images\delivered.svg" />
     <None Remove="Assets\Images\edit.svg" />
@@ -58,7 +64,9 @@
     <Resource Include="Assets\Images\back.svg" />
     <Resource Include="Assets\Images\balance.svg" />
     <Resource Include="Assets\Images\carry_forward.svg" />
+    <Resource Include="Assets\Images\circle_check_green.svg" />
     <Resource Include="Assets\Images\circle_cross.svg" />
+    <Resource Include="Assets\Images\circle_cross_red.svg" />
     <Resource Include="Assets\Images\collapse.svg" />
     <Resource Include="Assets\Images\delivered.svg" />
     <Resource Include="Assets\Images\edit.svg" />
