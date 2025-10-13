@@ -25,15 +25,19 @@
     <None Remove="Assets\Images\delivered.svg" />
     <None Remove="Assets\Images\edit.svg" />
     <None Remove="Assets\Images\expand.svg" />
+    <None Remove="Assets\Images\inventory_list_icon.svg" />
     <None Remove="Assets\Images\mark_ready.svg" />
     <None Remove="Assets\Images\orders.svg" />
+    <None Remove="Assets\Images\order_list_icon.svg" />
     <None Remove="Assets\Images\partial_returns.svg" />
     <None Remove="Assets\Images\pending_request.svg" />
     <None Remove="Assets\Images\pick_list.svg" />
     <None Remove="Assets\Images\pick_list_orders.svg" />
     <None Remove="Assets\Images\ready.svg" />
     <None Remove="Assets\Images\refresh.svg" />
+    <None Remove="Assets\Images\refund_list_icon.svg" />
     <None Remove="Assets\Images\rejected.svg" />
+    <None Remove="Assets\Images\sales_list_icon.svg" />
     <None Remove="Assets\Images\total_orders.svg" />
     <None Remove="Assets\Sounds\neworder.wav" />
   </ItemGroup>
@@ -71,8 +75,10 @@
     <Resource Include="Assets\Images\delivered.svg" />
     <Resource Include="Assets\Images\edit.svg" />
     <Resource Include="Assets\Images\expand.svg" />
+    <Resource Include="Assets\Images\inventory_list_icon.svg" />
     <Resource Include="Assets\Images\mark_ready.svg" />
     <Resource Include="Assets\Images\orders.svg" />
+    <Resource Include="Assets\Images\order_list_icon.svg" />
     <Resource Include="Assets\Images\partial_returns.svg" />
     <Resource Include="Assets\Images\pending_request.svg" />
     <Resource Include="Assets\Images\pick_list.svg" />
@@ -81,7 +87,9 @@
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\Images\refresh.svg" />
+    <Resource Include="Assets\Images\refund_list_icon.svg" />
     <Resource Include="Assets\Images\rejected.svg" />
+    <Resource Include="Assets\Images\sales_list_icon.svg" />
     <Resource Include="Assets\Images\total_orders.svg" />
 
   </ItemGroup>
