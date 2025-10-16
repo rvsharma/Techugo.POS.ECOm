@@ -150,7 +150,8 @@ namespace Techugo.POS.ECOm.Pages
                     MeasuredQty = pli.EditQty,
                     MeasuredWeight = pli.Weight.ToString(CultureInfo.CurrentCulture),
                     OUM = pli.UOM,
-                    PricePerKg = pli.Rate
+                    PricePerKg = pli.Rate,
+                    OriginalAmount = pli.Rate
                 };
             }
 
@@ -281,6 +282,26 @@ namespace Techugo.POS.ECOm.Pages
 
             // Close popup window
             CloseOrderDetailsPopUp(popup, new RoutedEventArgs());
+        }
+
+        private async void Ready_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            var selectable = btn?.DataContext as SelectableOrderDetail;
+            var order = selectable?.Item;
+            if (order == null) return;
+
+            var orderID = Convert.ToInt32(order.OrderID);
+            var data = new { OrderIDs = new[] { orderID }, BranchStatus = "Packed" };
+            BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
+            if (result != null)
+            {
+                if (result.Success == true)
+                {
+                    SnackbarService.Enqueue($"Orders Accepted");
+
+                }
+            }
         }
     }
 

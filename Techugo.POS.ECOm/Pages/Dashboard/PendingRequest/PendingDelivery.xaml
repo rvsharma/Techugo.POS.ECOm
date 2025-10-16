@@ -47,13 +47,13 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 Visibility="{Binding HasSelection, Converter={StaticResource BoolToVis}}" Foreground="#666" FontSize="12" />
 
                             <StackPanel Orientation="Horizontal" Visibility="{Binding HasSelection, Converter={StaticResource BoolToVis}}">
-                                <Button Click="AcceptSelected_Click" Height="32" Padding="12,0" Margin="8,0,8,0" Foreground="White" FontWeight="SemiBold" Style="{StaticResource RoundedGreenButtonStyle}">
+                                <Button Click="AcceptSelected_Click" Height="36" Padding="12,0" Margin="8,0,8,0" Foreground="White" FontWeight="SemiBold" Style="{StaticResource RoundedGreenButtonStyle}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <svg:SvgViewbox Source="/Assets/Images/ready.svg" Width="14" Height="14" Margin="8" VerticalAlignment="Center"/>
                                         <TextBlock Text="Accept Selected" Margin="6,0" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
-                                <Button Click="RejectSelected_Click" Height="32" Padding="12,0" Foreground="White" FontWeight="SemiBold" Style="{StaticResource RoundedRedButtonStyle}">
+                                <Button Click="RejectSelected_Click" Height="36" Padding="12,0" Foreground="White" FontWeight="SemiBold" Style="{StaticResource RoundedRedButtonStyle}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <svg:SvgViewbox Source="/Assets/Images/circle_cross.svg" Width="14" Height="14" Margin="8" VerticalAlignment="Center"/>
                                         <TextBlock Text="Reject Selected" Margin="6,0" VerticalAlignment="Center"/>

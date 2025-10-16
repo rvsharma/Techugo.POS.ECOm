@@ -52,7 +52,7 @@ namespace Techugo.POS.ECOm.Pages.Login
         private async void SendOtpButton_Click(object sender, RoutedEventArgs e)
         {
             // var data = new { MobileNo = MobileNumberTextBox.Text };
-            var data = new { MobileNo = "7053915310" };
+            var data = new { MobileNo = "9917000000" };
             BaseResponse result = await _apiService.PostAsync<BaseResponse>("auth/login", data);
             //ShowSuccessSnackbar("OTP sent successfully!");
             //await Task.Delay(3000); // Wait for 3 seconds

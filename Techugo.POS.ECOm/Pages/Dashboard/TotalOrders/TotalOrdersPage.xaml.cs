@@ -53,12 +53,12 @@ namespace Techugo.POS.ECOm.Pages
             OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=TotalOrders&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
-                
+
                 orderData.Clear();
                 foreach (var or in orderResponse.Data)
                 {
                     OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + or.OrderID);
-                    
+
                     if (orderDetails.Data != null)
                     {
                         var data = orderDetails.Data;
@@ -79,17 +79,19 @@ namespace Techugo.POS.ECOm.Pages
                         order.PaymentMode = data.PaymentMode;
                         order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                         order.Subscription = data.Subscription;
-                        order.OrderDetails  = data.OrderDetails;
+                        order.OrderDetails = data.OrderDetails;
                         order.Customer = data.Customer;
-                        order.BranchDeliverySlot =or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
+                        order.BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
                         order.ItemImages = or.ItemImages;
+                        order.Items = data.OrderDetails.Count + " items(s)";
+                        order.Status = data.Status;
                         orderData.Add(order);
                     }
-                    
+
                 }
-               
-                 TotalOrdersText = $"All Orders ({orderResponse.TotalItems} orders)";
-               
+
+                TotalOrdersText = $"All Orders ({orderResponse.TotalItems} orders)";
+
             }
         }
 
@@ -121,8 +123,8 @@ namespace Techugo.POS.ECOm.Pages
                 AllowsTransparency = true,
                 Background = Brushes.Transparent,
                 Owner = Application.Current.MainWindow,
-                Width = 800,
-                Height = 420,
+                Width = SystemParameters.PrimaryScreenWidth,
+                Height = SystemParameters.PrimaryScreenHeight,
                 ShowInTaskbar = false,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };

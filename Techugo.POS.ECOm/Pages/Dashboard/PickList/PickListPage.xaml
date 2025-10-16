@@ -147,7 +147,6 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                          BorderBrush="white"
                                                          BorderThickness="1"
                                                          CornerRadius="8"
-                                                         Padding="10"
                                                          SnapsToDevicePixels="True">
                                                         <ContentPresenter HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"/>
@@ -161,7 +160,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                 </ControlTemplate>
                                             </Button.Template>
                                         </Button>
-                                        <Button Height="36" Width="Auto" Margin="8,0,0,0" FontSize="14" Foreground="#fff" Background="#00a63e" BorderBrush="#00a63e" BorderThickness="1" Content="{Binding}" >
+                                        <Button Height="36" Width="Auto" Margin="8,0,0,0" FontSize="14" Foreground="#fff" Background="#00a63e" BorderBrush="#00a63e" BorderThickness="1" Content="{Binding}" Click="Ready_Button_Click">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
                                                     <Border x:Name="border"
