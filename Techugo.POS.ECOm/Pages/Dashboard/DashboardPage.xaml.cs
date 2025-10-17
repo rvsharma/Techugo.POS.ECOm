@@ -96,5 +96,10 @@ namespace Techugo.POS.ECOm.Pages
             CarryForwardClicked?.Invoke(this, new RoutedEventArgs());
         }
         // Add handlers for other tiles
+        public void TriggerPickList()
+        {
+            // reuse same behavior as clicking the tile
+            AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
+        }
     }
 }

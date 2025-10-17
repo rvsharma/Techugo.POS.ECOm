@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
@@ -48,11 +49,22 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(OrderDetails)));
             }
         }
+        private string _selectRiderText;
+        public string SelectRiderText
+        {
+            get => _selectRiderText;
+            set
+            {
+                _selectRiderText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectRiderText)));
+            }
+        }
         public AssignRiderPopUp(OrderDetailVM orderDetail)
         {
             InitializeComponent();
             DataContext = this;
             OrderDetails = orderDetail;
+            SelectRiderText = "Select a rider to assign to order " + orderDetail.OrderNo;
             _apiService = ApiServiceFactory.Create();
             GetRiders();
         }

@@ -80,8 +80,8 @@ namespace Techugo.POS.ECOm.Pages.Login
 
             if (otp == "123456")
             {
-                // var data = new { MobileNo = PhoneNumberWithoutCode, OTP = otp };
-                var data = new { MobileNo = "9917000000", OTP = otp };
+                var data = new { MobileNo = PhoneNumberWithoutCode, OTP = otp };
+                //var data = new { MobileNo = "9917000000", OTP = otp };
                 try
                 {
                     OTPVerifiedResponse result = await _apiService.PostAsync<OTPVerifiedResponse>("auth/verify-otp", data);

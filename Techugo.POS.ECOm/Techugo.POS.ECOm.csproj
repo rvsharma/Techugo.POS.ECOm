@@ -32,6 +32,7 @@
     <None Remove="Assets\Images\order_list_icon.svg" />
     <None Remove="Assets\Images\partial_returns.svg" />
     <None Remove="Assets\Images\pending_request.svg" />
+    <None Remove="Assets\Images\person_white.svg" />
     <None Remove="Assets\Images\pick_list.svg" />
     <None Remove="Assets\Images\pick_list_orders.svg" />
     <None Remove="Assets\Images\ready.svg" />
@@ -83,6 +84,7 @@
     <Resource Include="Assets\Images\order_list_icon.svg" />
     <Resource Include="Assets\Images\partial_returns.svg" />
     <Resource Include="Assets\Images\pending_request.svg" />
+    <Resource Include="Assets\Images\person_white.svg" />
     <Resource Include="Assets\Images\pick_list.svg" />
     <Resource Include="Assets\Images\pick_list_orders.svg" />
     <Resource Include="Assets\Images\ready.svg">

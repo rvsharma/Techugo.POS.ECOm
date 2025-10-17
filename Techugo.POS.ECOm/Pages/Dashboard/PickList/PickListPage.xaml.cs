@@ -27,9 +27,9 @@ namespace Techugo.POS.ECOm.Pages
         private readonly ApiService _apiService;
         // public ObservableCollection<PickListOrder> PickListOrders { get; set; } = new();
         private ObservableCollection<PickListOrder> _pickListOrders;
-        private ObservableCollection<SocietyOrderGroup> _groupedOrders;
+        private ObservableCollection<SocietyOrderGroup1> _groupedOrders;
 
-        public ObservableCollection<SocietyOrderGroup> GroupedOrders
+        public ObservableCollection<SocietyOrderGroup1> GroupedOrders
         {
             get => _groupedOrders;
             set
@@ -70,61 +70,65 @@ namespace Techugo.POS.ECOm.Pages
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
             // string formattedDate = "2025-10-08";
-
-            AssignRiderOrdersResponse assignRiderOrdersResponse = await _apiService.GetAsync<AssignRiderOrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=PickListOrder&Date=" + formattedDate + "");
-            if (assignRiderOrdersResponse != null)
+            try
             {
-
-                var grouped = assignRiderOrdersResponse.Data
-             .GroupBy(g => g.Society)
-             .Select(grp => new SocietyOrderGroup
-             {
-                 Society = grp.Key,
-                 Type = grp.First().Type,
-                 Zone = grp.First().Zone,
-                 Orders = grp.SelectMany(x => x.Orders).ToList()
-             })
-             .ToList();
-
-                GroupedOrders = new ObservableCollection<SocietyOrderGroup>(grouped);
-                PickListOrders.Clear();
-                foreach (var groupedOrder in GroupedOrders)
+                PickListResponse assignRiderOrdersResponse = await _apiService.GetAsync<PickListResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=PickListOrder&Date=" + formattedDate + "");
+                if (assignRiderOrdersResponse != null)
                 {
-                    foreach (var o in groupedOrder.Orders)
+
+                    var grouped = assignRiderOrdersResponse.Data
+                 .GroupBy(g => g.Society)
+                 .Select(grp => new SocietyOrderGroup1
+                 {
+                     Society = grp.Key,
+                     Type = grp.First().Type,
+                     Zone = grp.First().Zone,
+                     Orders = grp.SelectMany(x => x.Orders).ToList()
+                 })
+                 .ToList();
+
+                    GroupedOrders = new ObservableCollection<SocietyOrderGroup1>(grouped);
+                    PickListOrders.Clear();
+                    foreach (var groupedOrder in GroupedOrders)
                     {
-                        OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + o.OrderID);
-                        if (orderDetails.Data != null)
+                        foreach (var o in groupedOrder.Orders)
                         {
-                            PickListOrders.Add(new PickListOrder
+                            OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + o.OrderID);
+                            if (orderDetails.Data != null)
                             {
-                                OrderID = orderDetails.Data.OrderID,
-                                OrderNo = orderDetails.Data.OrderNo,
-                                CustomerName = orderDetails.Data.Customer.CustomerName,
-                                TotalItems = orderDetails.Data.OrderDetails.Count,
-                                OrderValue = orderDetails.Data.TotalAmount,
-                                //ActionsText = "Collapse Details",
-                                IsExpanded = false,
-                                Items = orderDetails.Data.OrderDetails.Select(od => new PickListItem
+                                PickListOrders.Add(new PickListOrder
                                 {
-                                    ItemID = od.ItemID,
-                                    ItemName = od.Item.ItemName,
-                                    Size = od.Size,
-                                    Qty = od.Quantity,
-                                    EditQty = od.Quantity,
-                                    Weight = Convert.ToDecimal(od.Size),
-                                    UOM = od.UOM,
-                                    Rate = od.Amount,
-                                    Total = od.NetAmount
-                                }).ToList()
-                            });
+                                    OrderID = orderDetails.Data.OrderID,
+                                    OrderNo = orderDetails.Data.OrderNo,
+                                    CustomerName = orderDetails.Data.Customer.CustomerName,
+                                    TotalItems = orderDetails.Data.OrderDetails.Count,
+                                    OrderValue = orderDetails.Data.TotalAmount,
+                                    //ActionsText = "Collapse Details",
+                                    IsExpanded = false,
+                                    Items = orderDetails.Data.OrderDetails.Select(od => new PickListItem
+                                    {
+                                        ItemID = od.ItemID,
+                                        ItemName = od.Item.ItemName,
+                                        Size = od.Size,
+                                        Qty = od.Quantity,
+                                        EditQty = od.Quantity,
+                                        Weight = Convert.ToDecimal(od.Size),
+                                        UOM = od.UOM,
+                                        Rate = od.Amount,
+                                        Total = od.NetAmount
+                                    }).ToList()
+                                });
+                            }
                         }
+
                     }
 
+                    PickListOrderText = $"Pick List Orders ({PickListOrders.Count} orders, {PickListOrders.Sum(o => o.Items?.Count ?? 0)} items)";
+
                 }
-
-                PickListOrderText = $"Pick List Orders ({PickListOrders.Count} orders, {PickListOrders.Sum(o => o.Items?.Count ?? 0)} items)";
-
             }
+            catch { }
+            
         }
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -287,21 +291,63 @@ namespace Techugo.POS.ECOm.Pages
         private async void Ready_Button_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
-            var selectable = btn?.DataContext as SelectableOrderDetail;
-            var order = selectable?.Item;
-            if (order == null) return;
+            var selectable = btn?.DataContext;
+            if (selectable == null) return;
 
-            var orderID = Convert.ToInt32(order.OrderID);
-            var data = new { OrderIDs = new[] { orderID }, BranchStatus = "Packed" };
-            BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
-            if (result != null)
+            // Fix: Cast selectable to PickListOrder before accessing OrderID
+            if (selectable is PickListOrder order)
             {
-                if (result.Success == true)
+                var orderID = order.OrderID;
+                var data = new { OrderIDs = new[] { orderID }, BranchStatus = "Packed" };
+                BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
+                if (result != null)
                 {
-                    SnackbarService.Enqueue($"Orders Accepted");
+                    if (result.Success == true)
+                    {
+                        SnackbarService.Enqueue($"Orders Packed");
+                        var main = Application.Current.MainWindow;
+                        LayoutPage? layout = null;
 
+                        // Case A: MainWindow.Content is LayoutPage
+                        if (main?.Content is LayoutPage lp)
+                            layout = lp;
+                        else
+                        {
+                            // Case B: search visual tree for LayoutPage
+                            layout = FindChild<LayoutPage>(main);
+                        }
+
+                        if (layout != null)
+                        {
+                            // Use the public method to navigate
+                            layout.ShowPickListPage();
+                        }
+                        else
+                        {
+                            // Fallback: set PageContent via reflection if LayoutPage is hosted differently
+                            var setPageMethod = main?.GetType().GetMethod("SetPageContent", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                            if (setPageMethod != null)
+                            {
+                                var newPickList = new PickListPage();
+                                setPageMethod.Invoke(main, new object[] { newPickList });
+                            }
+                        }
+                    }
                 }
             }
+        }
+        private static T? FindChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null) return null;
+            int count = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T typed) return typed;
+                var found = FindChild<T>(child);
+                if (found != null) return found;
+            }
+            return null;
         }
     }
 

@@ -51,22 +51,25 @@ namespace Techugo.POS.ECOm.Pages.Login
 
         private async void SendOtpButton_Click(object sender, RoutedEventArgs e)
         {
-            // var data = new { MobileNo = MobileNumberTextBox.Text };
-            var data = new { MobileNo = "9917000000" };
-            BaseResponse result = await _apiService.PostAsync<BaseResponse>("auth/login", data);
-            //ShowSuccessSnackbar("OTP sent successfully!");
-            //await Task.Delay(3000); // Wait for 3 seconds
-            //OtpRequested?.Invoke(this, new RoutedEventArgs());
-
-            if (result != null)
+            var data = new { MobileNo = MobileNumberTextBox.Text };
+            try
             {
-                if (result.Success == true)
+                BaseResponse result = await _apiService.PostAsync<BaseResponse>("auth/login", data);
+                if (result != null)
                 {
-                    ShowSuccessSnackbar("OTP sent successfully!");
-                    // await Task.Delay(3000); // Wait for 3 seconds
-                    OtpRequested?.Invoke(this, new RoutedEventArgs());
+                    if (result.Success == true)
+                    {
+                        ShowSuccessSnackbar("OTP sent successfully!");
+                        // await Task.Delay(3000); // Wait for 3 seconds
+                        OtpRequested?.Invoke(this, new RoutedEventArgs());
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                ShowSuccessSnackbar("Failed to send OTP. Please try again.");
+                return;
+            } 
         }
         private void MobileNumberTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {

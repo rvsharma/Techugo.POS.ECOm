@@ -1,9 +1,13 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Techugo.POS.ECom.Model
 {
-    public class AssignRiderOrdersResponse : BaseResponse
+    public class PickListResponse : BaseResponse
     {
         [JsonPropertyName("count")]
         public int Count { get; set; }
@@ -14,10 +18,10 @@ namespace Techugo.POS.ECom.Model
         [JsonPropertyName("totalPages")]
         public int TotalPages { get; set; }
         [JsonPropertyName("data")]
-        public List<SocietyOrderGroup> Data { get; set; }
+        public List<SocietyOrderGroup1> Data { get; set; }
     }
 
-    public class SocietyOrderGroup
+    public class SocietyOrderGroup1
     {
         [JsonPropertyName("type")]
         public string Type { get; set; }
@@ -29,10 +33,10 @@ namespace Techugo.POS.ECom.Model
         public string Zone { get; set; }
 
         [JsonPropertyName("orders")]
-        public List<SocietyOrder> Orders { get; set; }
+        public List<SocietyOrder1> Orders { get; set; }
     }
 
-    public class SocietyOrder
+    public class SocietyOrder1
     {
         [JsonPropertyName("OrderID")]
         public string OrderID { get; set; }
@@ -71,13 +75,13 @@ namespace Techugo.POS.ECom.Model
         public BranchDeliverySlot BranchDeliverySlot { get; set; }
 
         [JsonPropertyName("AddressList")]
-        public AddressList AddressList { get; set; }
+        public AddressList1 AddressList { get; set; }
 
         [JsonPropertyName("ItemImages")]
         public List<string> ItemImages { get; set; }
     }
 
-    public class AddressList
+    public class AddressList1
     {
         [JsonPropertyName("AddressID")]
         public int AddressID { get; set; }
@@ -107,18 +111,26 @@ namespace Techugo.POS.ECom.Model
         public string Pincode { get; set; }
 
         [JsonPropertyName("BranchZone")]
-        public string BranchZone { get; set; }
+        public BranchZone BranchZone { get; set; }
 
         [JsonPropertyName("BranchSociety")]
-        public BranchSociety BranchSociety { get; set; }
+        public BranchSociety1 BranchSociety { get; set; }
     }
 
-    public class BranchSociety
+    public class BranchSociety1
     {
         [JsonPropertyName("SocietyID")]
         public int SocietyID { get; set; }
 
         [JsonPropertyName("SocietyName")]
         public string SocietyName { get; set; }
+    }
+    public class BranchZone
+    {
+        [JsonPropertyName("SocietyID")]
+        public int ZoneID { get; set; }
+
+        [JsonPropertyName("SocietyName")]
+        public string ZoneName { get; set; }
     }
 }

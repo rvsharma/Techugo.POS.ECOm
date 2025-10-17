@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -95,24 +96,40 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 {
                     foreach (var o in groupedOrder.Orders)
                     {
-                        OrderDetailVM order = new OrderDetailVM();
-                        order.OrderID = o.OrderID;
-                        order.OrderNo = o.OrderNo;
-                        order.createdAt = o.CreatedAt;
-                        order.ExpectedDeliveryDate = o.ExpectedDeliveryDate;
-                        order.TotalAmount = o.TotalAmount;
-                        order.PaidAmount = o.PaidAmount;
-                        order.Status = o.Status;
-                        order.Address = o.AddressList.HouseNo.ToString() + ", "
-                                        + o.AddressList.StreetNo.ToString() + ", "
-                                        + o.AddressList.City.ToString() + ", "
-                                        + o.AddressList.Pincode.ToString();
-                        order.PaymentMode = o.PaymentMode;
-                        order.Subscription = o.Subscription;
-                        order.Customer = new CustomerDetails { CustomerName = o.AddressList.Name, MobileNo = "34234" };
-                        order.BranchDeliverySlot = o.BranchDeliverySlot.StartTime + " - " + o.BranchDeliverySlot.EndTime;
-                        order.ItemImages = o.ItemImages;
-                        orderData.Add(order);
+                        OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + o.OrderID);
+
+                        if (orderDetails.Data != null)
+                        {
+                            var data = orderDetails.Data;
+                            var address = data.AddressList.HouseNo.ToString() + ", "
+                                        + data.AddressList.StreetNo.ToString() + ", "
+                                        + data.AddressList.State.ToString() + ", "
+                                        + data.AddressList.City.ToString() + ", "
+                                        + data.AddressList.Pincode.ToString();
+                            OrderDetailVM order = new OrderDetailVM();
+                            order.OrderID = data.OrderID;
+                            order.OrderNo = data.OrderNo;
+                            order.createdAt = data.createdAt;
+                            order.ExpectedDeliveryDate = data.ExpectedDeliveryDate;
+                            order.TotalAmount = data.TotalAmount;
+                            order.PaidAmount = data.PaidAmount;
+                            order.Status = data.Status;
+                            order.Address = data.AddressList.HouseNo.ToString() + ", "
+                                            + data.AddressList.StreetNo.ToString() + ", "
+                                            + data.AddressList.State.ToString() + ", "
+                                            + data.AddressList.City.ToString() + ", "
+                                            + data.AddressList.Pincode.ToString();
+                            order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
+                            order.PaymentMode = data.PaymentMode;
+                            order.Subscription = data.Subscription;
+                            order.OrderDetails = data.OrderDetails;
+                            order.Customer = data.Customer;
+                            order.BranchDeliverySlot = o.BranchDeliverySlot.StartTime + " - " + o.BranchDeliverySlot.EndTime;
+                            order.ItemImages = o.ItemImages;
+                            order.Status = o.Status;
+                            order.Items = data.OrderDetails.Count + " items(s)";
+                            orderData.Add(order);
+                        }
                     }
                     
                 }
@@ -149,8 +166,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 AllowsTransparency = true,
                 Background = Brushes.Transparent,
                 Owner = Application.Current.MainWindow,
-                Width = 420,
-                Height = 230,
+                Width = SystemParameters.PrimaryScreenWidth,
+                Height = SystemParameters.PrimaryScreenHeight,
                 ShowInTaskbar = false,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };

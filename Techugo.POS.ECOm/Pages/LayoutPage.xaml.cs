@@ -156,5 +156,16 @@ namespace Techugo.POS.ECOm.Pages
                 _newOrderPopupWindow = null;
             }
         }
+        public void ShowPickListPage()
+        {
+            var assignRider = new AssignRider();
+            // wire BackRequested same as Dashboard menu handling
+            assignRider.BackRequested += (s, args) =>
+            {
+                var dashboard = CreateDashboardPage();
+                SetPageContent(dashboard);
+            };
+            SetPageContent(assignRider);
+        }
     }
 }
