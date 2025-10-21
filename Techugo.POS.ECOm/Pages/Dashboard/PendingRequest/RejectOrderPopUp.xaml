@@ -9,10 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="225" d:DesignWidth="450"
              Background="Transparent">
-    <UserControl.Resources>
-        <convertors:OnlineStatusConverter x:Key="OnlineStatusConverter"/>
-        <convertors:OnlineStatusColorConverter x:Key="OnlineStatusColorConverter"/>
-    </UserControl.Resources>
+
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <!-- Overlay -->
         <Rectangle Fill="#AA888888" Opacity="0.6" 
@@ -59,48 +56,26 @@
                                FontWeight="SemiBold"
                                Foreground="#222"
                                Margin="0,0,0,0"/>
-                    <ComboBox x:Name="RiderComboBox"
-                              ItemsSource="{Binding RiderList}"
-                              SelectedValuePath="RiderID"
-                              SelectedValue="{Binding SelectedRiderId, Mode=TwoWay}"
-                              SelectionChanged="RiderComboBox_SelectionChanged"
+                    <ComboBox x:Name="ReasonComboBox"
+                              ItemsSource="{Binding ReasonList}"
+                              DisplayMemberPath="Reason"
+                              SelectedValuePath="ReasonID"
+                              SelectedValue="{Binding SelectedReasonId, Mode=TwoWay}"
+                              SelectionChanged="ReasonComboBox_SelectionChanged"
                               FontSize="16"
                               Height="36"
                               Margin="0,8,0,0"
                               Padding="12,0"
                               Background="{DynamicResource MaterialDesignPaper}"
                               BorderBrush="{DynamicResource MaterialDesignDivider}"
-                              materialDesign:HintAssist.Hint="Select a rider">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Name}" />
-                                    <TextBlock Text="{Binding IsOnline, Converter={StaticResource OnlineStatusConverter}}" 
-                           Foreground="{Binding IsOnline, Converter={StaticResource OnlineStatusColorConverter}}"
-                           FontWeight="Regular" FontSize="12"
-                           Margin="0,4,8,0"/>
-
-                                </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                        <ComboBox.ItemContainerStyle>
-                            <Style TargetType="ComboBoxItem">
-                                <Setter Property="Height" Value="40"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsOnline}" Value="False">
-                                        <Setter Property="IsEnabled" Value="False"/>
-                                        <Setter Property="Foreground" Value="#888"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.ItemContainerStyle>
+                              materialDesign:HintAssist.Hint="Select a reason">
                     </ComboBox>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,0">
-                        <Button Height="36" Width="Auto" Click="Cancel_Click" Foreground="White"  FontWeight="SemiBold" Margin="0,0,6,0" Style="{StaticResource RoundedWhiteButtonStyle}">
+                        <Button x:Name="Cancel_Btn" Height="36" Width="Auto" Click="Cancel_Click" Foreground="#0a0a0a"  FontWeight="SemiBold" Margin="0,0,6,0" Style="{StaticResource RoundedWhiteButtonStyle}">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <TextBlock Text="Cancel" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Cancel" VerticalAlignment="Center" Margin="32,0,32,0"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </Button.ContentTemplate>
@@ -116,45 +91,8 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </Button>
-                        <Button Content="Cancel"
-                                Width="Auto"
-                                Height="36"
-                                Padding="16,0"
-                                FontSize="14"
-                                FontWeight="SemiBold"
-                                Background="#F5F5F7"
-                                Foreground="#222"
-                                BorderBrush="#F5F5F7"
-                                BorderThickness="2"
-                                Margin="0,0,16,0"
-                                Click="Cancel_Click"/>
-                        ConfirmReject_Click Content="Assign Rider"
-                            x:Name="AssignRiderButton"
-                            Width="Auto"
-                            Height="36"
-                            Padding="16,0"
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Click="AssignRider_Click">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Setter Property="Background" Value="#8B8B96"/>
-                                    <Setter Property="BorderBrush" Value="#8B8B96"/>
-                                    <Setter Property="Foreground" Value="White"/>
-                                    <Setter Property="BorderThickness" Value="2"/>
-                                    <Style.Triggers>
-                                        <!-- disable button when no rider selected (SelectedRiderId == 0) -->
-                                        <DataTrigger Binding="{Binding SelectedRiderId}" Value="0">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                            <Setter Property="Background" Value="#E5E7EB"/>
-                                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-                                            <Setter Property="Foreground" Value="#9CA3AF"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                       
+                       
                     </StackPanel>
                 </StackPanel>
             </Grid>

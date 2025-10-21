@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Pages.Dashboard.PendingRequest;
 using Techugo.POS.ECOm.Services;
 
 namespace Techugo.POS.ECOm.Pages.Dashboard
@@ -20,6 +21,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
 
         private ObservableCollection<SelectableOrderDetail> _orderData = new();
         private Window? _orderDetailsPopUpWindow;
+        private Window _rejectOrderPopUpWindow;
 
         public ObservableCollection<SelectableOrderDetail> orderData
         {
@@ -69,7 +71,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         private async void LoadOrdersData()
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            //string formattedDate = "2025-10-08";
+            //string formattedDate = "2025-10-17";
             OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=PendingRequest&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
@@ -227,28 +229,28 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
 
         private async void RejectRow_Click(object sender, RoutedEventArgs e)
         {
-            var btn = sender as Button;
-            var selectable = btn?.DataContext as SelectableOrderDetail;
+            var button = sender as Button;
+            var selectable = button?.DataContext as SelectableOrderDetail;
             var order = selectable?.Item;
             if (order == null) return;
 
-            var data = new { OrderIDs = new[] { order.OrderID }, BranchStatus = "StoreRejected" };
-            BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
-            if (result != null)
+            var popup = new RejectOrderPopUp(selectable);
+            popup.CloseClicked += CloseOrderDetailsPopUp;
+            popup.PendingRequestClick += CloseRejectPopUp;
+
+            _rejectOrderPopUpWindow = new Window
             {
-                if (result.Success == true)
-                {
-                    SnackbarService.Enqueue($"Accepted order {order.OrderNo}");
-
-                }
-            }
-            LoadOrdersData();
-            // TODO: replace placeholder with your API call to reject the order(s)
-            // MessageBox.Show($"Rejected order {order.OrderNo}", "Reject", MessageBoxButton.OK, MessageBoxImage.Warning);
-
-            // optional: update UI/state after rejecting
-            selectable.IsSelected = false;
-            RecalculateSelectedCount();
+                Content = popup,
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                Background = Brushes.Transparent,
+                Owner = Application.Current.MainWindow,
+                Width = SystemParameters.PrimaryScreenWidth,
+                Height = SystemParameters.PrimaryScreenHeight,
+                ShowInTaskbar = false,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            _rejectOrderPopUpWindow.ShowDialog();
         }
 
         private void OpenOrderDetailPoPUp_Click(object sender, RoutedEventArgs e)
@@ -284,8 +286,27 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 _orderDetailsPopUpWindow.Close();
                 _orderDetailsPopUpWindow = null;
             }
+            if (_rejectOrderPopUpWindow != null)
+            {
+                _rejectOrderPopUpWindow.Close();
+                _rejectOrderPopUpWindow = null;
+            }
+
         }
 
+        private void CloseRejectPopUp(object sender, RoutedEventArgs e)
+        {
+            var button = sender as RejectOrderPopUp;
+            var selectable = button?.DataContext as RejectOrderPopUp;
+            var orderItem = selectable?.OrderDetails?.Item;
+            if (_rejectOrderPopUpWindow != null)
+            {
+                _rejectOrderPopUpWindow.Close();
+                _rejectOrderPopUpWindow = null;
+            }
+            LoadOrdersData();
+            SnackbarService.Enqueue($"Order {orderItem?.OrderNo} Rejected Successfully");
+        }
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             BackRequested?.Invoke(this, new RoutedEventArgs());

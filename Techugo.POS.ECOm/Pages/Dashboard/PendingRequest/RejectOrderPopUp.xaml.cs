@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Services;
 
 namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
 {
@@ -27,15 +28,15 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event RoutedEventHandler CloseClicked;
-        public event RoutedEventHandler AssignRiderClicked;
+        public event RoutedEventHandler PendingRequestClick;
         private readonly ApiService _apiService;
-        private ObservableCollection<ReasonVM> _riderList;
+        private ObservableCollection<ReasonVM> _reasonList;
         public ObservableCollection<ReasonVM> ReasonList
         {
-            get => _riderList;
+            get => _reasonList;
             set
             {
-                _riderList = value;
+                _reasonList = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ReasonList)));
             }
         }
@@ -49,8 +50,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedReasonId)));
             }
         }
-        private OrderDetailVM _orderDetails;
-        public OrderDetailVM OrderDetails
+        private SelectableOrderDetail _orderDetails;
+        public SelectableOrderDetail OrderDetails
         {
             get => _orderDetails;
             set
@@ -69,12 +70,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectReasonText)));
             }
         }
-        public RejectOrderPopUp(OrderDetailVM orderDetail)
+        public RejectOrderPopUp(SelectableOrderDetail orderDetail)
         {
             InitializeComponent();
             DataContext = this;
             OrderDetails = orderDetail;
-            SelectReasonText = "Please select a reason for rejecting order " + orderDetail.OrderNo;
+            SelectReasonText = "Please select a reason for rejecting order " + orderDetail.Item.OrderNo;
             _apiService = ApiServiceFactory.Create();
             GetRasons(); ;
         }
@@ -84,14 +85,20 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
         }
         private async void ConfirmReject_Click(object sender, RoutedEventArgs e)
         {
-            var data = new { RiderID = SelectedReasonId, OrderIDs = new[] { OrderDetails.OrderID } };
-            BaseResponse result = await _apiService.PutAsync<BaseResponse>("rider/assign-rider", data);
+            if(SelectedReasonId == 0)
+            {
+                SnackbarService.Enqueue("Please select reason for rejection");
+                return;
+            }
+            var orderID = Convert.ToInt32(OrderDetails.Item.OrderID);
+            var data = new { ReasonID = SelectedReasonId, OrderIDs = new[] { orderID }, BranchStatus = "StoreRejected" };
+            BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
             if (result != null)
             {
                 if (result.Success == true)
                 {
 
-                    AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
+                    PendingRequestClick?.Invoke(this, new RoutedEventArgs());
                 }
             }
 
@@ -99,22 +106,17 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
 
         private async void GetRasons()
         {
-            List<ReasonVM> riderListResponse = await _apiService.GetAsync<List<ReasonVM>>("rider/rider-list?page=1&limit=10&filter=All");
-            var list = riderListResponse ?? new List<ReasonVM>();
+            ReasonResponse riderListResponse = await _apiService.GetAsync<ReasonResponse>("common/reason-list?Type=STORE_ORDER_CANCELLED");
+            var list = riderListResponse ?? new ReasonResponse();
 
-            ReasonList = new ObservableCollection<ReasonVM>(list);
+            ReasonList = new ObservableCollection<ReasonVM>(list.Data);
         }
-        private void RiderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ReasonComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (RiderComboBox.SelectedValue is int riderId)
+            if (ReasonComboBox.SelectedValue is int reasonId)
             {
-                SelectedReasonId = riderId;
+                SelectedReasonId = reasonId;
             }
-        }
-        public class ReasonVM
-        {
-            public int ReasonId { get; set; }
-            public string Reason { get; set; }
         }
     }
 }
