@@ -238,11 +238,18 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                         <TextBlock Text="{Binding EditQty}" FontSize="15" Foreground="#00C853" FontWeight="SemiBold"/>
                                                     </Border>
                                                     <StackPanel Orientation="Horizontal" Grid.Column="4" VerticalAlignment="Center">
-                                                        <TextBlock Text="&#xE998;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="#2196F3" Margin="0,0,4,0"/>
+                                                        <svg:SvgViewbox Source="/Assets/Images/balance_edit_qty.svg" Width="14" Height="14" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                                         <TextBlock Text="{Binding Weight}" FontSize="15" Foreground="#222"/>
                                                     </StackPanel>
-                                                    <TextBlock Text="{Binding Rate, StringFormat=₹{0}}" FontSize="15" Grid.Column="5" VerticalAlignment="Center"/>
-                                                    <TextBlock Text="{Binding Total, StringFormat=₹{0:N2}}" FontWeight="Bold" FontSize="15" Grid.Column="6" VerticalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="5" FontSize="15" VerticalAlignment="Center">
+                                                      <Run Text="₹"/>
+                                                      <Run Text="{Binding SPrice, StringFormat={}{0:N2}, FallbackValue=0.00}"/>             
+                                                    </TextBlock>
+                                                    <!-- Total (₹) -->
+                                                    <TextBlock Grid.Column="6" FontWeight="Bold" FontSize="15" VerticalAlignment="Center">
+                                                      <Run Text="₹"/>
+                                                      <Run Text="{Binding Amount, StringFormat={}{0:N2}, FallbackValue=0.00}"/>
+                                                    </TextBlock>
                                                     <Button Grid.Column="7" Height="32" Padding="12,0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"  HorizontalAlignment="Left" VerticalAlignment="Center"
                                                             Click="EditQty_Click">
                                                         <Button.Template>

@@ -33,10 +33,12 @@ namespace Techugo.POS.ECom.Model
 
     public class OrderDetail
     {
+        public string ID { get; set; }
         public int ItemID { get; set; }
         public int Quantity { get; set; }
         public string Size { get; set; }
         public string UOM { get; set; }
+        public decimal SPrice { get; set; }
         public decimal Amount { get; set; }
         public decimal NetAmount { get; set; }
         public decimal Discount { get; set; }

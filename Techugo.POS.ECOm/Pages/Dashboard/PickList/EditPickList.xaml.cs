@@ -77,7 +77,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                     if (TryParseInputAsDecimal(MeasuredQtyTextBox.Text, out decimal wt))
                     {
                         ItemDetails.MeasuredWeight = string.Format(CultureInfo.CurrentCulture, "{0:N2} kg", wt);
-                        ItemDetails.MeasuredAmount = Math.Round(ItemDetails.PricePerKg * wt, 2);
+                        ItemDetails.MeasuredAmount = Math.Round(ItemDetails.SPrice * wt, 2);
                     }
                     ItemDetails.UpdateDisplays();
 

@@ -103,10 +103,11 @@ namespace Techugo.POS.ECOm.Pages
                                     CustomerName = orderDetails.Data.Customer.CustomerName,
                                     TotalItems = orderDetails.Data.OrderDetails.Count,
                                     OrderValue = orderDetails.Data.TotalAmount,
-                                    //ActionsText = "Collapse Details",
                                     IsExpanded = false,
-                                    Items = orderDetails.Data.OrderDetails.Select(od => new PickListItem
+                                    Items = new ObservableCollection<PickListItem>(
+                                    orderDetails.Data.OrderDetails.Select(od => new PickListItem
                                     {
+                                        OrderDetailID = od.ID,
                                         ItemID = od.ItemID,
                                         ItemName = od.Item.ItemName,
                                         Size = od.Size,
@@ -114,9 +115,13 @@ namespace Techugo.POS.ECOm.Pages
                                         EditQty = od.Quantity,
                                         Weight = Convert.ToDecimal(od.Size),
                                         UOM = od.UOM,
-                                        Rate = od.Amount,
-                                        Total = od.NetAmount
+                                        SPrice = od.SPrice,
+                                        Amount = od.Amount,
+                                        NetAmount = od.NetAmount,
+                                        Discount = od.Discount,
+                                        //Rate = od.Rate
                                     }).ToList()
+                                )
                                 });
                             }
                         }
@@ -146,6 +151,7 @@ namespace Techugo.POS.ECOm.Pages
             {
                 itemDetails = new EditQtyViewModel
                 {
+                    OrderDetailID = pli.OrderDetailID,
                     TitleText = "Edit Qty - " + pli.ItemName,
                     SKU = "PLI-002",
                     ItemID = pli.ItemID,
@@ -155,7 +161,11 @@ namespace Techugo.POS.ECOm.Pages
                     MeasuredWeight = pli.Weight.ToString(CultureInfo.CurrentCulture),
                     OUM = pli.UOM,
                     PricePerKg = pli.Rate,
-                    OriginalAmount = pli.Rate
+                    SPrice = pli.SPrice,
+                    Amount = pli.Amount,
+                    NetAmount = pli.NetAmount,
+                    Discount = pli.Discount,
+                    //OriginalAmount = pli.Rate
                 };
             }
 

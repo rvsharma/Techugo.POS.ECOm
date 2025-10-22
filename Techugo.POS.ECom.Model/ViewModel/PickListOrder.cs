@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -34,12 +35,22 @@ namespace Techugo.POS.ECom.Model.ViewModel
                 }
             }
         }
-        public List<PickListItem> Items { get; set; }
+        private ObservableCollection<PickListItem> _items;
+        public ObservableCollection<PickListItem> Items
+        {
+            get => _items;
+            set
+            {
+                _items = value;
+                OnPropertyChanged(nameof(Items));
+            }
+        }
 
         public ICommand ToggleExpandCommand { get; }
 
         public PickListOrder()
         {
+            _items = new ObservableCollection<PickListItem>();
             ToggleExpandCommand = new RelayCommand(() => IsExpanded = !IsExpanded);
         }
 
@@ -50,6 +61,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
 
     public class PickListItem
     {
+        public string OrderDetailID { get; set; }
         public int ItemID { get; set; }
         public string ItemName { get; set; }
         public string Size { get; set; }
@@ -57,6 +69,10 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public int EditQty { get; set; }
         public decimal Weight { get; set; }
         public string UOM { get; set; }
+        public decimal SPrice { get; set; }
+        public decimal Amount { get; set; }
+        public decimal NetAmount { get; set; }
+        public decimal Discount { get; set; }
         public decimal Rate { get; set; }
         public decimal Total { get; set; }
     }
