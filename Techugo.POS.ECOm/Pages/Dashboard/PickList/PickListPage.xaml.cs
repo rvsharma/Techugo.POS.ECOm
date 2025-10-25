@@ -68,8 +68,8 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void LoadPickListData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            // string formattedDate = "2025-10-08";
+            //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+             string formattedDate = "2025-10-22";
             try
             {
                 PickListResponse assignRiderOrdersResponse = await _apiService.GetAsync<PickListResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=PickListOrder&Date=" + formattedDate + "");
@@ -160,7 +160,7 @@ namespace Techugo.POS.ECOm.Pages
                     MeasuredQty = pli.EditQty,
                     MeasuredWeight = pli.Weight.ToString(CultureInfo.CurrentCulture),
                     OUM = pli.UOM,
-                    PricePerKg = pli.Rate,
+                    //PricePerKg = pli.Rate,
                     SPrice = pli.SPrice,
                     Amount = pli.Amount,
                     NetAmount = pli.NetAmount,
@@ -215,7 +215,7 @@ namespace Techugo.POS.ECOm.Pages
             return null;
         }
 
-        private async void Popup_SaveClicked(object? sender, RoutedEventArgs e)
+        private void Popup_SaveClicked(object? sender, RoutedEventArgs e)
         {
             // sender should be the EditPickList control
             if (sender is not EditPickList popup) return;
@@ -277,22 +277,22 @@ namespace Techugo.POS.ECOm.Pages
                 MeasuredAmount = vm.MeasuredAmount
             };
 
-            try
-            {
-                var result = await _apiService.PutAsync<BaseResponse>($"order/update-item/{parentOrder.OrderID}/{targetItem.ItemID}", payload);
-                if (result != null && result.Success)
-                {
-                    SnackbarService.Enqueue("Item updated");
-                }
-                else
-                {
-                    SnackbarService.Enqueue($"Failed to update item: {(result?.Message ?? "Unknown error")}");
-                }
-            }
-            catch (Exception ex)
-            {
-                SnackbarService.Enqueue($"Error updating item: {ex.Message}");
-            }
+            //try
+            //{
+            //    var result = await _apiService.PutAsync<BaseResponse>($"order/update-item/{parentOrder.OrderID}/{targetItem.ItemID}", payload);
+            //    if (result != null && result.Success)
+            //    {
+            //        SnackbarService.Enqueue("Item updated");
+            //    }
+            //    else
+            //    {
+            //        SnackbarService.Enqueue($"Failed to update item: {(result?.Message ?? "Unknown error")}");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    SnackbarService.Enqueue($"Error updating item: {ex.Message}");
+            //}
 
             // Close popup window
             CloseOrderDetailsPopUp(popup, new RoutedEventArgs());

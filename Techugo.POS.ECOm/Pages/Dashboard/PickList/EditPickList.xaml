@@ -203,7 +203,7 @@
                         </UniformGrid>
                     </StackPanel>
 
-                    <!-- Two-column: Price per KG and Measured Weight -->
+                    <!-- Two-column: Price per KG and Measured Weight (with editable qty beside weight) -->
                     <Grid Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -220,13 +220,28 @@
                             </Border>
                         </StackPanel>
 
-                        <!-- Measured Weight (right column) -->
-                        <StackPanel Grid.Column="2">
-                            <TextBlock Text="Measured Weight" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
-                            <Border Background="#F3F4F6" CornerRadius="6" Padding="10" Margin="0,0,0,0">
-                                <TextBox x:Name="MeasuredWeightDisplayTextBox" Text="{Binding MeasuredWeight, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
-                            </Border>
-                        </StackPanel>
+                        <!-- Measured Weight (right column) with an editable quantity field beside it -->
+                        <Grid Grid.Column="2">
+                            <!--<Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>-->
+
+                            <!--<StackPanel Grid.Column="0">
+                                <TextBlock Text="Measured Weight" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
+                                <Border Background="#F3F4F6" CornerRadius="6" Padding="10" Margin="0,0,0,0">
+                                    <TextBox x:Name="MeasuredWeightDisplayTextBox" Text="{Binding MeasuredWeight, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>-->
+
+                            <!-- Editable quantity field placed to the right of measured weight -->
+                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom" Width="110">
+                                <TextBlock Text="Qty" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
+                                <Border Background="#F3F4F6" CornerRadius="6" Padding="8">
+                                    <TextBox Text="{Binding MeasuredQty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" HorizontalContentAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
 
                     <!-- Original / Measured / Diff -->
