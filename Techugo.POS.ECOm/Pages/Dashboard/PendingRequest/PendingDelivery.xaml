@@ -26,8 +26,8 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
 
                 <!-- All Orders Title -->
                 <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="16,0,0,0">
-                    <TextBlock Text="All Orders" FontWeight="Bold" FontSize="24"/>
-                    <TextBlock Text="Manage orders ready for rider assignment" FontSize="14" Foreground="#888" Margin="0,4,0,0"/>
+                    <TextBlock Text="Pending Delivery Orders" FontWeight="Bold" FontSize="24"/>
+                    <TextBlock Text="Review and manage pending delivery requests" FontSize="14" Foreground="#888" Margin="0,4,0,0"/>
                 </StackPanel>
             </Grid>
             <!-- Orders Card -->

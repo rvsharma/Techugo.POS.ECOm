@@ -19,6 +19,7 @@ namespace Techugo.POS.ECOm.Pages
         public event RoutedEventHandler RejectedClicked;
         public event RoutedEventHandler PartialReturnsClicked;
         public event RoutedEventHandler CarryForwardClicked;
+        public event RoutedEventHandler OrderTrackingClicked;
 
         private readonly ApiService _apiService;
 
@@ -94,6 +95,10 @@ namespace Techugo.POS.ECOm.Pages
         private void CarryForward_Click(object sender, RoutedEventArgs e)
         {
             CarryForwardClicked?.Invoke(this, new RoutedEventArgs());
+        }
+        private void OrderTracking_Click(object sender, RoutedEventArgs e)
+        {
+            OrderTrackingClicked?.Invoke(this, new RoutedEventArgs());
         }
         // Add handlers for other tiles
         public void TriggerPickList()

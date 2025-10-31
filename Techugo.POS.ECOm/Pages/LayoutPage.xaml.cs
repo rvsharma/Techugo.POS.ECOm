@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Techugo.POS.ECOm.Pages.Dashboard;
+using Techugo.POS.ECOm.Pages.Dashboard.OrderTracking;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -27,8 +28,11 @@ namespace Techugo.POS.ECOm.Pages
             dashboardPage.RejectedClicked += DashboardPage_RejectedClicked;
             dashboardPage.PartialReturnsClicked += DashboardPage_PartialReturnsClicked;
             dashboardPage.CarryForwardClicked += DashboardPage_CarryForwardClicked;
+            dashboardPage.OrderTrackingClicked += DashboardPage_OrderTrackingClicked;
             return dashboardPage;
         }
+
+        
 
         private void ShowDashboard()
         {
@@ -103,6 +107,12 @@ namespace Techugo.POS.ECOm.Pages
         private void DashboardPage_CarryForwardClicked(object sender, RoutedEventArgs e)
         {
             var page = new CarryForward();
+            page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
+            SetPageContent(page);
+        }
+        private void DashboardPage_OrderTrackingClicked(object sender, RoutedEventArgs e)
+        {
+            var page = new OrderTracking();
             page.BackRequested += (s, args) => SetPageContent(CreateDashboardPage());
             SetPageContent(page);
         }

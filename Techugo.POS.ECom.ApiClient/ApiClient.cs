@@ -52,18 +52,39 @@ namespace Techugo.POS.ECOm.ApiClient
 
         public async Task<T> PutAsync<T>(string url, object data)
         {
+            var result = default(T);
             var json = System.Text.Json.JsonSerializer.Serialize(data);
             var request = new HttpRequestMessage(HttpMethod.Put, url)
             {
                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
             };
-            var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var responseString = await response.Content.ReadAsStringAsync();
-            var result = System.Text.Json.JsonSerializer.Deserialize<T>(responseString);
-            if (result is null)
-                throw new System.InvalidOperationException("Deserialization returned null.");
-            return result;
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                //response.EnsureSuccessStatusCode();
+                var responseString = await response.Content.ReadAsStringAsync();
+                result = System.Text.Json.JsonSerializer.Deserialize<T>(responseString);
+                if (result is null)
+                    throw new System.InvalidOperationException("Deserialization returned null.");
+                return result;
+            }
+            catch (HttpRequestException httpEx) when (httpEx.StatusCode.HasValue &&
+                                                      (httpEx.StatusCode.Value == HttpStatusCode.BadRequest ||
+                                                       httpEx.StatusCode.Value == HttpStatusCode.NotFound))
+            {
+                // Try to get the response content from the exception's Data dictionary, if available
+                if (httpEx.Data != null && httpEx.Data.Contains("ResponseContent"))
+                {
+                    var errorContentObj = httpEx.Data["ResponseContent"];
+                    if (errorContentObj is string errorContent && !string.IsNullOrEmpty(errorContent))
+                    {
+                        result= System.Text.Json.JsonSerializer.Deserialize<T>(errorContent);
+                        if (result != null)
+                            return result;
+                    }
+                }
+               return result;
+            }
         }
     }
 }

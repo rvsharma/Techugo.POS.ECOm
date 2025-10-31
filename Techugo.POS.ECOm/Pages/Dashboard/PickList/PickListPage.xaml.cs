@@ -68,8 +68,8 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void LoadPickListData()
         {
-            //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-             string formattedDate = "2025-10-22";
+            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+             //string formattedDate = "2025-10-22";
             try
             {
                 PickListResponse assignRiderOrdersResponse = await _apiService.GetAsync<PickListResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=PickListOrder&Date=" + formattedDate + "");
@@ -113,7 +113,7 @@ namespace Techugo.POS.ECOm.Pages
                                         Size = od.Size,
                                         Qty = od.Quantity,
                                         EditQty = od.Quantity,
-                                        Weight = Convert.ToDecimal(od.Size),
+                                        Weight = od.Size,
                                         UOM = od.UOM,
                                         SPrice = od.SPrice,
                                         Amount = od.Amount,
@@ -229,7 +229,6 @@ namespace Techugo.POS.ECOm.Pages
 
             if (!decimal.TryParse(weightText, NumberStyles.Number, CultureInfo.CurrentCulture, out decimal newWeight))
             {
-                // If parsing fails, you can notify user — for now just return
                 MessageBox.Show("Invalid weight entered", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -251,48 +250,56 @@ namespace Techugo.POS.ECOm.Pages
 
             if (targetItem == null || parentOrder == null)
             {
-                // Could not find item in current in-memory list; still attempt API or notify
                 MessageBox.Show("Could not locate the item to update in the current list.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                // Close popup anyway
                 CloseOrderDetailsPopUp(popup, new RoutedEventArgs());
                 return;
             }
 
-            // Update in-memory model
-            targetItem.Weight = newWeight;
+            // Create a new item instance with updated values and replace it in the observable collection
+            var updatedItem = new PickListItem
+            {
+                OrderDetailID = targetItem.OrderDetailID,
+                ItemID = targetItem.ItemID,
+                ItemName = targetItem.ItemName,
+                Size = targetItem.Size,
+                Qty = targetItem.Qty,
+                EditQty = Convert.ToInt32(Math.Round(vm.MeasuredQty)), // or adjust conversion rule
+                Weight = Convert.ToString(newWeight),
+                UOM = targetItem.UOM,
+                SPrice = targetItem.SPrice,
+                Amount = vm.MeasuredAmount,
+                NetAmount = targetItem.NetAmount,
+                Discount = targetItem.Discount,
+                Rate = targetItem.Rate,
+                Total = targetItem.Total
+            };
 
-            // Recalculate any totals if needed (e.g., Total) — adjust based on your model
-            // Example: targetItem.Total = targetItem.Rate * targetItem.Qty; // if applicable
+            // Replace item in the parent's Items collection to raise CollectionChanged and update UI
+            var itemIndex = parentOrder.Items?.IndexOf(targetItem) ?? -1;
+            if (itemIndex >= 0)
+            {
+                parentOrder.Items[itemIndex] = updatedItem;
+            }
 
-            // Refresh UI by notifying property change for the collection
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PickListOrders)));
+            // Recalculate parent order totals and replace the parent order in PickListOrders to force UI refresh
+            parentOrder.OrderValue = parentOrder.Items?.Sum(i => i.Amount) ?? parentOrder.OrderValue;
+
+            var orderIndex = PickListOrders.IndexOf(parentOrder);
+            if (orderIndex >= 0)
+            {
+                // replace the order to raise CollectionChanged on PickListOrders (UI will refresh header fields)
+                PickListOrders[orderIndex] = parentOrder;
+            }
 
             // Prepare payload for API — replace with your actual expected schema
             var payload = new
             {
                 OrderID = parentOrder.OrderID,
-                ItemID = targetItem.ItemID,
+                ItemID = updatedItem.ItemID,
                 MeasuredWeight = newWeight,
-                MeasuredQty = vm.MeasuredQty,           // may be int or decimal per your API
+                MeasuredQty = vm.MeasuredQty,
                 MeasuredAmount = vm.MeasuredAmount
             };
-
-            //try
-            //{
-            //    var result = await _apiService.PutAsync<BaseResponse>($"order/update-item/{parentOrder.OrderID}/{targetItem.ItemID}", payload);
-            //    if (result != null && result.Success)
-            //    {
-            //        SnackbarService.Enqueue("Item updated");
-            //    }
-            //    else
-            //    {
-            //        SnackbarService.Enqueue($"Failed to update item: {(result?.Message ?? "Unknown error")}");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    SnackbarService.Enqueue($"Error updating item: {ex.Message}");
-            //}
 
             // Close popup window
             CloseOrderDetailsPopUp(popup, new RoutedEventArgs());
@@ -300,6 +307,7 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void Ready_Button_Click(object sender, RoutedEventArgs e)
         {
+
             var btn = sender as Button;
             var selectable = btn?.DataContext;
             if (selectable == null) return;
@@ -308,41 +316,74 @@ namespace Techugo.POS.ECOm.Pages
             if (selectable is PickListOrder order)
             {
                 var orderID = order.OrderID;
-                var data = new { OrderIDs = new[] { orderID }, BranchStatus = "Packed" };
-                BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
-                if (result != null)
-                {
-                    if (result.Success == true)
+                var selectedOrder = PickListOrders.First(x => x.OrderID == orderID);
+               
+
+                var items = selectedOrder.Items?
+                    .Select(i => new
                     {
-                        SnackbarService.Enqueue($"Orders Packed");
-                        var main = Application.Current.MainWindow;
-                        LayoutPage? layout = null;
+                        // OrderDetailID as int when possible (matches example)
+                        OrderDetailID = int.TryParse(i.OrderDetailID, out var odid) ? odid : (object)i.OrderDetailID,
+                        // Quantity comes from EditQty (edited quantity)
+                        Quantity = i.EditQty,
+                        // Size or null
+                        Size = string.IsNullOrWhiteSpace(i.Size) ? null : i.Size,
+                        // Original amount (use item.Amount or another property if you store original separately)
+                        OrginalAmount = i.Amount,
+                        // MeasuredAmount — if you track measured separately, use that; fallback to Amount
+                        MeasuredAmount = i.Amount
+                    })
+                    .ToList();
 
-                        // Case A: MainWindow.Content is LayoutPage
-                        if (main?.Content is LayoutPage lp)
-                            layout = lp;
-                        else
-                        {
-                            // Case B: search visual tree for LayoutPage
-                            layout = FindChild<LayoutPage>(main);
-                        }
+                var itemsData = new
+                {
+                    OrderID =Convert.ToInt32(orderID),
+                    Items = items
+                };
 
-                        if (layout != null)
+                BaseResponse itemsSaveResult = await _apiService.PutAsync<BaseResponse>("order/edit-order-item", itemsData);
+                if(itemsSaveResult != null && itemsSaveResult.Success == true)
+                {
+                    var data = new { OrderIDs = new[] { orderID }, BranchStatus = "Packed" };
+                    BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
+                    if (result != null)
+                    {
+                        if (result.Success == true)
                         {
-                            // Use the public method to navigate
-                            layout.ShowPickListPage();
-                        }
-                        else
-                        {
-                            // Fallback: set PageContent via reflection if LayoutPage is hosted differently
-                            var setPageMethod = main?.GetType().GetMethod("SetPageContent", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                            if (setPageMethod != null)
+                            SnackbarService.Enqueue($"Order {order.OrderNo} Packed");
+                            var main = Application.Current.MainWindow;
+                            LayoutPage? layout = null;
+
+                            // Case A: MainWindow.Content is LayoutPage
+                            if (main?.Content is LayoutPage lp)
+                                layout = lp;
+                            else
                             {
-                                var newPickList = new PickListPage();
-                                setPageMethod.Invoke(main, new object[] { newPickList });
+                                // Case B: search visual tree for LayoutPage
+                                layout = FindChild<LayoutPage>(main);
+                            }
+
+                            if (layout != null)
+                            {
+                                // Use the public method to navigate
+                                layout.ShowPickListPage();
+                            }
+                            else
+                            {
+                                // Fallback: set PageContent via reflection if LayoutPage is hosted differently
+                                var setPageMethod = main?.GetType().GetMethod("SetPageContent", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                                if (setPageMethod != null)
+                                {
+                                    var newPickList = new PickListPage();
+                                    setPageMethod.Invoke(main, new object[] { newPickList });
+                                }
                             }
                         }
                     }
+                }
+                else
+                {
+                    SnackbarService.Enqueue(itemsSaveResult.Message);
                 }
             }
         }

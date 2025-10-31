@@ -43,8 +43,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
                 ItemDetails.UpdateDisplays();
 
-                if (MeasuredWeightDisplayTextBox != null)
-                    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight ?? string.Empty;
+                //if (MeasuredWeightDisplayTextBox != null)
+                //    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight ?? string.Empty;
             }
 
             // initialize measured input UI to show quantity (MeasuredQty), not weight
@@ -94,8 +94,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                     ItemDetails.UpdateDisplays();
                 }
 
-                if (MeasuredWeightDisplayTextBox != null)
-                    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight ?? string.Empty;
+                //if (MeasuredWeightDisplayTextBox != null)
+                //    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight ?? string.Empty;
             }
 
             if (checkWeight)
@@ -189,8 +189,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
             ItemDetails.UpdateDisplays();
 
-            if (MeasuredWeightDisplayTextBox != null)
-                MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;
+            //if (MeasuredWeightDisplayTextBox != null)
+            //    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;
 
             SaveClicked?.Invoke(this, new RoutedEventArgs());
         }
