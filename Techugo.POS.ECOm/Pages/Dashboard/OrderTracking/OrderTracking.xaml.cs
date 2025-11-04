@@ -3,17 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
@@ -60,43 +52,18 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.OrderTracking
         }
         private async void LoadOrdersData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/tracking-list?page=1&limit=10");
+            TrackingResponse orderResponse = await _apiService.GetAsync<TrackingResponse>("order/tracking-list?page=1&limit=10");
             if (orderResponse != null)
             {
 
                 orderData.Clear();
                 foreach (var or in orderResponse.Data)
                 {
-                    OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + or.OrderID);
+                    TrackingDetailResponse orderDetails = await _apiService.GetAsync<TrackingDetailResponse>("order/order-tracking/" + or.OrderID);
 
                     if (orderDetails.Data != null)
                     {
-                        var data = orderDetails.Data;
-                        var address = data.AddressList.HouseNo.ToString() + ", "
-                                        + data.AddressList.StreetNo.ToString() + ", "
-                                        + data.AddressList.State.ToString() + ", "
-                                        + data.AddressList.City.ToString() + ", "
-                                        + data.AddressList.Pincode.ToString();
-                        OrderDetailVM order = new OrderDetailVM();
-                        order.OrderID = data.OrderID;
-                        order.OrderNo = data.OrderNo;
-                        order.createdAt = data.createdAt;
-                        order.ExpectedDeliveryDate = data.ExpectedDeliveryDate;
-                        order.TotalAmount = data.TotalAmount;
-                        order.PaidAmount = data.PaidAmount;
-                        order.Status = data.Status;
-                        order.Address = address;
-                        order.PaymentMode = data.PaymentMode;
-                        order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
-                        order.Subscription = data.Subscription;
-                        order.OrderDetails = data.OrderDetails;
-                        order.Customer = data.Customer;
-                        order.BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
-                        order.ItemImages = or.ItemImages;
-                        order.Items = data.OrderDetails.Count + " items(s)";
-                        order.Status = data.Status;
-                        orderData.Add(order);
+                        
                     }
 
                 }
