@@ -16,6 +16,11 @@ namespace Techugo.POS.ECOm.Converters
 
             return status switch
             {
+                // Category 
+                "dairy" => (SolidColorBrush)(new BrushConverter().ConvertFrom("#dbeafe")),
+                "vegetables" => (SolidColorBrush)(new BrushConverter().ConvertFrom("#016630")),
+                "cooking oil" => (SolidColorBrush)(new BrushConverter().ConvertFrom("#894b00")),
+
                 "delivered" => (SolidColorBrush)(new BrushConverter().ConvertFrom("#016630")), // dark green
                 "placed" => (SolidColorBrush)(new BrushConverter().ConvertFrom("#065F46")),     // dark teal
                 "pending" => (SolidColorBrush)(new BrushConverter().ConvertFrom("#92400E")),   // dark amber/brown

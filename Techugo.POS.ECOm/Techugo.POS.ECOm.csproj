@@ -18,6 +18,7 @@
     <None Remove="Assets\Images\back.svg" />
     <None Remove="Assets\Images\balance.svg" />
     <None Remove="Assets\Images\balance_edit_qty.svg" />
+    <None Remove="Assets\Images\barcode.svg" />
     <None Remove="Assets\Images\box.svg" />
     <None Remove="Assets\Images\calender.svg" />
     <None Remove="Assets\Images\carry_forward.svg" />
@@ -76,6 +77,7 @@
     <Resource Include="Assets\Images\back.svg" />
     <Resource Include="Assets\Images\balance.svg" />
     <Resource Include="Assets\Images\balance_edit_qty.svg" />
+    <Resource Include="Assets\Images\barcode.svg" />
     <Resource Include="Assets\Images\box.svg" />
     <Resource Include="Assets\Images\calender.svg" />
     <Resource Include="Assets\Images\carry_forward.svg" />

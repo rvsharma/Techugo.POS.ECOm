@@ -54,7 +54,7 @@ namespace Techugo.POS.ECom.Model
         public string OpenTime { get; set; }
         public string CloseTime { get; set; }
         public string SlotType { get; set; }
-        public int ETA { get; set; }
+        public int? ETA { get; set; }
         public string ETARemark { get; set; }
         public string OnBoardingDate { get; set; }
         public string IsActive { get; set; }

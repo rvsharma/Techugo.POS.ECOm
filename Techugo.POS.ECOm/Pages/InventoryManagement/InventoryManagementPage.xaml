@@ -5,6 +5,7 @@
     xmlns:conv="clr-namespace:Techugo.POS.ECOm.Converters"
     Height="Auto" Width="Auto">
     <UserControl.Resources>
+        <conv:ActiveStateConverter x:Key="ActiveStateConverter"/>
         <conv:StatusToBackgroundConverter x:Key="StatusToBackgroundConverter" />
         <conv:StatusToForegroundConverter x:Key="StatusToForegroundConverter" />
 
@@ -250,23 +251,24 @@
                     </StackPanel>
 
                     <!-- Products ListView -->
-                    <ListView x:Name="ProductsListView" ItemsSource="{Binding Products}" Margin="0" BorderThickness="0" SelectionMode="Single">
+                    <ListView x:Name="ProductsListView" ItemsSource="{Binding inventoryData}" Margin="0" BorderThickness="0" SelectionMode="Single">
                         <!-- row style -->
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="Background" Value="White"/>
-                                <Setter Property="Margin" Value="0,0,0,4"/>
-                                <Setter Property="Padding" Value="12,8"/>
+                                <Setter Property="Margin" Value="0,12,0,2"/>
+                                <Setter Property="Padding" Value="0"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Setter Property="MinHeight" Value="72"/>
                                 <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="MinHeight" Value="64"/>
                                 <Setter Property="BorderBrush" Value="Transparent"/>
                                 <Setter Property="Foreground" Value="#0a0a0a"/>
                                 <Setter Property="FontSize" Value="14"/>
+
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#FAFAFB"/>
+                                        <Setter Property="Background" Value="Transparent"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -278,45 +280,83 @@
                                 <GridViewColumn Header="Product Image" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border Width="64" Height="64" CornerRadius="8" Background="#F5F5F5" HorizontalAlignment="Left">
-                                                <Image Source="{Binding ImagePath}" Width="64" Height="64" Stretch="UniformToFill" />
-                                            </Border>
+                                            <Grid Width="64" Height="64" HorizontalAlignment="Left">
+                                                <!-- Background visible when image is missing -->
+                                                <Border Background="#F5F5F5" CornerRadius="8"/>
+                                                <!-- Rounded image using Rectangle + ImageBrush to get clipped corners -->
+                                                <Rectangle Width="64" Height="64" RadiusX="8" RadiusY="8" SnapsToDevicePixels="True">
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush ImageSource="{Binding ImagePath}" Stretch="UniformToFill" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                            </Grid>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
                                 <!-- Barcode -->
-                                <GridViewColumn Header="Barcode" Width="120" DisplayMemberBinding="{Binding Barcode}" />
+
+                                <GridViewColumn Header="Barcode" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <svg:SvgViewbox Source="/Assets/Images/barcode.svg" Width="14" Height="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="{Binding Barcode}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
                                 <!-- Product Details -->
-                                <GridViewColumn Header="Product Details" Width="190">
+                                <GridViewColumn Header="Product Details" Width="280">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel>
-                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
-                                                <TextBlock Text="{Binding ShortDescription}" Foreground="#6B7280" FontSize="12" TextWrapping="Wrap" MaxWidth="300"/>
+                                                <TextBlock Text="{Binding ItemName}" FontWeight="SemiBold" FontSize="14"/>
+                                                <TextBlock Text="Short Description" Foreground="#6B7280" FontSize="12" TextWrapping="Wrap" MaxWidth="300"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
                                 <!-- Brand -->
-                                <GridViewColumn Header="Brand" Width="110" DisplayMemberBinding="{Binding Brand}" />
+                                
+                                    <GridViewColumn Header="Brand" Width="130">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                            <Border Background="#ffffff" BorderBrush="#e1e2e2" BorderThickness="1" CornerRadius="8" Padding="6,2" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding Brand}" HorizontalAlignment="Center" FontSize="12" FontWeight="DemiBold"/>
+                                            </Border>
+                                        </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
                                 <!-- Category -->
-                                <GridViewColumn Header="Category" Width="110" DisplayMemberBinding="{Binding Category}" />
-
-                                <!-- Selling Price -->
-                                <GridViewColumn Header="Selling Price" Width="100">
+                                <GridViewColumn Header="Category" Width="130">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding SellingPrice, StringFormat=₹{0:F2}}" HorizontalAlignment="Left"/>
+                                            <Border Background="{Binding Category, Converter={StaticResource StatusToBackgroundConverter}}"
+CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,6">
+                                                <TextBlock Text="{Binding Category}" 
+       Foreground="{Binding Category, Converter={StaticResource StatusToForegroundConverter}}"
+       FontWeight="SemiBold" FontSize="12" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <!--<GridViewColumn Header="Category" Width="130" DisplayMemberBinding="{Binding Category}" />-->
+
+                                <!-- Selling Price -->
+                                <GridViewColumn Header="Selling Price" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0:F2}}" HorizontalAlignment="Left"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
                                 <!-- MRP -->
-                                <GridViewColumn Header="MRP" Width="80">
+                                <GridViewColumn Header="MRP" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding MRP, StringFormat=₹{0:F2}}" HorizontalAlignment="Left" Foreground="#6B7280"/>
@@ -325,22 +365,63 @@
                                 </GridViewColumn>
 
                                 <!-- Active / Inactive -->
-                                <GridViewColumn Header="Active/Inactive" Width="120">
+                                <GridViewColumn Header="Active/Inactive" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border x:Name="StatusBadge" CornerRadius="12" Padding="8,4" HorizontalAlignment="Left" Margin="0,4,0,4" Background="#F3F4F6">
-                                                <TextBlock x:Name="StatusText" Text="Inactive" FontWeight="SemiBold" Foreground="#374151"/>
-                                            </Border>
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <!-- Toggle styled as iOS-like switch -->
+                                                <ToggleButton x:Name="SwitchToggle"
+                              Width="44" Height="24"
+                              Margin="0,0,6,0"
+                              IsChecked="{Binding IsActive, Mode=TwoWay, Converter={StaticResource ActiveStateConverter}}"
+                              Focusable="False"
+                              Background="Transparent"
+                              BorderThickness="0">
+                                                    <ToggleButton.Template>
+                                                        <ControlTemplate TargetType="ToggleButton">
+                                                            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                                                <!-- Track -->
+                                                                <Border x:Name="Track"
+                                                                CornerRadius="12"
+                                                                Background="#111827"
+                                                                Opacity="1"/>
+                                                                                        <!-- Thumb -->
+                                                                                        <Ellipse x:Name="Thumb"
+                                                                 Width="18" Height="18"
+                                                                 Fill="White"
+                                                                 Margin="3,3,0,3"
+                                                                 HorizontalAlignment="Left"/>
+                                                            </Grid>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsChecked" Value="True">
+                                                                    <Setter TargetName="Track" Property="Background" Value="#111827"/>
+                                                                    <!-- green when active -->
+                                                                    <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled" Value="False">
+                                                                    <Setter TargetName="Track" Property="Background" Value="#cbced4"/>
+                                                                    <Setter TargetName="Track" Property="Opacity" Value="0.4"/>
+                                                                    <Setter TargetName="Thumb" Property="Opacity" Value="0.6"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </ToggleButton.Template>
+                                                </ToggleButton>
+
+                                                <!-- Text label that updates based on toggle state -->
+                                                <TextBlock x:Name="StatusText" VerticalAlignment="Center" FontSize="14" Foreground="#374151" FontWeight="SemiBold" Text="Inactive"/>
+
+                                            </StackPanel>
+
+                                            <!-- Use DataTriggers based on the ToggleButton's IsChecked to update text/color -->
                                             <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#DCFCE7"/>
+                                                <DataTrigger Binding="{Binding IsChecked, ElementName=SwitchToggle}" Value="True">
                                                     <Setter TargetName="StatusText" Property="Text" Value="Active"/>
-                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#16A34A"/>
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#cbced4"/>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#FEE2E2"/>
+                                                <DataTrigger Binding="{Binding IsChecked, ElementName=SwitchToggle}" Value="False">
                                                     <Setter TargetName="StatusText" Property="Text" Value="Inactive"/>
-                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#DC2626"/>
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#374151"/>
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
@@ -349,9 +430,29 @@
                             </GridView>
                         </ListView.View>
 
-                        <!-- GridView header template/style -->
                         <ListView.Resources>
-                            <Style TargetType="GridViewColumnHeader" BasedOn="{StaticResource GridHeaderStyle}" />
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Height" Value="48"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GridViewColumnHeader">
+                                            <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
                         </ListView.Resources>
                     </ListView>
                 </StackPanel>
