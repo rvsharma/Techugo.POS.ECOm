@@ -29,7 +29,7 @@
         <!-- Search box style -->
         <Style x:Key="SearchBoxStyle" TargetType="Border">
             <Setter Property="Background" Value="#F3F4F6"/>
-            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="8"/>
             <Setter Property="Margin" Value="1"/>
             <Setter Property="Height" Value="40"/>
@@ -37,8 +37,8 @@
 
         <!-- Filter pill style (rounded pill with border) -->
         <Style x:Key="FilterPillBorder" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="BorderBrush" Value="beige"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height" Value="40"/>
@@ -212,21 +212,21 @@
                 <Border Grid.Column="1" Style="{StaticResource FilterPillBorder}" Margin="12,0,0,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="36"/>
+                            <ColumnDefinition Width="49"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- filter icon -->
-                        <Viewbox Grid.Column="0" Width="18" Height="20" VerticalAlignment="Center"   HorizontalAlignment="Center">
-                            <Canvas Width="12" Height="10">
-                                <Path Data="M3,3 L13,3 L9,8 L9,13 L7,13 L7,8 Z" Fill="#6B7280" Stretch="Uniform"/>
+                        <Viewbox Grid.Column="0" Width="18" Height="20" VerticalAlignment="Center"   HorizontalAlignment="Center" >
+                            <Canvas Width="12" Height="10"  >
+                                <Path Data="M3,3 L13,3 L9,8 L9,13 L7,13 L7,8 Z" Fill="gray" Stretch="Uniform" />
                             </Canvas>
                         </Viewbox>
 
                         <!-- ComboBox with transparent background so pill shows rounded corners -->
                         <ComboBox Grid.Column="1"
                                   x:Name="BrandFilterCombo"
-                                  Background="white"
+                                  Background="#F3F4F6"
                                   BorderThickness="0"
                                   Padding="6,0"
                                   VerticalContentAlignment="Center"
