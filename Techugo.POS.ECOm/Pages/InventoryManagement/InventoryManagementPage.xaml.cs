@@ -1,15 +1,20 @@
 using MaterialDesignColors;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Services;
 
 namespace Techugo.POS.ECOm.Pages
 {
-    public partial class InventoryManagementPage : UserControl
+    public partial class InventoryManagementPage : UserControl, INotifyPropertyChanged
     {
         public event RoutedEventHandler BackRequested;
         private readonly ApiService _apiService;
@@ -24,6 +29,36 @@ namespace Techugo.POS.ECOm.Pages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(inventoryData)));
             }
         }
+        private int _totalItems;
+        public int TotalItems
+        {
+            get => _totalItems;
+            set => SetField(ref _totalItems, value);
+        }
+
+        private int _activeProducts;
+        public int ActiveProducts
+        {
+            get => _activeProducts;
+            set => SetField(ref _activeProducts, value);
+        }
+
+        private int _inactiveProducts;
+        public int InactiveProducts
+        {
+            get => _inactiveProducts;
+            set => SetField(ref _inactiveProducts, value);
+        }
+
+        private int _outOfStock;
+        public int OutOfStock
+        {
+            get => _outOfStock;
+            set => SetField(ref _outOfStock, value);
+        }
+
+        // Prevent Toggle Checked/Unchecked handlers from reacting to programmatic bindings/initialization
+        private bool _suppressToggleEvents = true;
 
         public InventoryManagementPage()
         {
@@ -31,43 +66,167 @@ namespace Techugo.POS.ECOm.Pages
             DataContext = this;
             inventoryData = new ObservableCollection<InventoryVM>();
             _apiService = ApiServiceFactory.Create();
+
+            // start loading; suppression remains true until LoadInventoryData finishes
             LoadInventoryData();
         }
 
         private async void LoadInventoryData()
         {
-            var data = new { page = 1, limit = 10, brandId = (int?)null, categoryIds = new[] { 1, 2, 3 }, search = (string)null, status = "InStock" };
-            StockListResponse stocklist = await _apiService.PostAsync<StockListResponse>("item/stock-list", data);
-            if (stocklist != null && stocklist.Data != null)
+            try
             {
-
-                inventoryData.Clear();
-
-                foreach (var or in stocklist.Data)
+                var data = new { page = 1, limit = 10, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null };
+                ItemListResponse itemList = await _apiService.PostAsync<ItemListResponse>("item/item-list", data);
+                if (itemList != null && itemList.Data != null)
                 {
+                    inventoryData.Clear();
 
-                    InventoryVM inventory = new InventoryVM();
-                    inventory.ItemBranchID = or.ItemBranchID;
-                    inventory.ItemID = or.ItemID;
-                    inventory.ImagePath = or.Item.ItemImages[0].ImagePath;
-                    inventory.ItemName = or.Item.ItemName;
-                    inventory.IsVeg = or.Item.IsVeg;
-                    inventory.Barcode = or.Item.Barcode;
-                    inventory.Brand = or.Item.BrandDetails.BrandName;
-                    inventory.Category = or.Item.CategoryDetails.Category;
-                    inventory.SPrice = or.Item.SPrice;
-                    inventory.MRP = or.Item.MRP;
-                    //inventory.StockQuantity = or.Item.StockQuantity;
-                    inventory.IsActive = or.IsActive;
-                    inventoryData.Add(inventory);
+                    foreach (var or in itemList.Data)
+                    {
+                        InventoryVM inventory = new InventoryVM();
 
+                        inventory.ItemID = or.ID;
+                        inventory.ImagePath = or.ItemImages.Count > 0 ? or.ItemImages[0].ImagePath : string.Empty;
+                        inventory.ItemName = or.ItemName;
+
+                        inventory.Barcode = or.Barcode;
+                        inventory.Brand = or.BrandDetails?.BrandName;
+                        inventory.Category = or.CategoryDetails?.Category;
+                        inventory.SPrice = or.SPrice;
+                        inventory.MRP = or.MRP;
+                        inventory.IsActive = or.ItemBranchLists != null && or.ItemBranchLists.Count > 0
+                            ? or.ItemBranchLists[0].IsActive
+                            : "Inactive";
+
+                        inventoryData.Add(inventory);
+                    }
+                    UpdateStats();
                 }
-
+            }
+            finally
+            {
+                // Allow handlers to run only after initial population finishes
+                _suppressToggleEvents = false;
             }
         }
+        private void UpdateStats()
+        {
+            // compute totals from inventoryData
+            TotalItems = inventoryData?.Count ?? 0;
+
+            // ActiveProducts: check IsActive string; adjust if you use bool
+            ActiveProducts = inventoryData?.Count(i => string.Equals(i.IsActive, "Active", System.StringComparison.OrdinalIgnoreCase)) ?? 0;
+
+            OutOfStock = TotalItems - ActiveProducts;
+
+            // OutOfStock: uses StockQuantity; ensure StockQuantity is populated from API mapping
+           // OutOfStock = inventoryData?.Count(i => i.StockQuantity <= 0) ?? 0;
+        }
+
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             BackRequested?.Invoke(this, new RoutedEventArgs());
+        }
+
+        private void SwitchToggle_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ToggleButton tb)
+            {
+                // mark control as user-initiated
+                tb.Tag = "user";
+            }
+        }
+
+        private void SwitchToggle_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is ToggleButton tb && (e.Key == Key.Space || e.Key == Key.Enter))
+            {
+                // mark control as user-initiated for keyboard toggles
+                tb.Tag = "user";
+            }
+        }
+
+        private async void SwitchToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_suppressToggleEvents) return;
+            if (sender is ToggleButton tb)
+            {
+                // Only proceed if user interaction set the flag
+                if (!(tb.Tag is string tag && tag == "user")) return;
+                tb.Tag = null; // clear flag
+            }
+            await HandleToggleChangedAsync(sender, true);
+        }
+
+        private async void SwitchToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (_suppressToggleEvents) return;
+            if (sender is ToggleButton tb)
+            {
+                if (!(tb.Tag is string tag && tag == "user")) return;
+                tb.Tag = null;
+            }
+            await HandleToggleChangedAsync(sender, false);
+        }
+
+        // Centralized handler: optimistic UI update, call API, revert on failure
+        private async Task HandleToggleChangedAsync(object sender, bool isChecked)
+        {
+            if (sender is not ToggleButton toggle) return;
+            if (toggle.DataContext is not InventoryVM vm) return;
+
+            // If still suppressing (extra safety)
+            if (_suppressToggleEvents) return;
+
+            string previousValue = vm.IsActive;
+            string newValue = isChecked ? "Active" : "Inactive";
+
+            // Optimistically update UI
+            vm.IsActive = newValue;
+
+            // Suppress events while we programmatically update or when awaiting API
+            _suppressToggleEvents = true;
+            try
+            {
+                var payload = new { status = newValue };
+
+                // Example endpoint — replace with the actual API contract
+                BaseResponse result = await _apiService.PutAsync<BaseResponse>("item/update-item-stock/" + vm.ItemID, payload);
+                if (result != null && result.Success == true)
+                {
+                    SnackbarService.Enqueue("Item updated successfully");
+                    LoadInventoryData();
+                }
+                else
+                {
+                    // revert on server-side failure
+                    vm.IsActive = previousValue;
+                    SnackbarService.Enqueue("Failed to update item.");
+                }
+            }
+            catch (System.Exception)
+            {
+                // revert UI on failure and inform user
+                vm.IsActive = previousValue;
+                SnackbarService.Enqueue("Failed to update item.");
+            }
+            finally
+            {
+                // Re-enable handlers
+                _suppressToggleEvents = false;
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

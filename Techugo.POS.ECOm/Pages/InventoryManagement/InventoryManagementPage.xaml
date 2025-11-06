@@ -77,13 +77,13 @@
             <TextBlock Text="Inventory Management" FontSize="24" FontWeight="Bold"/>
             <TextBlock Text="Manage product catalog, pricing, and stock status" FontSize="14" Foreground="#888" Margin="0,4,0,24"/>
 
-            <!-- Stats row (unchanged) -->
+            <!-- Stats row -->
             <Grid Margin="0,0,0,24" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
+                    <!--<ColumnDefinition Width="*" />-->
                 </Grid.ColumnDefinitions>
 
                 <!-- Total Products -->
@@ -96,7 +96,7 @@
 
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Total Products" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="10" FontSize="26" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding TotalItems}" FontSize="26" FontWeight="SemiBold" />
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -111,7 +111,7 @@
 
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Active Products" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="11" FontSize="26" FontWeight="SemiBold"  Foreground="#16A34A"/>
+                            <TextBlock Text="{Binding ActiveProducts}" FontSize="26" FontWeight="SemiBold"  Foreground="#16A34A"/>
                         </StackPanel>
 
                         <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -123,7 +123,7 @@
                 </Border>
 
                 <!-- Inactive Products -->
-                <Border Style="{StaticResource StatCardStyle}" Grid.Column="2">
+                <!--<Border Style="{StaticResource StatCardStyle}" Grid.Column="2">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -132,7 +132,7 @@
 
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Inactive Products" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="1" FontSize="26" FontWeight="SemiBold"  Foreground="#374151"/>
+                            <TextBlock Text="{Binding InactiveProducts}" FontSize="26" FontWeight="SemiBold"  Foreground="#374151"/>
                         </StackPanel>
 
                         <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -141,10 +141,10 @@
                             </Border>
                         </Grid>
                     </Grid>
-                </Border>
+                </Border>-->
 
                 <!-- Out of Stock -->
-                <Border Style="{StaticResource StatCardStyle}" Grid.Column="3">
+                <Border Style="{StaticResource StatCardStyle}" Grid.Column="2">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -153,7 +153,7 @@
 
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Out of Stock" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="1" FontSize="26" FontWeight="SemiBold"  Foreground="#DC2626"/>
+                            <TextBlock Text="{Binding OutOfStock}" FontSize="26" FontWeight="SemiBold"  Foreground="#DC2626"/>
                         </StackPanel>
 
                         <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -164,6 +164,7 @@
                     </Grid>
                 </Border>
             </Grid>
+
 
             <!-- Search + Filter row -->
             <Grid Margin="0,0,0,24">
@@ -359,7 +360,7 @@ CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,6">
                                 <GridViewColumn Header="MRP" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding MRP, StringFormat=₹{0:F2}}" HorizontalAlignment="Left" Foreground="#6B7280"/>
+                                            <TextBlock Text="{Binding MRP, StringFormat=₹{0:F2}}" HorizontalAlignment="Left" Foreground="#6B7280" TextDecorations="Strikethrough"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -370,20 +371,25 @@ CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,6">
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                                 <!-- Toggle styled as iOS-like switch -->
+                                                <!-- inside the ToggleButton element -->
                                                 <ToggleButton x:Name="SwitchToggle"
-                              Width="44" Height="24"
-                              Margin="0,0,6,0"
-                              IsChecked="{Binding IsActive, Mode=TwoWay, Converter={StaticResource ActiveStateConverter}}"
-                              Focusable="False"
-                              Background="Transparent"
-                              BorderThickness="0">
+                                                  Width="44" Height="24"
+                                                  Margin="0,0,6,0"
+                                                  IsChecked="{Binding IsActive, Mode=TwoWay, Converter={StaticResource ActiveStateConverter}}"
+                                                  Focusable="False"
+                                                  Background="Transparent"
+                                                  BorderThickness="0"
+                                                  PreviewMouseLeftButtonDown="SwitchToggle_PreviewMouseLeftButtonDown"
+                                                  PreviewKeyDown="SwitchToggle_PreviewKeyDown"
+                                                  Checked="SwitchToggle_Checked"
+                                                  Unchecked="SwitchToggle_Unchecked">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="ToggleButton">
                                                             <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
                                                                 <!-- Track -->
                                                                 <Border x:Name="Track"
                                                                 CornerRadius="12"
-                                                                Background="#111827"
+                                                                Background="#cbced4"
                                                                 Opacity="1"/>
                                                                                         <!-- Thumb -->
                                                                                         <Ellipse x:Name="Thumb"
@@ -393,12 +399,12 @@ CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,6">
                                                                  HorizontalAlignment="Left"/>
                                                             </Grid>
                                                             <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsChecked" Value="True">
-                                                                    <Setter TargetName="Track" Property="Background" Value="#111827"/>
+                                                                <Trigger Property="IsChecked" Value="true">
+                                                                    <Setter TargetName="Track" Property="Background" Value="#374151"/>
                                                                     <!-- green when active -->
                                                                     <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right"/>
                                                                 </Trigger>
-                                                                <Trigger Property="IsEnabled" Value="False">
+                                                                <Trigger Property="IsEnabled" Value="false">
                                                                     <Setter TargetName="Track" Property="Background" Value="#cbced4"/>
                                                                     <Setter TargetName="Track" Property="Opacity" Value="0.4"/>
                                                                     <Setter TargetName="Thumb" Property="Opacity" Value="0.6"/>
@@ -417,11 +423,13 @@ CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,6">
                                             <DataTemplate.Triggers>
                                                 <DataTrigger Binding="{Binding IsChecked, ElementName=SwitchToggle}" Value="True">
                                                     <Setter TargetName="StatusText" Property="Text" Value="Active"/>
-                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#cbced4"/>
+
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#374151"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsChecked, ElementName=SwitchToggle}" Value="False">
                                                     <Setter TargetName="StatusText" Property="Text" Value="Inactive"/>
-                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#374151"/>
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#cbced4"/>
+
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
