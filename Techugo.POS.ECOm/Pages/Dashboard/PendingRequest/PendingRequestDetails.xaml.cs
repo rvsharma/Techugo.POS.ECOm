@@ -17,6 +17,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event RoutedEventHandler CloseClicked;
+        public event RoutedEventHandler RequestRefresh;
         private Window _rejectOrderPopUpWindow;
 
 
@@ -79,9 +80,6 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
 
         private async void RejectRow_Click(object sender, RoutedEventArgs e)
         {
-            //var order = DataContext as SelectableOrderDetail;
-            //if (order == null) return;
-
 
             var button = sender as Button;
             var selectable = button?.DataContext as OrderDetailVM;
@@ -145,6 +143,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
                 _rejectOrderPopUpWindow.Close();
                 _rejectOrderPopUpWindow = null;
             }
+            var wnd = Window.GetWindow(this);
+            wnd?.Close();
+
+            // Notify parent to refresh its list
+            RequestRefresh?.Invoke(this, new RoutedEventArgs());
+
 
             //LoadOrdersData();
             SnackbarService.Enqueue($"Order {orderItem?.OrderNo} Rejected Successfully");

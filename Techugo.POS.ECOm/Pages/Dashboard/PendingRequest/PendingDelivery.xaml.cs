@@ -16,7 +16,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
     public partial class PendingDelivery : UserControl, INotifyPropertyChanged
     {
         public event RoutedEventHandler BackRequested;
-        private readonly ApiService _apiService;
+        private readonly ApiService _api_service;
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private ObservableCollection<SelectableOrderDetail> _orderData = new();
@@ -64,7 +64,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             InitializeComponent();
             DataContext = this;
             orderData = new ObservableCollection<SelectableOrderDetail>();
-            _apiService = ApiServiceFactory.Create();
+            _api_service = ApiServiceFactory.Create();
             LoadOrdersData();
         }
 
@@ -72,13 +72,13 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
             //string formattedDate = "2025-10-17";
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=TotalOrders&Date=" + formattedDate + "");
+            OrdersResponse orderResponse = await _api_service.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=PendingRequest&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
                 orderData.Clear();
                 foreach (var or in orderResponse.Data)
                 {
-                    OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + or.OrderID);
+                    OrderDetailsReponse orderDetails = await _api_service.GetAsync<OrderDetailsReponse>("order/order-detail/" + or.OrderID);
 
                     if (orderDetails.Data != null)
                     {
@@ -154,7 +154,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var orderIDs = selectedOrders.Select(o => Convert.ToInt32(o.OrderID)).ToArray();
 
             var data = new { OrderIDs = orderIDs, BranchStatus = "StoreAccepted" };
-            BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
+            BaseResponse result = await _api_service.PutAsync<BaseResponse>("order/update-order", data);
             if (result != null)
             {
                 if (result.Success == true)
@@ -181,7 +181,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var orderIDs = selectedOrders.Select(o => Convert.ToInt32(o.OrderID)).ToArray();
 
             var data = new { OrderIDs = orderIDs, BranchStatus = "StoreRejected" };
-            BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
+            BaseResponse result = await _api_service.PutAsync<BaseResponse>("order/update-order", data);
             if (result != null)
             {
                 if (result.Success == true)
@@ -209,7 +209,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
 
             var orderID = Convert.ToInt32(order.OrderID);
             var data = new { OrderIDs = new[] { orderID }, BranchStatus = "StoreAccepted" };
-            BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
+            BaseResponse result = await _api_service.PutAsync<BaseResponse>("order/update-order", data);
             if (result != null)
             {
                 if (result.Success == true)
@@ -264,6 +264,17 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var popup = new PendingRequestDetails(orderItem);
             popup.CloseClicked += CloseOrderDetailsPopUp;
 
+            // subscribe to refresh request from details popup so we can reload data
+            popup.RequestRefresh += (s, ev) =>
+            {
+                // ensure UI actions run on UI thread
+                Dispatcher.Invoke(() =>
+                {
+                    CloseOrderDetailsPopUp(this, new RoutedEventArgs());
+                    LoadOrdersData();
+                });
+            };
+
             _orderDetailsPopUpWindow = new Window
             {
                 Content = popup,
@@ -299,12 +310,24 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var button = sender as RejectOrderPopUp;
             var selectable = button?.DataContext as RejectOrderPopUp;
             var orderItem = selectable?.OrderDetails?.Item;
+
+            // close reject popup if open
             if (_rejectOrderPopUpWindow != null)
             {
                 _rejectOrderPopUpWindow.Close();
                 _rejectOrderPopUpWindow = null;
             }
+
+            // also close the order details popup (if open) as requested
+            if (_orderDetailsPopUpWindow != null)
+            {
+                _orderDetailsPopUpWindow.Close();
+                _orderDetailsPopUpWindow = null;
+            }
+
+            // refresh the list so the UI reflects the change
             LoadOrdersData();
+
             SnackbarService.Enqueue($"Order {orderItem?.OrderNo} Rejected Successfully");
         }
         private void BackButton_Click(object sender, RoutedEventArgs e)

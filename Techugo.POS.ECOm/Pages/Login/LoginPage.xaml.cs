@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Services;
 
 namespace Techugo.POS.ECOm.Pages.Login
 {
@@ -59,9 +60,13 @@ namespace Techugo.POS.ECOm.Pages.Login
                 {
                     if (result.Success == true)
                     {
-                        ShowSuccessSnackbar("OTP sent successfully!");
+                        SnackbarService.Enqueue("OTP sent successfully!");
                         // await Task.Delay(3000); // Wait for 3 seconds
                         OtpRequested?.Invoke(this, new RoutedEventArgs());
+                    }
+                    else
+                    {
+                        SnackbarService.Enqueue(result.Message);
                     }
                 }
             }

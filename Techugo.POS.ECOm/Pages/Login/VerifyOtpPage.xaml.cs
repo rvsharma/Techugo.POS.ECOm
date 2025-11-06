@@ -192,10 +192,14 @@ namespace Techugo.POS.ECOm.Pages.Login
                         TokenService.BearerToken = result.Data.Token;
                         OtpVerified?.Invoke(this, new RoutedEventArgs());
                     }
+                    else
+                    {
+                        SnackbarService.Enqueue(result?.Message);
+                    }
                 }
                 catch
                 {
-                    // consider logging/displaying the error
+                    SnackbarService.Enqueue("Something went wrong");
                 }
             }
             else

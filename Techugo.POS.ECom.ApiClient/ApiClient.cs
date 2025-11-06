@@ -42,7 +42,7 @@ namespace Techugo.POS.ECOm.ApiClient
             // request.Headers.Add("Accept-Language", "en");
 
             var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             var result = System.Text.Json.JsonSerializer.Deserialize<T>(responseString);
             if (result is null)
