@@ -72,7 +72,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
             //string formattedDate = "2025-10-17";
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=PendingRequest&Date=" + formattedDate + "");
+            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=10&status=TotalOrders&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
                 orderData.Clear();
@@ -261,7 +261,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             if (orderItem == null)
                 return;
 
-            var popup = new OrderDetailsPopUp(orderItem);
+            var popup = new PendingRequestDetails(orderItem);
             popup.CloseClicked += CloseOrderDetailsPopUp;
 
             _orderDetailsPopUpWindow = new Window

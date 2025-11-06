@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
+using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Services;
 
 namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
 {
@@ -25,6 +17,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event RoutedEventHandler CloseClicked;
+        private Window _rejectOrderPopUpWindow;
+
 
         private OrderDetailVM _orderDetails;
         public OrderDetailVM OrderDetails
@@ -42,9 +36,118 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
             OrderDetails = orderDetail;
             DataContext = OrderDetails;
         }
+
+        private readonly ApiService _apiService;
+
+        public PendingRequestDetails()
+        {
+            InitializeComponent();
+            _apiService = ApiServiceFactory.Create();
+        }
+
+        private async void AcceptRow_Click(object sender, RoutedEventArgs e)
+        {
+            var order = DataContext as OrderDetailVM;
+            if (order == null) return;
+
+            try
+            {
+                var orderID = Convert.ToInt32(order.OrderID);
+                var data = new { OrderIDs = new[] { orderID }, BranchStatus = "StoreAccepted" };
+
+                BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
+                if (result != null && result.Success)
+                {
+                    SnackbarService.Enqueue($"Accepted order {order.OrderNo}");
+                }
+                else
+                {
+                    SnackbarService.Enqueue(result?.Message ?? "Failed to accept order");
+                }
+            }
+            catch (Exception ex)
+            {
+                SnackbarService.Enqueue($"Failed to accept order: {ex.Message}");
+            }
+            finally
+            {
+                // Close the popup window that hosts this UserControl
+                var wnd = Window.GetWindow(this);
+                wnd?.Close();
+            }
+        }
+
+        private async void RejectRow_Click(object sender, RoutedEventArgs e)
+        {
+            //var order = DataContext as SelectableOrderDetail;
+            //if (order == null) return;
+
+
+            var button = sender as Button;
+            var selectable = button?.DataContext as OrderDetailVM;
+            
+            if (selectable == null) return;
+            var popUpData = new SelectableOrderDetail(selectable);
+            popUpData.Item.OrderID = selectable.OrderID;
+            popUpData.Item.OrderNo = selectable.OrderNo;
+
+            var popup = new RejectOrderPopUp(popUpData);
+            popup.CloseClicked += CloseOrderDetailsPopUp;
+            popup.PendingRequestClick += CloseRejectPopUp;
+
+            _rejectOrderPopUpWindow = new Window
+            {
+                Content = popup,
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                Background = Brushes.Transparent,
+                Owner = Application.Current.MainWindow,
+                Width = SystemParameters.PrimaryScreenWidth,
+                Height = SystemParameters.PrimaryScreenHeight,
+                ShowInTaskbar = false,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            _rejectOrderPopUpWindow.ShowDialog();
+
+
+
+        }
+
+        // Close button in XAML
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            CloseClicked?.Invoke(this, new RoutedEventArgs());
+            var wnd = Window.GetWindow(this);
+            wnd?.Close();
+        }
+
+        private void CloseOrderDetailsPopUp(object sender, RoutedEventArgs e)
+        {
+            //if (_orderDetailsPopUpWindow != null)
+            //{
+            //    _orderDetailsPopUpWindow.Close();
+            //    _orderDetailsPopUpWindow = null;
+            //}
+            if (_rejectOrderPopUpWindow != null)
+            {
+                _rejectOrderPopUpWindow.Close();
+                _rejectOrderPopUpWindow = null;
+            }
+
+        }
+
+        private void CloseRejectPopUp(object sender, RoutedEventArgs e)
+        {
+            var button = sender as RejectOrderPopUp;
+            var selectable = button?.DataContext as RejectOrderPopUp;
+            var orderItem = selectable?.OrderDetails?.Item;
+            if (_rejectOrderPopUpWindow != null)
+            {
+                _rejectOrderPopUpWindow.Close();
+                _rejectOrderPopUpWindow = null;
+            }
+
+            //LoadOrdersData();
+            SnackbarService.Enqueue($"Order {orderItem?.OrderNo} Rejected Successfully");
         }
     }
 }

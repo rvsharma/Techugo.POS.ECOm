@@ -190,13 +190,28 @@
                         </TextBox>
                     </StackPanel>
                     <!-- Resend OTP -->
-                    <Button Background="Transparent" BorderThickness="0" HorizontalAlignment="Center" Cursor="Hand" Padding="0" Margin="0,0,0,40">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource AccentGreen}" FontSize="18" Margin="0,0,6,0"/>
-                            <TextBlock Text="Resend OTP" Foreground="{StaticResource AccentGreen}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <!-- Verify button -->
+                        <Button x:Name="ResendButton"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            HorizontalAlignment="Center"
+                            Cursor="Hand"
+                            Padding="0"
+                            Margin="0,0,0,40"
+                            Click="ResendButton_Click">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE72C;"
+                                       Foreground="{StaticResource AccentGreen}"
+                                       FontSize="18"
+                                       Margin="0,0,6,0"/>
+                                                    <TextBlock x:Name="ResendButtonText" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center">
+                                <Run x:Name="ResendLabelRun" Text="Resend OTP" Foreground="{StaticResource AccentGreen}"/>
+                                <Run x:Name="ResendSpacerRun" Text="" Foreground="{StaticResource PrimaryGreen}"/>
+                                <Run x:Name="ResendTimerRun" Text="" Foreground="{StaticResource PrimaryGreen}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
+                        <!-- Verify button -->
                         <Button x:Name="VerifyButton"
                             Style="{StaticResource PrimaryButton}"
                             HorizontalAlignment="Stretch"
