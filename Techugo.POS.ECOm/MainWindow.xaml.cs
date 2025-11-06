@@ -38,5 +38,24 @@ namespace Techugo.POS.ECOm
             var layoutPage = new LayoutPage();
             MainContent.Content = layoutPage;
         }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Maximized;
+            WindowStyle = WindowStyle.None;
+            ResizeMode = ResizeMode.NoResize;
+            Topmost = true;
+        }
+
+        // Optional: allow user to exit fullscreen with Esc (restore caption and allow resizing)
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Escape)
+            {
+                Topmost = false;
+                WindowStyle = WindowStyle.SingleBorderWindow;
+                ResizeMode = ResizeMode.CanResize;
+                WindowState = WindowState.Normal;
+            }
+        }
     }
 }
