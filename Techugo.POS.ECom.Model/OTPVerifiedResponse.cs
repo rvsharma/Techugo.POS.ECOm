@@ -47,7 +47,6 @@ namespace Techugo.POS.ECom.Model
         public string GSTDocUrl { get; set; }
         public string FSSAILicNo { get; set; }
         public string FSSAILicDocUrl { get; set; }
-        public int FreeDeliveryAbove { get; set; }
         public string Status { get; set; }
         public bool ReviewedRequest { get; set; }
         public bool IsReviewed { get; set; }

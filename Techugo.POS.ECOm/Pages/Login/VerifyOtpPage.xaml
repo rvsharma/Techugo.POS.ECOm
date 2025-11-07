@@ -1,4 +1,5 @@
 <UserControl x:Class="Techugo.POS.ECOm.Pages.Login.VerifyOtpPage"
+            xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -127,8 +128,8 @@
         <StackPanel Grid.Row="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,06,0,0">
             <Button Style="{StaticResource BackButtonStyle}" Content="Back to Login" HorizontalAlignment="Left" Margin="0,0,0,10" Click="BackToLoginButton_Click"/>
             <Border Grid.Row="1" Width="64" Height="64" CornerRadius="36" Background="{StaticResource PrimaryGreen}" HorizontalAlignment="Center" Margin="0,16,0,0">
-                <TextBlock Text="&#xEBD3;" FontFamily="Segoe MDL2 Assets" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            </Border>
+                    <svg:SvgViewbox Source="/Assets/Images/shield.svg" Width="30" Height="30" VerticalAlignment="Center" Margin="8,0,8,0"/>
+                </Border>
             <TextBlock Text="Verify OTP" FontSize="24" FontWeight="Bold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,6,0,6"/>
             <TextBlock Text="Enter the 6-digit code sent to" FontSize="15" Foreground="{StaticResource MutedText}" HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding PhoneNumber}" FontSize="16" FontWeight="DemiBold" Foreground="{StaticResource HeadingText}" HorizontalAlignment="Center" Margin="0,8,0,18"/>
@@ -138,8 +139,8 @@
                 <StackPanel>
                     <!-- Enter Verification Code header with green check icon -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,40  ">
-                        <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" Foreground="{StaticResource AccentGreen}" FontSize="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBlock Text="Enter Verification Code" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource HeadingText}" VerticalAlignment="Center"/>
+                            <svg:SvgViewbox Source="/Assets/Images/circle_check_green.svg" Width="18" Height="18" VerticalAlignment="Center" Margin="8,2,8,0"/>
+                            <TextBlock Text="Enter Verification Code" FontSize="16" FontWeight="Normal" Foreground="{StaticResource HeadingText}" VerticalAlignment="Center"/>
                     </StackPanel>
                     <!-- OTP boxes -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,40">

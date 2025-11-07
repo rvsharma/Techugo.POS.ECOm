@@ -26,12 +26,6 @@ namespace Techugo.POS.ECom.Model
         [JsonPropertyName("OrderNo")]
         public string OrderNo { get; set; }
 
-        [JsonPropertyName("PaidAmount")]
-        public decimal PaidAmount { get; set; }
-
-        [JsonPropertyName("PaymentMode")]
-        public string PaymentMode { get; set; }
-
         [JsonPropertyName("Status")]
         public string Status { get; set; }
 
@@ -41,11 +35,10 @@ namespace Techugo.POS.ECom.Model
         [JsonPropertyName("RiderStatus")]
         public string RiderStatus { get; set; }
 
+        public string Message { get; set; }
+
         [JsonPropertyName("Rider")]
         public RiderInfo Rider { get; set; }
-
-        [JsonPropertyName("AddressList")]
-        public AddressList2 AddressList { get; set; }
     }
 
     public class RiderInfo
@@ -60,29 +53,6 @@ namespace Techugo.POS.ECom.Model
         public bool IsOnline { get; set; }
     }
 
-    public class AddressList2
-    {
-        [JsonPropertyName("ZoneID")]
-        public int ZoneID { get; set; }
-
-        [JsonPropertyName("SocietyID")]
-        public int? SocietyID { get; set; }
-
-        [JsonPropertyName("BranchZone")]
-        public BranchZone1 BranchZone { get; set; }
-
-        [JsonPropertyName("BranchSociety")]
-        public BranchSociety BranchSociety { get; set; }
-    }
-
-    public class BranchZone1
-    {
-        [JsonPropertyName("ZoneID")]
-        public int ZoneID { get; set; }
-
-        [JsonPropertyName("ZoneName")]
-        public string ZoneName { get; set; }
-    }
     public class TrackingDetailResponse : BaseResponse
     {
         public string Message { get; set; }

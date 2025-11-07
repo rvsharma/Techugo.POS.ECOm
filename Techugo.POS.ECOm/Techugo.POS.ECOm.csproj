@@ -48,8 +48,10 @@
     <None Remove="Assets\Images\refund_list_icon.svg" />
     <None Remove="Assets\Images\rejected.svg" />
     <None Remove="Assets\Images\sales_list_icon.svg" />
+    <None Remove="Assets\Images\shield.svg" />
     <None Remove="Assets\Images\store_icon.svg" />
     <None Remove="Assets\Images\total_orders.svg" />
+    <None Remove="Assets\Images\tracking.png" />
     <None Remove="Assets\Sounds\neworder.wav" />
   </ItemGroup>
 
@@ -111,8 +113,10 @@
     <Resource Include="Assets\Images\refund_list_icon.svg" />
     <Resource Include="Assets\Images\rejected.svg" />
     <Resource Include="Assets\Images\sales_list_icon.svg" />
+    <Resource Include="Assets\Images\shield.svg" />
     <Resource Include="Assets\Images\store_icon.svg" />
     <Resource Include="Assets\Images\total_orders.svg" />
+    <Resource Include="Assets\Images\tracking.png" />
 
   </ItemGroup>
 

@@ -227,7 +227,7 @@
             </Border>
             <!-- Order Tracking -->
             <Border
-                Background="#fff7ed"
+                Background="#eef2ff"
                 BorderBrush="#e0e0e0"
                 BorderThickness="1"
                 CornerRadius="20"
@@ -237,8 +237,8 @@
                 MouseLeftButtonUp="OrderTracking_Click"
                 TouchUp="OrderTracking_Click">
                             <Border
-                    Background="#fff7ed"
-                    BorderBrush="#ff6900"
+                    Background="#eef2ff"
+                    BorderBrush="#4f39f6"
                     BorderThickness="4,0,0,0"
                     CornerRadius="20">
                     <StackPanel Margin="24">
@@ -248,7 +248,8 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Order Tracking" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
-                            <svg:SvgViewbox Source="/Assets/Images/carry_forward.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
+                            <!--<svg:SvgViewbox Source="/Assets/Images/carry_forward.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>-->
+                            <Image Source="/Assets/Images/tracking.png"  Width="28" Height="28" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.OrderTracking}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                         <!--<TextBlock Text="Orders received after 9PM &#x0a; cutoff" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>-->
