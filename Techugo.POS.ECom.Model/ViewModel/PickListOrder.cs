@@ -75,6 +75,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public decimal Discount { get; set; }
         public decimal Rate { get; set; }
         public decimal Total { get; set; }
+        public string ImageUrl { get; set; }
     }
 
     public class RelayCommand : ICommand

@@ -229,7 +229,16 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                         <ColumnDefinition Width="2*"/>
                                                         <ColumnDefinition Width="2*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Text="{Binding ItemName}" FontWeight="SemiBold" FontSize="15" Grid.Column="0" VerticalAlignment="Center" Margin="16,0" />
+                                                    <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center">
+                                                        <!-- Rounded image using Rectangle with ImageBrush to respect corner radius -->
+                                                        <Rectangle RadiusX="8" RadiusY="8" Width="40" Height="40" Margin="0,0,8,0" VerticalAlignment="Center">
+                                                            <Rectangle.Fill>
+                                                                <ImageBrush ImageSource="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+
+                                                        <TextBlock Text="{Binding ItemName}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Margin="16,0" />
+                                                    </StackPanel>
                                                     <Border Background="#F3F4F6" CornerRadius="8" Padding="8,2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
                                                         <TextBlock Text="{Binding Size}" FontSize="13" Foreground="#222"/>
                                                     </Border>

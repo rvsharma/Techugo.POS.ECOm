@@ -257,7 +257,7 @@ BorderBrush="#00c951"
 
                                 <!--<GridViewColumn Header="Order ID" Width="150" DisplayMemberBinding="{Binding OrderNo}" />-->
 
-                                <GridViewColumn Header="  Status" Width="150">
+                                <GridViewColumn Header="Order No" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding OrderNo}" FontWeight="DemiBold" FontSize="14" HorizontalAlignment="Left"/>

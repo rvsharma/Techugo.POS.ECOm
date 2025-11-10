@@ -119,6 +119,7 @@ namespace Techugo.POS.ECOm.Pages
                                         Amount = od.Amount,
                                         NetAmount = od.NetAmount,
                                         Discount = od.Discount,
+                                        ImageUrl = od.Item.ItemImages[0].ImagePath
                                         //Rate = od.Rate
                                     }).ToList()
                                 )
