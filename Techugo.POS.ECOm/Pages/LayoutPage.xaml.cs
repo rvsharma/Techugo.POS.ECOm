@@ -2,6 +2,7 @@ using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.OrderTracking;
 
@@ -11,10 +12,22 @@ namespace Techugo.POS.ECOm.Pages
     {
         private Window _newOrderPopupWindow; // Add this field
 
+        // DependencyProperty so XAML bindings (DataTrigger) can observe the state
+        public static readonly DependencyProperty IsMenuExpandedProperty =
+            DependencyProperty.Register(nameof(IsMenuExpanded), typeof(bool), typeof(LayoutPage), new PropertyMetadata(true));
+
+        public bool IsMenuExpanded
+        {
+            get => (bool)GetValue(IsMenuExpandedProperty);
+            set => SetValue(IsMenuExpandedProperty, value);
+        }
+
         public LayoutPage()
         {
             InitializeComponent();
             ShowDashboard();
+            // ensure initial width matches expanded state
+            LeftMenu.Width = IsMenuExpanded ? 240 : 48;
         }
 
         private DashboardPage CreateDashboardPage()
@@ -31,8 +44,6 @@ namespace Techugo.POS.ECOm.Pages
             dashboardPage.OrderTrackingClicked += DashboardPage_OrderTrackingClicked;
             return dashboardPage;
         }
-
-        
 
         private void ShowDashboard()
         {
@@ -134,12 +145,6 @@ namespace Techugo.POS.ECOm.Pages
             popup.AcceptOrderClicked += CloseNewOrderPopUp;
             popup.RejectOrderClicked += CloseNewOrderPopUp;
 
-            // Option 1: Show as overlay in PageContent (replace current content)
-            // SetPageContent(popup);
-
-            // Option 2: Show as a dialog/modal (recommended for popups)
-            // If you want a true modal, consider using a Window or a custom overlay.
-            // Example:
             _newOrderPopupWindow = new Window
             {
                 Content = popup,
@@ -166,6 +171,20 @@ namespace Techugo.POS.ECOm.Pages
                 _newOrderPopupWindow = null;
             }
         }
+
+        // Toggle expand/collapse on button click and start storyboard
+        private void ExpandCollapse_Click(object sender, RoutedEventArgs e)
+        {
+            IsMenuExpanded = !IsMenuExpanded;
+
+            var sbKey = IsMenuExpanded ? "ExpandMenu" : "CollapseMenu";
+            if (TryFindResource(sbKey) is Storyboard sb)
+            {
+                // Ensure the storyboard targets the named LeftMenu
+                sb.Begin(this, true);
+            }
+        }
+
         public void ShowPickListPage()
         {
             var assignRider = new AssignRider();
