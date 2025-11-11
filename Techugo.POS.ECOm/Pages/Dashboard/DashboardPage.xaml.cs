@@ -35,6 +35,17 @@ namespace Techugo.POS.ECOm.Pages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(orderData)));
             }
         }
+
+        private string _updatedTime;
+        public string UpdatedTime
+        {
+            get => _updatedTime;
+            set
+            {
+                _updatedTime = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UpdatedTime)));
+            }
+        }
         // Add events for other tiles
 
         public DashboardPage()
@@ -55,6 +66,7 @@ namespace Techugo.POS.ECOm.Pages
                 if (data != null)
                 {
                     orderData = data.Data;
+                    UpdatedTime = "Last updated: " + DateTime.Now.ToString("h:mm:ss tt");
                 }
 
             }
@@ -105,6 +117,11 @@ namespace Techugo.POS.ECOm.Pages
         {
             // reuse same behavior as clicking the tile
             AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadDashboardData();
         }
     }
 }
