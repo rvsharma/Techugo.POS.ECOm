@@ -44,7 +44,7 @@ namespace Techugo.POS.ECom.Model
         public DateTime CreatedAt { get; set; }
 
         [JsonPropertyName("ExpectedDeliveryDate")]
-        public DateTime ExpectedDeliveryDate { get; set; }
+        public DateTime? ExpectedDeliveryDate { get; set; }
 
         [JsonPropertyName("TotalAmount")]
         public decimal TotalAmount { get; set; }

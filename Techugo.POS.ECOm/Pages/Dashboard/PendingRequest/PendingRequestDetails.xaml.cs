@@ -19,7 +19,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
         public event RoutedEventHandler CloseClicked;
         public event RoutedEventHandler RequestRefresh;
         private Window _rejectOrderPopUpWindow;
-
+        private readonly ApiService _apiService;
 
         private OrderDetailVM _orderDetails;
         public OrderDetailVM OrderDetails
@@ -36,13 +36,6 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
             InitializeComponent();
             OrderDetails = orderDetail;
             DataContext = OrderDetails;
-        }
-
-        private readonly ApiService _apiService;
-
-        public PendingRequestDetails()
-        {
-            InitializeComponent();
             _apiService = ApiServiceFactory.Create();
         }
 

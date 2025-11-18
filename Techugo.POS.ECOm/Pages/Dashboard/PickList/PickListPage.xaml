@@ -218,7 +218,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                     <ItemsControl ItemsSource="{Binding Items}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Grid Margin="0,0,0,0" Height="44" Background="White">
+                                                <Grid Margin="0,0,0,0" Height="50" Background="White">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="2.5*"/>
                                                         <ColumnDefinition Width="1*"/>
@@ -237,7 +237,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                             </Rectangle.Fill>
                                                         </Rectangle>
 
-                                                        <TextBlock Text="{Binding ItemName}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Margin="16,0" />
+                                                        <TextBlock Text="{Binding ItemName}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Margin="0,0,16,0" />
                                                     </StackPanel>
                                                     <Border Background="#F3F4F6" CornerRadius="8" Padding="8,2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
                                                         <TextBlock Text="{Binding Size}" FontSize="13" Foreground="#222"/>

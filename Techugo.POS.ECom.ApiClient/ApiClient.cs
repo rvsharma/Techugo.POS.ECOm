@@ -24,7 +24,7 @@ namespace Techugo.POS.ECOm.ApiClient
         public async Task<T> GetAsync<T>(string endpoint)
         {
             var response = await _httpClient.GetAsync(endpoint);
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             var result = System.Text.Json.JsonSerializer.Deserialize<T>(responseString);
             if (result is null)

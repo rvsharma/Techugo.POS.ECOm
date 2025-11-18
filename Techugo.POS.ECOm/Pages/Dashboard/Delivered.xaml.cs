@@ -60,33 +60,51 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 orderData.Clear();
                 foreach (var or in orderResponse.Data)
                 {
-                    OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + or.OrderID);
-
-                    if (orderDetails.Data != null)
+                    if (or.OrderID != null)
                     {
-                        var data = orderDetails.Data;
-                        OrderDetailVM order = new OrderDetailVM();
-                        order.OrderID = data.OrderID;
-                        order.OrderNo = data.OrderNo;
-                        order.createdAt = data.createdAt;
-                        order.ExpectedDeliveryDate = data.ExpectedDeliveryDate;
-                        order.TotalAmount = data.TotalAmount;
-                        order.PaidAmount = data.PaidAmount;
-                        order.Status = data.Status;
-                        order.Address = data.AddressList.HouseNo.ToString() + ", "
-                                        + data.AddressList.StreetNo.ToString() + ", "
-                                        + data.AddressList.State.ToString() + ", "
-                                        + data.AddressList.City.ToString() + ", "
-                                        + data.AddressList.Pincode.ToString();
-                        order.PaymentMode = data.PaymentMode;
-                        order.Subscription = data.Subscription;
-                        order.OrderDetails = data.OrderDetails;
-                        order.Customer = data.Customer;
-                        order.BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
-                        order.ItemImages = or.ItemImages;
-                        order.Status = or.Status;
-                        order.Items = data.OrderDetails.Count + " items(s)";
-                        orderData.Add(order);
+                        OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + or.OrderID);
+
+                        if (orderDetails.Data != null)
+                        {
+                            var data = orderDetails.Data;
+                            OrderDetailVM order = new OrderDetailVM();
+                            order.OrderID = data.OrderID;
+                            order.OrderNo = data.OrderNo;
+                            order.createdAt = data.createdAt;
+                            order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
+        ? data.ExpectedDeliveryDate.Value
+        : null;
+                            order.TotalAmount = data.TotalAmount;
+                            order.PaidAmount = data.PaidAmount;
+                            order.Status = data.Status;
+                            string address = string.Empty;
+                            if (data.AddressList != null)
+                            {
+                                var parts = new List<string>();
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.HouseNo))
+                                    parts.Add(data.AddressList.HouseNo);
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.StreetNo))
+                                    parts.Add(data.AddressList.StreetNo);
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.State))
+                                    parts.Add(data.AddressList.State);
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.City))
+                                    parts.Add(data.AddressList.City);
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.Pincode))
+                                    parts.Add(data.AddressList.Pincode);
+
+                                address = string.Join(", ", parts);
+                            }
+                            order.Address = address;
+                            order.PaymentMode = data.PaymentMode;
+                            order.Subscription = data.Subscription;
+                            order.OrderDetails = data.OrderDetails;
+                            order.Customer = data.Customer;
+                            order.BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
+                            order.ItemImages = or.ItemImages;
+                            order.Status = or.Status;
+                            order.Items = data.OrderDetails.Count + " items(s)";
+                            orderData.Add(order);
+                        }
                     }
                 }
                 DeliverdOrdersText = $"Delivered Orders ({orderResponse?.TotalItems} orders)";

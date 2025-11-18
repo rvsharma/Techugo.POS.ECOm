@@ -11,7 +11,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string OrderID { get; set; }
         public string OrderNo { get; set; }
         public DateTime createdAt { get; set; }
-        public DateTime ExpectedDeliveryDate { get; set; }
+        public DateTime? ExpectedDeliveryDate { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal PaidAmount { get; set; }
         public string Status { get; set; }

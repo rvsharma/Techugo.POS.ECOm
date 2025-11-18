@@ -86,7 +86,14 @@
                                 <GridViewColumn Header="Delivery Time" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding ExpectedDeliveryDate, StringFormat='{}{0:yyyy-MM-dd, hh:mm tt}'}" />
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <Binding Path="ExpectedDeliveryDate"
+                 StringFormat="{}{0:yyyy-MM-dd, hh:mm tt}"
+                 TargetNullValue=""
+                 FallbackValue=""/>
+                                                </TextBlock.Text>
+                                            </TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

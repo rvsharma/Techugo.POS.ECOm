@@ -77,7 +77,8 @@
                                             <!-- Selected -->
                                             <Trigger Property="IsSelected" Value="True">
                                                 <Setter TargetName="Bd" Property="Background" Value="#F3F4F6"/>
-                                                <Setter Property="Foreground" Value="#0B3B67"/>
+                                                <Setter Property="Foreground" Value="#171717"/>
+                                                <Setter Property="FontWeight" Value="DemiBold" />
                                             </Trigger>
 
                                             <!-- Selected + Hover -->
@@ -109,12 +110,12 @@
                         </StackPanel>
                     </ListBoxItem>
 
-                    <ListBoxItem PreviewMouseLeftButtonUp="RefundManagementMenu_Click" >
+                    <!--<ListBoxItem PreviewMouseLeftButtonUp="RefundManagementMenu_Click" >
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <svg:SvgViewbox Source="/Assets/Images/refund_list_icon.svg" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             <TextBlock Text="Refund Management" FontSize="14" VerticalAlignment="Center" Style="{StaticResource MenuItemTextStyle}"/>
                         </StackPanel>
-                    </ListBoxItem>
+                    </ListBoxItem>-->
 
                     <ListBoxItem PreviewMouseLeftButtonUp="InventoryManagementMenu_Click" >
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">

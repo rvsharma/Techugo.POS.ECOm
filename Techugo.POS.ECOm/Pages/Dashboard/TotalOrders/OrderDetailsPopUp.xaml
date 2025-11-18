@@ -127,7 +127,15 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <TextBlock Text="Scheduled Delivery" FontSize="13" Foreground="#6a7282"/>
-                            <TextBlock Text="{Binding ExpectedDeliveryDate, StringFormat='{}{0:yyyy-MM-dd, hh\\:mm tt}'}" FontSize="15" FontWeight="DemiBold" Foreground="#222"/>
+                            <TextBlock FontSize="15" FontWeight="DemiBold" Foreground="#222">
+                                <TextBlock.Text>
+                                    <Binding Path="ExpectedDeliveryDate"
+StringFormat="{}{0:yyyy-MM-dd, hh:mm tt}"
+TargetNullValue=""
+FallbackValue=""/>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            
                         </StackPanel>
                     </Grid>
                     <TextBlock Text="Total Amount" FontSize="13" Foreground="#6a7282"/>

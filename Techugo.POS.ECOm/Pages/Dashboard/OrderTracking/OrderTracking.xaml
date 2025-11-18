@@ -74,8 +74,29 @@
 
     <Grid Background="#FCFAFB">
         <StackPanel Margin="32">
-            <TextBlock Text="Order Tracking" FontSize="24" FontWeight="Bold"/>
-            <TextBlock Text="Track real-time order status and rider location" FontSize="14" Foreground="#888" Margin="0,4,0,24"/>
+
+            <Grid Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Back Button -->
+                <Border Grid.Column="0" Width="Auto" Height="36" Padding="8,0,12,0" Background="#fff" BorderBrush="#e3e3e3" CornerRadius="8" BorderThickness="1" MouseLeftButtonUp="BackButton_Click"
+TouchUp="BackButton_Click" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <svg:SvgViewbox Source="/Assets/Images/back.svg" Width="12" Height="12" VerticalAlignment="Center" Margin="8,0,8,0"/>
+                        <TextBlock Text="Back to Dashboard" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <!-- Spacer -->
+
+                <!-- All Orders Title -->
+                <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <TextBlock Text="Order Tracking" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Text="Track real-time order status and rider location" FontSize="14" Foreground="#888" Margin="0,4,0,24"/>
+                </StackPanel>
+            </Grid>
+            
 
             <!-- Stats row -->
             <Grid Margin="0,0,0,24" HorizontalAlignment="Stretch">

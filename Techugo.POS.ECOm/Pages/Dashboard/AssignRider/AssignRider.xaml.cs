@@ -101,16 +101,30 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                         if (orderDetails.Data != null)
                         {
                             var data = orderDetails.Data;
-                            var address = data.AddressList.HouseNo.ToString() + ", "
-                                        + data.AddressList.StreetNo.ToString() + ", "
-                                        + data.AddressList.State.ToString() + ", "
-                                        + data.AddressList.City.ToString() + ", "
-                                        + data.AddressList.Pincode.ToString();
+                            string address = string.Empty;
+                            if (data.AddressList != null)
+                            {
+                                var parts = new List<string>();
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.HouseNo))
+                                    parts.Add(data.AddressList.HouseNo);
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.StreetNo))
+                                    parts.Add(data.AddressList.StreetNo);
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.State))
+                                    parts.Add(data.AddressList.State);
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.City))
+                                    parts.Add(data.AddressList.City);
+                                if (!string.IsNullOrWhiteSpace(data.AddressList.Pincode))
+                                    parts.Add(data.AddressList.Pincode);
+
+                                address = string.Join(", ", parts);
+                            }
                             OrderDetailVM order = new OrderDetailVM();
                             order.OrderID = data.OrderID;
                             order.OrderNo = data.OrderNo;
                             order.createdAt = data.createdAt;
-                            order.ExpectedDeliveryDate = data.ExpectedDeliveryDate;
+                            order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
+    ? data.ExpectedDeliveryDate.Value
+    : null;
                             order.TotalAmount = data.TotalAmount;
                             order.PaidAmount = data.PaidAmount;
                             order.Status = data.Status;
