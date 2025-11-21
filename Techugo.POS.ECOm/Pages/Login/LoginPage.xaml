@@ -48,8 +48,8 @@
                         <svg:SvgViewbox Source="/Assets/Images/store_icon.svg" Width="30" Height="30" VerticalAlignment="Center" Margin="8,0,8,0"/>
                     </Border>
                     <TextBlock Text="E-Stock Order Management" FontWeight="Bold" FontSize="24" Foreground="#222" HorizontalAlignment="Center" Margin="0,0,0,4"/>
-                    <TextBlock Text="Store POS Login" FontSize="16" Foreground="#888" HorizontalAlignment="Center" Margin="0,0,0,24"/>
-                    <Border Background="White" CornerRadius="20" Padding="32" Width="420" HorizontalAlignment="Center" >
+                    <TextBlock Text="Store POS Login" FontSize="16" Foreground="#4a5565" HorizontalAlignment="Center" Margin="0,0,0,24"/>
+                    <Border Background="White" CornerRadius="20" Padding="32" Width="448" Height="348" HorizontalAlignment="Center" >
                         <Border.Effect>
                             <DropShadowEffect 
                                 ShadowDepth="4" 
@@ -64,25 +64,56 @@
                                 <TextBlock Text="Mobile Login" FontWeight="Normal" FontSize="16" Foreground="#000000"/>
                             </StackPanel>
                             <TextBlock Text="Enter your registered mobile number to receive OTP" 
-                   FontSize="14" Foreground="#000000" HorizontalAlignment="Center" FontWeight="Light"
-                   Margin="0,0,0,16" TextWrapping="Wrap"/>
+                   FontSize="14" Foreground="#4a5565" HorizontalAlignment="Center" FontWeight="Light"
+                   Margin="0,0,0,36" TextWrapping="Wrap"/>
 
-                            <TextBlock Text="Mobile Number" FontWeight="Bold" FontSize="13" Foreground="#222222" Margin="0,0,0,6"/>
+                            <TextBlock Text="Mobile Number" FontWeight="DemiBold" FontSize="16" Foreground="#222222" Margin="0,0,0,6"/>
 
                             <!-- FIX: Replace DockPanel with Border to support CornerRadius -->
-                            <Border Margin="0,0,0,8" Background="#F3F4F6" Height="36" CornerRadius="8">
-                                <DockPanel LastChildFill="True">
-                                    <TextBlock Text="+91" FontSize="14" Foreground="#888888" VerticalAlignment="Center" Margin="12,0,8,0"/>
+                            <!-- FIX: Wrapper border outside TextBox to show focused outline -->
+                            <Border x:Name="MobileBorder"
+        Margin="0,0,0,8"
+        Background="#F3F4F6"
+        Height="44"
+        CornerRadius="8">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="#D1D5DB"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="SnapsToDevicePixels" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsKeyboardFocusWithin, ElementName=MobileNumberTextBox}" Value="True">
+                                                <Setter Property="BorderBrush" Value="#cecece"/>
+                                                <!-- focused blue -->
+                                                <Setter Property="BorderThickness" Value="2"/>
+                                                <Setter Property="Effect">
+                                                    <Setter.Value>
+                                                        <DropShadowEffect Color="#cecece" BlurRadius="4" ShadowDepth="0" Opacity="0.5"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <Grid VerticalAlignment="Center" Margin="8,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="+91" FontSize="14" Width="25" Foreground="#888888" VerticalAlignment="Center" Margin="4,0" Grid.Column="0"/>
                                     <TextBox x:Name="MobileNumberTextBox"
-                                 Width="280"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 FontSize="14"
-                                 Foreground="#0a0a0a"
-                                 VerticalContentAlignment="Center"
-                                 Padding="0"
-                                 />
-                                </DockPanel>
+                 Grid.Column="1"
+                 
+                 BorderThickness="0"
+                 FontSize="14"
+                 Foreground="#0a0a0a"
+                 VerticalContentAlignment="Center"
+                 Padding="8,0"
+                                             Background="Transparent"
+                 />
+                                </Grid>
                             </Border>
                             <TextBlock x:Name="MobilePreviewTextBlock"
 							   FontSize="12"
@@ -91,18 +122,33 @@
 							   Visibility="Collapsed"
 />
                             <Button x:Name="SendOtpButton"
-                        Content="Send OTP  →"
-                        Height="38"
-                        Background="#7E7E87"
-                        Foreground="White"
-                        FontWeight="SemiBold"
-                        FontSize="14"
-                        BorderThickness="0"
-                        Margin="0,8,0,16"
-                        Cursor="Hand"
-                        Click="SendOtpButton_Click"
-                        Style="{StaticResource RoundedButtonStyle}"
-                />
+        Height="38"
+        Background="#a1a1a1"
+        Foreground="White"
+        FontWeight="SemiBold"
+        FontSize="14"
+        BorderThickness="0"
+        Margin="0,8,0,16"
+        Cursor="Hand"
+        Click="SendOtpButton_Click"
+        Style="{StaticResource RoundedButtonStyle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="Send OTP" VerticalAlignment="Center" Grid.Column="0" Margin="8,0,0,0"/>
+
+                                    <!-- Use your SVG file here. Add /Assets/Images/send_otp.svg to project, BuildAction=Resource. 
+             If you prefer an existing icon, change Source to an existing SVG like mobile_icon.svg -->
+                                    <svg:SvgViewbox Source="/Assets/Images/arrow_right.svg"
+                        Width="14" Height="12"
+                        VerticalAlignment="Center"
+                        Grid.Column="1"
+                        Margin="12,0,12,0"/>
+                                </Grid>
+                            </Button>
 
                             <Border Background="#eff6ff" CornerRadius="8" Padding="12" >
                                 <TextBlock TextWrapping="Wrap" FontSize="12">

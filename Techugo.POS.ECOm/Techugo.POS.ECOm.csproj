@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="Assets\Images\arrow_right.svg" />
     <None Remove="Assets\Images\assign_rider.svg" />
     <None Remove="Assets\Images\back.svg" />
     <None Remove="Assets\Images\balance.svg" />
@@ -78,6 +79,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Images\arrow_right.svg" />
     <Resource Include="Assets\Images\assign_rider.svg" />
     <Resource Include="Assets\Images\back.svg" />
     <Resource Include="Assets\Images\balance.svg" />
