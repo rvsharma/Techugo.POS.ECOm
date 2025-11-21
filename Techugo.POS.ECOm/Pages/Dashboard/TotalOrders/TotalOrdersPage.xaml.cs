@@ -98,7 +98,7 @@ namespace Techugo.POS.ECOm.Pages
                         order.Subscription = data.Subscription;
                         order.OrderDetails = data.OrderDetails;
                         order.Customer = data.Customer;
-                        order.BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime;
+                        order.BranchDeliverySlot = or.BranchDeliverySlot?.StartTime + " - " + or.BranchDeliverySlot?.EndTime;
                         order.ItemImages = or.ItemImages;
                         order.Items = data.OrderDetails.Count + " items(s)";
                         order.Status = data.Status;

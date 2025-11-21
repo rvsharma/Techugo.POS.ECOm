@@ -33,7 +33,7 @@ namespace Techugo.POS.ECom.Model
         public string RiderStatus { get; set; }
         public string PaymentMode { get; set; }
         public string Subscription { get; set; }
-        public BranchDeliverySlot BranchDeliverySlot { get; set; }
+        public BranchDeliverySlot? BranchDeliverySlot { get; set; }
         public List<string> ItemImages { get; set; }
     }
 

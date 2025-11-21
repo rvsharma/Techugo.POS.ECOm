@@ -77,13 +77,13 @@
                     BorderBrush="#2b7fff"
                     BorderThickness="4,0,0,0"
                     CornerRadius="20">
-                    <StackPanel Margin="12">
+                    <StackPanel Margin="24">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Total Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="Total Orders" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" Margin="0,0,0,2"/>
                             <svg:SvgViewbox Source="/Assets/Images/total_orders.svg" Width="30" Height="30" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
                         </Grid>
                         <TextBlock Text="{Binding orderData.TotalOrders}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>

@@ -24,6 +24,7 @@
     <None Remove="Assets\Images\box.svg" />
     <None Remove="Assets\Images\calender.svg" />
     <None Remove="Assets\Images\carry_forward.svg" />
+    <None Remove="Assets\Images\circle_check.svg" />
     <None Remove="Assets\Images\circle_check_green.svg" />
     <None Remove="Assets\Images\circle_cross.svg" />
     <None Remove="Assets\Images\circle_cross_red.svg" />
@@ -49,7 +50,9 @@
     <None Remove="Assets\Images\refresh.svg" />
     <None Remove="Assets\Images\refund_list_icon.svg" />
     <None Remove="Assets\Images\rejected.svg" />
+    <None Remove="Assets\Images\resend.svg" />
     <None Remove="Assets\Images\sales_list_icon.svg" />
+    <None Remove="Assets\Images\search.svg" />
     <None Remove="Assets\Images\shield.svg" />
     <None Remove="Assets\Images\store_icon.svg" />
     <None Remove="Assets\Images\total_orders.svg" />
@@ -89,6 +92,7 @@
     <Resource Include="Assets\Images\box.svg" />
     <Resource Include="Assets\Images\calender.svg" />
     <Resource Include="Assets\Images\carry_forward.svg" />
+    <Resource Include="Assets\Images\circle_check.svg" />
     <Resource Include="Assets\Images\circle_check_green.svg" />
     <Resource Include="Assets\Images\circle_cross.svg" />
     <Resource Include="Assets\Images\circle_cross_red.svg" />
@@ -116,7 +120,9 @@
     <Resource Include="Assets\Images\refresh.svg" />
     <Resource Include="Assets\Images\refund_list_icon.svg" />
     <Resource Include="Assets\Images\rejected.svg" />
+    <Resource Include="Assets\Images\resend.svg" />
     <Resource Include="Assets\Images\sales_list_icon.svg" />
+    <Resource Include="Assets\Images\search.svg" />
     <Resource Include="Assets\Images\shield.svg" />
     <Resource Include="Assets\Images\store_icon.svg" />
     <Resource Include="Assets\Images\total_orders.svg" />

@@ -20,6 +20,8 @@ namespace Techugo.POS.ECOm.Pages.Login
         {
             InitializeComponent();
             SuccessSnackbar.MessageQueue = _messageQueue;
+            MobileNumberTextBox.PreviewKeyDown += OtpTextBox_PreviewKeyDown;
+
 
             _apiService = ApiServiceFactory.Create();
             MobileNumberTextBox.PreviewTextInput += MobileNumberTextBox_PreviewTextInput;
@@ -27,6 +29,18 @@ namespace Techugo.POS.ECOm.Pages.Login
             DataObject.AddPastingHandler(MobileNumberTextBox, OnPaste);
             SendOtpButton.IsEnabled = false;
             SendOtpButton.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray);
+        }
+        private void OtpTextBox_PreviewKeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                // trigger the button Click handler (or execute its Command)
+                SendOtpButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                // Or, if button uses ICommand:
+                // SendOtpButton.Command?.Execute(SendOtpButton.CommandParameter);
+
+                e.Handled = true;
+            }
         }
         private void MobileNumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -55,6 +69,8 @@ namespace Techugo.POS.ECOm.Pages.Login
             var data = new { MobileNo = MobileNumberTextBox.Text };
             try
             {
+                SendOtpButton.IsEnabled = false;
+                SendOtpButton.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray);
                 BaseResponse result = await _apiService.PostAsync<BaseResponse>("auth/login", data);
                 if (result != null)
                 {
@@ -74,7 +90,12 @@ namespace Techugo.POS.ECOm.Pages.Login
             {
                 ShowSuccessSnackbar("Failed to send OTP. Please try again.");
                 return;
-            } 
+            }
+            finally
+            {
+                SendOtpButton.IsEnabled = true;
+                SendOtpButton.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
+            }
         }
         private void MobileNumberTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {

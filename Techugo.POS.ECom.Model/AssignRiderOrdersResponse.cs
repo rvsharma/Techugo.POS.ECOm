@@ -68,7 +68,7 @@ namespace Techugo.POS.ECom.Model
         public string Subscription { get; set; }
 
         [JsonPropertyName("BranchDeliverySlot")]
-        public BranchDeliverySlot BranchDeliverySlot { get; set; }
+        public BranchDeliverySlot? BranchDeliverySlot { get; set; }
 
         [JsonPropertyName("AddressList")]
         public AddressList AddressList { get; set; }

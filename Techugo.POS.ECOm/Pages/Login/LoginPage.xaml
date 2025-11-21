@@ -4,8 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                        >
     <UserControl.Resources>
-        <Style x:Key="RoundedButtonStyle" TargetType="Button">
-            <Setter Property="Template">
+        <Style x:Key="RoundedButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Template"> 
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
@@ -17,6 +17,15 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <!-- Use opaque #A1A1A1 -->
+                    <Setter Property="Background" Value="#A1A1A1"/>
+                    <Setter Property="BorderBrush" Value="#A1A1A1"/>
+                    <!-- Optional: adjust foreground for contrast -->
+                    <Setter Property="Foreground" Value="#666666"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <Style TargetType="materialDesign:Snackbar">
             <Setter Property="Background" Value="White" />
@@ -49,7 +58,7 @@
                     </Border>
                     <TextBlock Text="E-Stock Order Management" FontWeight="Bold" FontSize="24" Foreground="#222" HorizontalAlignment="Center" Margin="0,0,0,4"/>
                     <TextBlock Text="Store POS Login" FontSize="16" Foreground="#4a5565" HorizontalAlignment="Center" Margin="0,0,0,24"/>
-                    <Border Background="White" CornerRadius="20" Padding="32" Width="448" Height="348" HorizontalAlignment="Center" >
+                    <Border Background="White" CornerRadius="20" Padding="32" Width="448" Height="Auto" HorizontalAlignment="Center" >
                         <Border.Effect>
                             <DropShadowEffect 
                                 ShadowDepth="4" 

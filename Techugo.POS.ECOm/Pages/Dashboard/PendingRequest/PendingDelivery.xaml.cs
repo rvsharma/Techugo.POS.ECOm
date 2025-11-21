@@ -119,7 +119,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             OrderType = data.Subscription == null ? "One Time Order" : "Subscription Order",
                             OrderDetails = data.OrderDetails,
                             Customer = data.Customer,
-                            BranchDeliverySlot = or.BranchDeliverySlot.StartTime + " - " + or.BranchDeliverySlot.EndTime,
+                            BranchDeliverySlot = or.BranchDeliverySlot?.StartTime + " - " + or.BranchDeliverySlot?.EndTime,
                             ItemImages = or.ItemImages,
                             Items = data.OrderDetails.Count + " items(s)"
                         };

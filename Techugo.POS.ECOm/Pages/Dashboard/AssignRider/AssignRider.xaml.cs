@@ -128,17 +128,14 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.TotalAmount = data.TotalAmount;
                             order.PaidAmount = data.PaidAmount;
                             order.Status = data.Status;
-                            order.Address = data.AddressList.HouseNo.ToString() + ", "
-                                            + data.AddressList.StreetNo.ToString() + ", "
-                                            + data.AddressList.State.ToString() + ", "
-                                            + data.AddressList.City.ToString() + ", "
-                                            + data.AddressList.Pincode.ToString();
+                            order.Address = address;
+                           
                             order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                             order.PaymentMode = data.PaymentMode;
                             order.Subscription = data.Subscription;
                             order.OrderDetails = data.OrderDetails;
                             order.Customer = data.Customer;
-                            order.BranchDeliverySlot = o.BranchDeliverySlot.StartTime + " - " + o.BranchDeliverySlot.EndTime;
+                            order.BranchDeliverySlot = o.BranchDeliverySlot?.StartTime + " - " + o.BranchDeliverySlot?.EndTime;
                             order.ItemImages = o.ItemImages;
                             order.Status = o.Status;
                             order.Items = data.OrderDetails.Count + " items(s)";

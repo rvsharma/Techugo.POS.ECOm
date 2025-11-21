@@ -56,6 +56,16 @@ namespace Techugo.POS.ECOm.Pages
             get => _outOfStock;
             set => SetField(ref _outOfStock, value);
         }
+        private string _totalItemText;
+        public string TotalItemText
+        {
+            get => _totalItemText;
+            set
+            {
+                _totalItemText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalItemText)));
+            }
+        }
 
         // Prevent Toggle Checked/Unchecked handlers from reacting to programmatic bindings/initialization
         private bool _suppressToggleEvents = true;
@@ -102,6 +112,7 @@ namespace Techugo.POS.ECOm.Pages
                     }
                     UpdateStats();
                 }
+                TotalItemText = $"Products Inventory ({itemList?.TotalItems})";
             }
             finally
             {

@@ -47,7 +47,7 @@
 		</Style>
 	</UserControl.Resources>
 
-	<ScrollViewer VerticalScrollBarVisibility="Auto">
+	
 		<StackPanel Margin="28">
 			<!-- Header -->
 			<Grid Margin="0,0,0,18">
@@ -380,5 +380,5 @@
 				</StackPanel>
 			</Border>
 		</StackPanel>
-	</ScrollViewer>
+
 </UserControl>

@@ -28,7 +28,7 @@ namespace Techugo.POS.ECom.Model
         public Rider Rider { get; set; }
         public List<OrderTimeline> OrderTimelines { get; set; }
         public string Subscription { get; set; }
-        public BranchDeliverySlot BranchDeliverySlot { get; set; }
+        public BranchDeliverySlot? BranchDeliverySlot { get; set; }
     }
 
     public class OrderDetail

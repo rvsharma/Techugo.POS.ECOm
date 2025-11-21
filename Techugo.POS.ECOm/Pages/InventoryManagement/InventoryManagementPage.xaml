@@ -72,7 +72,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Background="#FCFAFB">
+
         <StackPanel Margin="32">
             <TextBlock Text="Inventory Management" FontSize="24" FontWeight="Bold"/>
             <TextBlock Text="Manage product catalog, pricing, and stock status" FontSize="14" Foreground="#888" Margin="0,4,0,24"/>
@@ -182,12 +182,8 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- magnifier icon (simple Path) -->
-                        <Viewbox Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Canvas Width="24" Height="16">
-                                <Path Data="M15.5,14h-0.79l-0.28-0.27A6.471,6.471,0,1,0,14,15.5l0.27,0.28v0.79L20,21.5,21.5,20,15.5,14z M6.5,11A4.5,4.5,0,1,1,11,15.5,4.5,4.5,0,0,1,6.5,11z"
-                                      Fill="#9CA3AF" Stretch="Uniform"/>
-                            </Canvas>
-                        </Viewbox>
+                    <svg:SvgViewbox Source="/Assets/Images/search.svg"  Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
 
                         <!-- TextBox with overlay placeholder -->
                         <Grid Grid.Column="1" VerticalAlignment="Center">
@@ -248,7 +244,7 @@
                     <!-- Header -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16" VerticalAlignment="Center">
                         <svg:SvgViewbox Source="/Assets/Images/orders.svg" Width="18" Height="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBlock Text="Products Inventory (12)" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalItemText}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
 
                     <!-- Products ListView -->
@@ -466,5 +462,5 @@ CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,6">
                 </StackPanel>
             </Border>
         </StackPanel>
-    </Grid>
+
 </UserControl>

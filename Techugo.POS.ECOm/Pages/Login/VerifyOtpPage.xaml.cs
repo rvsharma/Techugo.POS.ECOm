@@ -32,7 +32,7 @@ namespace Techugo.POS.ECOm.Pages.Login
             PhoneNumberWithoutCode = phoneNumber;
             DataContext = this; // For simple binding
             _apiService = ApiServiceFactory.Create();
-
+            ResendButton.Visibility = Visibility.Collapsed;
             // initialize resend timer
             _resendTimer = new DispatcherTimer
             {
@@ -50,7 +50,7 @@ namespace Techugo.POS.ECOm.Pages.Login
             _isCountdownActive = true;
 
             // disable button while countdown running (non-clickable) and update text
-            ResendButton.IsEnabled = false;
+            //ResendButton.IsEnabled = false;
             UpdateResendUi();
 
             _resendTimer.Stop();
@@ -66,10 +66,8 @@ namespace Techugo.POS.ECOm.Pages.Login
                 _isCountdownActive = false;
 
                 // Restore clickable state and label
-                ResendButton.IsEnabled = true;
-                ResendLabelRun.Text = "Resend OTP";
-                ResendSpacerRun.Text = "";
-                ResendTimerRun.Text = "";
+                ResendButton.Visibility = Visibility.Visible;
+                ResendOtpIn.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -81,8 +79,8 @@ namespace Techugo.POS.ECOm.Pages.Login
         {
             var ts = TimeSpan.FromSeconds(Math.Max(0, _resendSecondsRemaining));
             // show "Resend OTP in 0:09" with timer colored
-            ResendLabelRun.Text = "Resend OTP";
-            ResendSpacerRun.Text = " in ";
+            ResendButton.Visibility = Visibility.Collapsed;
+            ResendOtpIn.Visibility = Visibility.Visible;
             ResendTimerRun.Text = $"{ts.Minutes}:{ts.Seconds:D2}";
         }
 
@@ -90,11 +88,6 @@ namespace Techugo.POS.ECOm.Pages.Login
         {
             // defensive: if countdown active, ignore clicks (button should be disabled)
             if (_isCountdownActive) return;
-
-            // show sending state
-            ResendLabelRun.Text = "Sending...";
-            ResendSpacerRun.Text = "";
-            ResendTimerRun.Text = "";
 
             try
             {
@@ -112,8 +105,7 @@ namespace Techugo.POS.ECOm.Pages.Login
                 else
                 {
                     // restore label on failure, keep clickable
-                    ResendLabelRun.Text = "Resend OTP";
-                    ResendSpacerRun.Text = "";
+                   
                     ResendTimerRun.Text = "";
                     SnackbarService.Enqueue("Failed to send OTP.");
                 }
@@ -121,8 +113,7 @@ namespace Techugo.POS.ECOm.Pages.Login
             catch (Exception ex)
             {
                 // restore label on failure
-                ResendLabelRun.Text = "Resend OTP";
-                ResendSpacerRun.Text = "";
+                ResendOtpIn.Visibility = Visibility.Visible;
                 ResendTimerRun.Text = "";
                 SnackbarService.Enqueue($"Failed to send OTP: {ex.Message}");
             }
