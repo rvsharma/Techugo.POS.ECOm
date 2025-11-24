@@ -24,8 +24,8 @@
 
                 <!-- All Orders Title -->
                 <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="16,0,0,0">
-                    <TextBlock Text="Delivered Orders" FontWeight="Bold" FontSize="24"/>
-                    <TextBlock Text="View all successfully delivered orders" FontSize="14" Foreground="#888" Margin="0,4,0,0"/>
+                    <TextBlock Text="Cancelled Orders" FontWeight="Bold" FontSize="24"/>
+                    <TextBlock Text="View all rejected and cancelled orders" FontSize="14" Foreground="#888" Margin="0,4,0,0"/>
                 </StackPanel>
             </Grid>
             <!-- Orders Card -->
@@ -39,6 +39,8 @@
                     <ListView x:Name="OrdersListView" ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0" SelectionMode="Single">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
+                                <Setter Property="Foreground" Value="#0a0a0a"/>
+
                                 <Setter Property="Background" Value="White"/>
                                 <Setter Property="BorderBrush" Value="Transparent"/>
                                 <Setter Property="BorderThickness" Value="0"/>
@@ -93,7 +95,13 @@
                         </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header="Order ID" Width="120" DisplayMemberBinding="{Binding OrderNo}" />
+                                <GridViewColumn Header="Order ID" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding OrderNo}" FontWeight="DemiBold"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Customer" Width="120" DisplayMemberBinding="{Binding Customer.CustomerName}" />
                                 <GridViewColumn Header="Contact" Width="120">
                                     <GridViewColumn.CellTemplate>

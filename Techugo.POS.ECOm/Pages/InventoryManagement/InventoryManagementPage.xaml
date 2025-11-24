@@ -70,6 +70,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ListViewScrollTemplate" TargetType="ListView">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListView">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Background="{TemplateBinding Background}">
+                            <ScrollViewer
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Auto"
+                        PanningMode="VerticalFirst"
+                        CanContentScroll="False">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
 
 
@@ -87,7 +107,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Total Products -->
-                <Border Style="{StaticResource StatCardStyle}" Grid.Column="0">
+                <Border Style="{StaticResource StatCardStyle}" Grid.Column="0" Margin="0,8,8,8">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -144,7 +164,7 @@
                 </Border>-->
 
                 <!-- Out of Stock -->
-                <Border Style="{StaticResource StatCardStyle}" Grid.Column="2">
+                <Border Style="{StaticResource StatCardStyle}" Grid.Column="2" Margin="8,8,0,8">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -248,30 +268,79 @@
                     </StackPanel>
 
                     <!-- Products ListView -->
-                    <ListView x:Name="ProductsListView" ItemsSource="{Binding inventoryData}" Margin="0" BorderThickness="0" SelectionMode="Single">
-                        <!-- row style -->
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="Background" Value="White"/>
-                                <Setter Property="Margin" Value="0,12,0,2"/>
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Setter Property="MinHeight" Value="64"/>
-                                <Setter Property="BorderBrush" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="#0a0a0a"/>
-                                <Setter Property="FontSize" Value="14"/>
+                <ListView x:Name="ProductsListView"
+                      ItemsSource="{Binding inventoryData}"
+                      SelectionMode="Single"
+                      BorderThickness="0"
+                      Margin="0"
+                      Style="{StaticResource ListViewScrollTemplate}">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListView.ItemContainerStyle>
 
-                        <ListView.View>
+                    <!-- row style -->
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="Foreground" Value="#0a0a0a"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="MinHeight" Value="80"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="BorderThickness" Value="0,1,0,0" />
+                            <Setter Property="BorderBrush" Value="#dcdcdc" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <Border x:Name="Bd"
+Background="{TemplateBinding Background}"
+BorderBrush="{TemplateBinding BorderBrush}"
+BorderThickness="{TemplateBinding BorderThickness}"
+Padding="{TemplateBinding Padding}">
+                                            <GridViewRowPresenter Content="{TemplateBinding Content}"
+                Columns="{Binding Path=View.Columns, RelativeSource={RelativeSource AncestorType=ListView}}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <!-- Hover -->
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
+                                            </Trigger>
+
+                                            <!-- Selected + active -->
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="True"/>
+                                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
+                                                <Setter Property="Foreground" Value="#0a0a0a"/>
+                                            </MultiTrigger>
+
+                                            <!-- Selected + inactive -->
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="True"/>
+                                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                                </MultiTrigger.Conditions>
+                                                <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
+                                                <Setter Property="Foreground" Value="#0a0a0a"/>
+                                            </MultiTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.View>
                             <GridView>
                                 <!-- Product Image -->
                                 <GridViewColumn Header="Product Image" Width="120">
@@ -347,7 +416,7 @@ CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,6">
                                 <GridViewColumn Header="Selling Price" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0:F2}}" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0:F2}}" HorizontalAlignment="Left" FontWeight="Bold"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

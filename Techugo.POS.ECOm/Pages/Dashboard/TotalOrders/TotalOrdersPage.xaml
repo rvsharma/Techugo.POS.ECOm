@@ -41,9 +41,11 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                         <TextBlock Text="{Binding TotalOrdersText}" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
                     <!-- Table Header -->
-                    <ListView x:Name="OrdersListView" ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0" SelectionMode="Single">
+                    <ListView x:Name="OrdersListView" ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0" SelectionMode="Single" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
+                                <Setter Property="Foreground" Value="#0a0a0a"/>
+
                                 <Setter Property="Background" Value="White"/>
                                 <Setter Property="BorderBrush" Value="Transparent"/>
                                 <Setter Property="BorderThickness" Value="0"/>
@@ -98,7 +100,13 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                         </ListView.ItemContainerStyle>
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Header=" Order ID" Width="120" DisplayMemberBinding="{Binding OrderNo}" />
+                                <GridViewColumn Header=" Order ID" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding OrderNo}" FontWeight="DemiBold"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header=" Customer" Width="120" DisplayMemberBinding="{Binding Customer.CustomerName}" />
                                 <GridViewColumn Header=" Contact" Width="125">
                                     <GridViewColumn.CellTemplate>
@@ -150,7 +158,7 @@ FallbackValue=""/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header=" Actions" Width="180">
+                                <GridViewColumn Header="       Action" Width="180">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button Height="36" Click="OpenOrderDetailPoPUp_Click" Width="130"

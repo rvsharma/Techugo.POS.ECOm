@@ -112,7 +112,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                         orderData.Add(order);
                     }
                 }
-                DeliverdOrdersText = $"Rejected Orders ({orderResponse?.TotalItems} orders)";
+                DeliverdOrdersText = $"Cancelled Orders ({orderResponse?.TotalItems} orders)";
             }
 
         }

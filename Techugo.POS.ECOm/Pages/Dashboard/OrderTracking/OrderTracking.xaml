@@ -252,6 +252,8 @@ BorderBrush="#00c951"
                         <!-- row style -->
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
+                                <Setter Property="Foreground" Value="#0a0a0a"/>
+
                                 <Setter Property="Background" Value="White"/>
                                 <Setter Property="BorderBrush" Value="Transparent"/>
                                 <Setter Property="BorderThickness" Value="0"/>

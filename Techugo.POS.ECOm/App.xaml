@@ -155,6 +155,10 @@ SnapsToDevicePixels="True">
                 <Setter Property="FontFamily" Value="Segoe UI"/>
             </Style>
 
+            <Style TargetType="ListView">
+                <Setter Property="local:MouseWheelForwarder.ForwardToParent" Value="True"/>
+            </Style>
+
             <!-- TextBox specific tweaks (optional) -->
             <ObjectDataProvider x:Key="LoadingServiceInstance"
                     ObjectType="{x:Type svc:LoadingService}"

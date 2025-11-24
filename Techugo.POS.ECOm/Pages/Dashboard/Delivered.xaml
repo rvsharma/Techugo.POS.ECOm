@@ -30,164 +30,187 @@
             </Grid>
             <!-- Orders Card -->
             <Border Background="#fff" BorderBrush="#e3e3e3" BorderThickness="1" CornerRadius="20" Padding="24" Margin="0,24,0,0">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- header row -->
+                        <RowDefinition Height="*"/>
+                        <!-- ListView row -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
                         <svg:SvgViewbox Source="/Assets/Images/circle_check_green.svg" Width="18" Height="24" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <TextBlock Text="{Binding DeliverdOrdersText}" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <!-- Table Header -->
-                    <ListView x:Name="OrdersListView" ItemsSource="{Binding orderData}" Margin="0,24,0,0" BorderThickness="0" SelectionMode="Single">
+
+                    <!-- ListView -->
+                    <ListView Grid.Row="1"
+                  x:Name="OrdersListView"
+                  ItemsSource="{Binding orderData}"
+                  BorderThickness="0"
+                  SelectionMode="Single">
+
                         <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
+                                <Style TargetType="ListViewItem">
+                                <Setter Property="Foreground" Value="#0a0a0a"/>
+
                                 <Setter Property="Background" Value="White"/>
-                                <Setter Property="BorderBrush" Value="Transparent"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Setter Property="MinHeight" Value="64"/>
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListViewItem">
-                                            <Border x:Name="Bd"
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="MinHeight" Value="64"/>
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListViewItem">
+                                                <Border x:Name="Bd"
                   Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}"
                   Padding="{TemplateBinding Padding}">
-                                                <GridViewRowPresenter Content="{TemplateBinding Content}"
+                                                    <GridViewRowPresenter Content="{TemplateBinding Content}"
                                   Columns="{Binding Path=View.Columns, RelativeSource={RelativeSource AncestorType=ListView}}"
                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <!-- Hover -->
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
-                                                </Trigger>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <!-- Hover -->
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
+                                                    </Trigger>
 
-                                                <!-- Selected + active -->
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="IsSelected" Value="True"/>
-                                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                                    </MultiTrigger.Conditions>
-                                                    <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
-                                                    <Setter Property="Foreground" Value="#0a0a0a"/>
-                                                </MultiTrigger>
+                                                    <!-- Selected + active -->
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True"/>
+                                                            <Condition Property="Selector.IsSelectionActive" Value="True"/>
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
+                                                        <Setter Property="Foreground" Value="#0a0a0a"/>
+                                                    </MultiTrigger>
 
-                                                <!-- Selected + inactive -->
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="IsSelected" Value="True"/>
-                                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                                    </MultiTrigger.Conditions>
-                                                    <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
-                                                    <Setter Property="Foreground" Value="#0a0a0a"/>
-                                                </MultiTrigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Order ID" Width="120" DisplayMemberBinding="{Binding OrderNo}" />
+                                                    <!-- Selected + inactive -->
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True"/>
+                                                            <Condition Property="Selector.IsSelectionActive" Value="False"/>
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter TargetName="Bd" Property="Background" Value="#ececf0"/>
+                                                        <Setter Property="Foreground" Value="#0a0a0a"/>
+                                                    </MultiTrigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                <GridViewColumn Header=" Order ID" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding OrderNo}" FontWeight="DemiBold"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Customer" Width="120" DisplayMemberBinding="{Binding Customer.CustomerName}" />
-                                <GridViewColumn Header="Contact" Width="120">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <MultiBinding StringFormat="+91 {0:00000 00000}">
-                                                        <Binding Path="Customer.MobileNo"/>
-                                                    </MultiBinding>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Address" Width="280">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Address}" TextWrapping="Wrap" Width="170"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
+                                    <GridViewColumn Header="Contact" Width="120">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="+91 {0:00000 00000}">
+                                                            <Binding Path="Customer.MobileNo"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Address" Width="280">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Address}" TextWrapping="Wrap" Width="170"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
 
-                                <GridViewColumn Header="Items" Width="80" DisplayMemberBinding="{Binding Items}" />
-                                <GridViewColumn Header="Total Amount" Width="140" DisplayMemberBinding="{Binding TotalAmount, StringFormat=₹{0}}" />
-                                <GridViewColumn Header="Payment" Width="120" DisplayMemberBinding="{Binding PaymentMode}" />
-                                <GridViewColumn Header="Delivery Time" Width="150">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
-                                                <TextBlock.Text>
-                                                    <Binding Path="ExpectedDeliveryDate"
+                                    <GridViewColumn Header="Items" Width="80" DisplayMemberBinding="{Binding Items}" />
+                                    <GridViewColumn Header="Total Amount" Width="140" DisplayMemberBinding="{Binding TotalAmount, StringFormat=₹{0}}" />
+                                    <GridViewColumn Header="Payment" Width="120" DisplayMemberBinding="{Binding PaymentMode}" />
+                                    <GridViewColumn Header="Delivery Time" Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <TextBlock.Text>
+                                                        <Binding Path="ExpectedDeliveryDate"
                  StringFormat="{}{0:yyyy-MM-dd, hh:mm tt}"
                  TargetNullValue=""
                  FallbackValue=""/>
-                                                </TextBlock.Text>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Status" Width="80">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border x:Name="Badge" CornerRadius="8" Padding="8,4" Background="#dcfce7" HorizontalAlignment="Left" Margin="0,6,0,6">
-                                                <TextBlock x:Name="BadgeText" Text="{Binding Status}" Foreground="#016630" FontWeight="SemiBold" FontSize="12" />
-                                            </Border>
-                                            
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Actions" Width="180">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Height="36" Click="OpenOrderDetailPoPUp_Click" Width="130"
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Status" Width="80">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border x:Name="Badge" CornerRadius="8" Padding="8,4" Background="#dcfce7" HorizontalAlignment="Left" Margin="0,6,0,6">
+                                                    <TextBlock x:Name="BadgeText" Text="{Binding Status}" Foreground="#016630" FontWeight="SemiBold" FontSize="12" />
+                                                </Border>
+
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Actions" Width="180">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Height="36" Click="OpenOrderDetailPoPUp_Click" Width="130"
                                                     Style="{StaticResource RoundedWhiteButtonStyle}" BorderBrush="#dedede">
-                                                <Button.ContentTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                            <svg:SvgViewbox Source="/Assets/Images/eye.svg" Width="14" Height="14" Margin="8" VerticalAlignment="Center"/>
-                                                            <TextBlock Text="Veiw Details" FontSize="14" Foreground="#030213" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8"/>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </Button.ContentTemplate>
-                                            </Button>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                        <ListView.Resources>
-                            <Style TargetType="GridViewColumnHeader">
-                                <Setter Property="Height" Value="48"/>
-                                <Setter Property="FontWeight" Value="SemiBold"/>
-                                <Setter Property="FontSize" Value="14"/>
-                                <Setter Property="Background" Value="White"/>
-                                <Setter Property="BorderBrush" Value="Transparent"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="GridViewColumnHeader">
-                                            <Border Background="{TemplateBinding Background}"
+                                                    <Button.ContentTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                <svg:SvgViewbox Source="/Assets/Images/eye.svg" Width="14" Height="14" Margin="8" VerticalAlignment="Center"/>
+                                                                <TextBlock Text="Veiw Details" FontSize="14" Foreground="#030213" FontWeight="SemiBold" VerticalAlignment="Center" Margin="8"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </Button.ContentTemplate>
+                                                </Button>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.Resources>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="Height" Value="48"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="GridViewColumnHeader">
+                                                <Border Background="{TemplateBinding Background}"
                                                 BorderBrush="{TemplateBinding BorderBrush}"
                                                 BorderThickness="{TemplateBinding BorderThickness}">
-                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.Resources>
-                    </ListView>
-                </StackPanel>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.Resources>
+                        </ListView>
+                </Grid>
+
             </Border>
         </StackPanel>
     </Grid>
