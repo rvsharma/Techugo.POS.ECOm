@@ -68,7 +68,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.OrderTracking
         private async void LoadOrdersData()
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            TrackingResponse orderResponse = await _apiService.GetAsync<TrackingResponse>("order/tracking-list?page=1&limit=10&date=" + formattedDate + "");
+            TrackingResponse orderResponse = await _apiService.GetAsync<TrackingResponse>("order/tracking-list?page=1&limit=1000&date=" + formattedDate + "");
             if (orderResponse != null)
             {
 

@@ -35,6 +35,7 @@
     <None Remove="Assets\Images\edit.svg" />
     <None Remove="Assets\Images\expand.svg" />
     <None Remove="Assets\Images\eye.svg" />
+    <None Remove="Assets\Images\filter.svg" />
     <None Remove="Assets\Images\indicator.svg" />
     <None Remove="Assets\Images\inventory_list_icon.svg" />
     <None Remove="Assets\Images\mark_ready.svg" />
@@ -103,6 +104,7 @@
     <Resource Include="Assets\Images\edit.svg" />
     <Resource Include="Assets\Images\expand.svg" />
     <Resource Include="Assets\Images\eye.svg" />
+    <Resource Include="Assets\Images\filter.svg" />
     <Resource Include="Assets\Images\indicator.svg" />
     <Resource Include="Assets\Images\inventory_list_icon.svg" />
     <Resource Include="Assets\Images\mark_ready.svg" />

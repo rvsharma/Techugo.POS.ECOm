@@ -68,6 +68,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
                 // Close the popup window that hosts this UserControl
                 var wnd = Window.GetWindow(this);
                 wnd?.Close();
+                RequestRefresh?.Invoke(this, new RoutedEventArgs());
             }
         }
 

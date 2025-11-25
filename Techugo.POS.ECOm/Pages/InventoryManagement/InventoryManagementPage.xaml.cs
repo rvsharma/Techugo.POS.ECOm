@@ -2,11 +2,13 @@ using MaterialDesignColors;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
@@ -16,6 +18,8 @@ namespace Techugo.POS.ECOm.Pages
 {
     public partial class InventoryManagementPage : UserControl, INotifyPropertyChanged
     {
+        private DispatcherTimer _searchTimer;
+
         public event RoutedEventHandler BackRequested;
         private readonly ApiService _apiService;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -67,26 +71,49 @@ namespace Techugo.POS.ECOm.Pages
             }
         }
 
+        private ObservableCollection<Brand> _brandList;
+        public ObservableCollection<Brand> BrandList
+        {
+            get => _brandList;
+            set
+            {
+                _brandList = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(BrandList)));
+            }
+        }
+        public int? SelectedBrandID { get; set; }
+
         // Prevent Toggle Checked/Unchecked handlers from reacting to programmatic bindings/initialization
         private bool _suppressToggleEvents = true;
+        private string _pendingSearchText;
 
         public InventoryManagementPage()
         {
             InitializeComponent();
             DataContext = this;
             inventoryData = new ObservableCollection<InventoryVM>();
+            BrandList = new ObservableCollection<Brand>();
             _apiService = ApiServiceFactory.Create();
-
+            var queryData = new { page = 1, limit = 1000, brandId = (int?)SelectedBrandID, categoryIds = System.Array.Empty<object>(), search = (string)null };
             // start loading; suppression remains true until LoadInventoryData finishes
-            LoadInventoryData();
+            LoadInventoryData(queryData);
+            GetBrands();
+            SelectedBrandID = null;
+
+            _searchTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+            _searchTimer.Tick += SearchTimer_Tick;
+
         }
 
-        private async void LoadInventoryData()
+        private async void LoadInventoryData(object queryData)
         {
             try
             {
-                var data = new { page = 1, limit = 10, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null };
-                ItemListResponse itemList = await _apiService.PostAsync<ItemListResponse>("item/item-list", data);
+                
+                ItemListResponse itemList = await _apiService.PostAsync<ItemListResponse>("item/item-list", queryData);
                 if (itemList != null && itemList.Data != null)
                 {
                     inventoryData.Clear();
@@ -119,6 +146,23 @@ namespace Techugo.POS.ECOm.Pages
                 // Allow handlers to run only after initial population finishes
                 _suppressToggleEvents = false;
             }
+        }
+
+        private async void GetBrands()
+        {
+            try
+            {
+                BrandResponse riderListResponse = await _apiService.GetAsync<BrandResponse>("common/brand-list");
+                var list = riderListResponse?.Data ?? new List<Brand>();
+                list.Insert(0,new Brand { BrandID = null, BrandName = "All Brands" });
+                BrandList = new ObservableCollection<Brand>(list);
+            }
+            catch
+            {
+
+            }
+            
+            
         }
         private void UpdateStats()
         {
@@ -206,7 +250,9 @@ namespace Techugo.POS.ECOm.Pages
                 if (result != null && result.Success == true)
                 {
                     SnackbarService.Enqueue("Item updated successfully");
-                    LoadInventoryData();
+                    var queryData = new { page = 1, limit = 1000, brandId = (int?)SelectedBrandID, categoryIds = System.Array.Empty<object>(), search = (string)null };
+
+                    LoadInventoryData(queryData);
                 }
                 else
                 {
@@ -238,6 +284,50 @@ namespace Techugo.POS.ECOm.Pages
             field = value;
             OnPropertyChanged(propertyName);
             return true;
+        }
+
+        public class BrandResponse : BaseResponse
+        {
+            [JsonPropertyName("data")]
+            public List<Brand> Data { get; set; } = new List<Brand>();
+        }
+        public class Brand
+        {
+            public int? BrandID { get; set; }
+            public string BrandName { get; set; }
+
+        }
+
+        private void BrandFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (BrandFilterCombo.SelectedValue is int brandId)
+            {
+                SelectedBrandID = brandId;
+            }
+            var queryData = new { page = 1, limit = 1000, brandId = (int?)SelectedBrandID, categoryIds = System.Array.Empty<object>(), search = (string)null };
+            LoadInventoryData(queryData);
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            // Store latest text
+            _pendingSearchText = string.IsNullOrWhiteSpace(textBox.Text) ? null : textBox.Text;
+
+            // Reset debounce timer
+            _searchTimer.Stop();
+            _searchTimer.Start();
+        }
+        private void SearchTimer_Tick(object sender, EventArgs e)
+        {
+            _searchTimer.Stop();
+
+            // Call your API function here
+            var queryData = new { page = 1, limit = 1000, brandId = (int?)SelectedBrandID, categoryIds = System.Array.Empty<object>(), search = _pendingSearchText };
+
+            LoadInventoryData(queryData);
         }
     }
 }

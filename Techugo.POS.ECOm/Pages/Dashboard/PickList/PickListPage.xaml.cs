@@ -72,7 +72,7 @@ namespace Techugo.POS.ECOm.Pages
              //string formattedDate = "2025-10-22";
             try
             {
-                PickListResponse assignRiderOrdersResponse = await _apiService.GetAsync<PickListResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=10&status=PickListOrder&Date=" + formattedDate + "");
+                PickListResponse assignRiderOrdersResponse = await _apiService.GetAsync<PickListResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=1000&status=PickListOrder&Date=" + formattedDate + "");
                 if (assignRiderOrdersResponse != null)
                 {
 

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:conv="clr-namespace:Techugo.POS.ECOm.Converters"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     Height="Auto" Width="Auto">
     <UserControl.Resources>
         <conv:ActiveStateConverter x:Key="ActiveStateConverter"/>
@@ -213,49 +214,110 @@
                                      FontSize="14"
                                      Foreground="#111827"
                                      VerticalContentAlignment="Center"
-                                     Padding="6,0"/>
-                            <TextBlock Text="Search by product name, barcode, or category..."
-                                       FontSize="14"
-                                       Foreground="#9CA3AF"
-                                       Margin="6,0,0,0"
-                                       VerticalAlignment="Center"
-                                       IsHitTestVisible="False"/>
-                        </Grid>
+                                     Padding="6,0"
+                                     TextChanged="SearchBox_TextChanged" />
+                        <TextBlock Text="Search by product name, barcode, or category..."
+                           IsHitTestVisible="False"
+                           Foreground="Gray"
+                           FontSize="14"
+                           VerticalAlignment="Center"
+                           Margin="5,0,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                    </Grid>
                     </Grid>
                 </Border>
 
                 <!-- Filter pill: rounded, icon on left and ComboBox content on right -->
                 <Border Grid.Column="1" Style="{StaticResource FilterPillBorder}" Margin="12,0,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="49"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <Grid Width="150">
+                    <svg:SvgViewbox Width="18" Height="20"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left" Source="/Assets/Images/filter.svg" />
+                    <!-- Overlay ComboBox -->
+                    <ComboBox x:Name="BrandFilterCombo"
+                          ItemsSource="{Binding BrandList}"
+                          SelectedValuePath="BrandID"
+                          SelectedValue="{Binding SelectedBrandID, Mode=TwoWay}"
+                          Width="150"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          Padding="6,0"
+                          VerticalContentAlignment="Center"
+                          HorizontalContentAlignment="Center"
+                          Foreground="#111827"
+                          FontSize="14"
+                          FocusVisualStyle="{x:Null}"
+                          materialDesign:TextFieldAssist.UnderlineBrush="Transparent"
+                              SelectedIndex="0"
+                              SelectionChanged="BrandFilterCombo_SelectionChanged"
+                              >
 
-                        <!-- filter icon -->
-                        <Viewbox Grid.Column="0" Width="18" Height="20" VerticalAlignment="Center"   HorizontalAlignment="Center" >
-                            <Canvas Width="12" Height="10"  >
-                                <Path Data="M3,3 L13,3 L9,8 L9,13 L7,13 L7,8 Z" Fill="gray" Stretch="Uniform" />
-                            </Canvas>
-                        </Viewbox>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- You can add icons, styling, etc. -->
+                                    <TextBlock Text="{Binding BrandName}" FontSize="14" HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
 
-                        <!-- ComboBox with transparent background so pill shows rounded corners -->
-                        <ComboBox Grid.Column="1"
-                                  x:Name="BrandFilterCombo"
-                                  Background="#F3F4F6"
-                                  BorderThickness="0"
-                                  Padding="6,0"
-                                  VerticalContentAlignment="Center"
-                                  HorizontalContentAlignment="Left"
-                                  Foreground="#111827"
-                                  SelectedIndex="0">
-                            <ComboBoxItem IsSelected="True">All Brands</ComboBoxItem>
-                            <ComboBoxItem>Mother Dairy</ComboBoxItem>
-                            <ComboBoxItem>Safal</ComboBoxItem>
-                            <ComboBoxItem>Dhara</ComboBoxItem>
-                        </ComboBox>
-                    </Grid>
-                </Border>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="Padding" Value="12,4"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ComboBoxItem">
+                                            <Border x:Name="Bd"
+                            Background="Transparent"
+                            Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <!-- Hover -->
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#E5E7EB"/>
+                                                    <!-- light gray -->
+                                                </Trigger>
+                                                <!-- Selected -->
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#D1D5DB"/>
+                                                    <!-- darker gray -->
+                                                    <Setter Property="Foreground" Value="Black"/>
+                                                </Trigger>
+                                                <!-- Disabled -->
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#F3F4F6"/>
+                                                    <Setter Property="Foreground" Value="#9CA3AF"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+
+
+                            </Style>
+                           
+
+                        </ComboBox.ItemContainerStyle>
+                        
+                    </ComboBox>
+
+                </Grid>
+            </Border>
             </Grid>
 
             <!-- Products Inventory Card (table) -->
@@ -273,14 +335,7 @@
                       SelectionMode="Single"
                       BorderThickness="0"
                       Margin="0"
-                      Style="{StaticResource ListViewScrollTemplate}">
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel/>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-
-
+                      ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                     <!-- row style -->
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
@@ -387,10 +442,10 @@ Padding="{TemplateBinding Padding}">
 
                                 <!-- Brand -->
                                 
-                                    <GridViewColumn Header="Brand" Width="130">
+                                    <GridViewColumn Header="  Brand" Width="130">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                            <Border Background="#ffffff" BorderBrush="#e1e2e2" BorderThickness="1" CornerRadius="8" Padding="6,2" HorizontalAlignment="Center">
+                                            <Border Background="#ffffff" BorderBrush="#e1e2e2" BorderThickness="1" CornerRadius="8" Padding="6,2" HorizontalAlignment="Left">
                                                 <TextBlock Text="{Binding Brand}" HorizontalAlignment="Center" FontSize="12" FontWeight="DemiBold"/>
                                             </Border>
                                         </DataTemplate>
