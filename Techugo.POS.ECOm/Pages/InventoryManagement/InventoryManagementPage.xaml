@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:conv="clr-namespace:Techugo.POS.ECOm.Converters"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:local="clr-namespace:Techugo.POS.ECOm"
     Height="Auto" Width="Auto">
     <UserControl.Resources>
         <conv:ActiveStateConverter x:Key="ActiveStateConverter"/>
@@ -335,7 +336,7 @@
                       SelectionMode="Single"
                       BorderThickness="0"
                       Margin="0"
-                      ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                      ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden" local:MouseWheelForwarder.ForwardToParent="True">
                     <!-- row style -->
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
@@ -582,7 +583,25 @@ CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,6,0,6">
                                 </Setter>
                             </Style>
                         </ListView.Resources>
-                    </ListView>
+                    <ListView.Style>
+                        <Style TargetType="ListView">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding inventoryData.Count}" Value="0">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListView">
+                                                <TextBlock Text="No items to display"
+HorizontalAlignment="Center"
+VerticalAlignment="Center"
+Foreground="Gray" FontSize="14"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Style>
+                </ListView>
                 </StackPanel>
             </Border>
         </StackPanel>

@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -60,6 +61,7 @@ namespace Techugo.POS.ECOm.Pages
         public PickListPage()
         {
             InitializeComponent();
+            NoItemsText.Visibility = Visibility.Collapsed;
             DataContext = this;
             PickListOrders = new ObservableCollection<PickListOrder>();
             _apiService = ApiServiceFactory.Create();
@@ -109,7 +111,8 @@ namespace Techugo.POS.ECOm.Pages
                                     {
                                         OrderDetailID = od.ID,
                                         ItemID = od.ItemID,
-                                        ItemName = od.Item.ItemName,
+                                        
+                                        ItemName = od.Item.ItemName.Length > 25 ? od.Item.ItemName.Substring(0, 25) + "..." : od.Item.ItemName,
                                         Size = od.Size,
                                         Qty = od.Quantity,
                                         EditQty = od.Quantity,
@@ -127,6 +130,11 @@ namespace Techugo.POS.ECOm.Pages
                             }
                         }
 
+                    }
+                    if(PickListOrders.Count == 0)
+                    {
+                        NoItemsText.Visibility = Visibility.Visible;
+                        PickListHeader.Visibility = Visibility.Collapsed;
                     }
 
                     PickListOrderText = $"Pick List Orders ({PickListOrders.Count} orders, {PickListOrders.Sum(o => o.Items?.Count ?? 0)} items)";

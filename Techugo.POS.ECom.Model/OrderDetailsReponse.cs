@@ -24,7 +24,7 @@ namespace Techugo.POS.ECom.Model
         public string RiderStatus { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
         public CustomerDetails Customer { get; set; }
-        public AddressDetails AddressList { get; set; }
+        public OrderAddress OrderAddress { get; set; }
         public Rider Rider { get; set; }
         public List<OrderTimeline> OrderTimelines { get; set; }
         public string Subscription { get; set; }

@@ -79,7 +79,14 @@
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <TextBlock Text="Contact" FontSize="13" Foreground="#6a7282"/>
-                            <TextBlock Text="{Binding Customer.MobileNo}" FontSize="15" Foreground="#222"/>
+                            <TextBlock  FontSize="15" Foreground="#222">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="+91 {0:00000 00000}">
+                                        <Binding Path="Customer.MobileNo"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <!--<TextBlock Text="{Binding Customer.MobileNo}" FontSize="15" Foreground="#222"/>-->
                         </StackPanel>
                     </Grid>
                     <TextBlock Text="Delivery Address" FontSize="13" Foreground="#6a7282"/>

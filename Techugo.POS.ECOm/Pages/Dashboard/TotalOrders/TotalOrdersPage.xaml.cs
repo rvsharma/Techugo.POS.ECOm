@@ -68,19 +68,19 @@ namespace Techugo.POS.ECOm.Pages
 
                         // Build address only if AddressList is not null. Add commas only between present parts.
                         string address = string.Empty;
-                        if (data.AddressList != null)
+                        if (data.OrderAddress != null)
                         {
                             var parts = new List<string>();
-                            if (!string.IsNullOrWhiteSpace(data.AddressList.HouseNo))
-                                parts.Add(data.AddressList.HouseNo);
-                            if (!string.IsNullOrWhiteSpace(data.AddressList.StreetNo))
-                                parts.Add(data.AddressList.StreetNo);
-                            if (!string.IsNullOrWhiteSpace(data.AddressList.State))
-                                parts.Add(data.AddressList.State);
-                            if (!string.IsNullOrWhiteSpace(data.AddressList.City))
-                                parts.Add(data.AddressList.City);
-                            if (!string.IsNullOrWhiteSpace(data.AddressList.Pincode))
-                                parts.Add(data.AddressList.Pincode);
+                            if (!string.IsNullOrWhiteSpace(data.OrderAddress.HouseNo))
+                                parts.Add(data.OrderAddress.HouseNo);
+                            if (!string.IsNullOrWhiteSpace(data.OrderAddress.StreetNo))
+                                parts.Add(data.OrderAddress.StreetNo);
+                            if (!string.IsNullOrWhiteSpace(data.OrderAddress.State))
+                                parts.Add(data.OrderAddress.State);
+                            if (!string.IsNullOrWhiteSpace(data.OrderAddress.City))
+                                parts.Add(data.OrderAddress.City);
+                            if (!string.IsNullOrWhiteSpace(data.OrderAddress.Pincode))
+                                parts.Add(data.OrderAddress.Pincode);
 
                             address = string.Join(", ", parts);
                         }
@@ -90,7 +90,7 @@ namespace Techugo.POS.ECOm.Pages
                         order.OrderNo = data.OrderNo;
                         order.createdAt = data.createdAt;
                         order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue ? data.ExpectedDeliveryDate.Value : null;
-                        order.TotalAmount = data.TotalAmount;
+                        order.TotalAmount = data.PaidAmount;
                         order.PaidAmount = data.PaidAmount;
                         order.Status = data.Status;
                         order.Address = address;

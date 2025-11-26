@@ -79,7 +79,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                     <svg:SvgViewbox Source="/Assets/Images/pick_list_orders.svg" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
                     <TextBlock Text="{Binding PickListOrderText}" FontSize="16" FontWeight="Regular" VerticalAlignment="Center" Foreground="#222"/>
                 </StackPanel>
-                <Grid Margin="0,0,0,12">
+                <Grid Margin="0,0,0,12" x:Name="PickListHeader">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2.5*"/>
                         <ColumnDefinition Width="2*"/>
@@ -93,6 +93,14 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                     <TextBlock Text="Order Value" FontWeight="DemiBold" FontSize="14" Grid.Column="3" Margin="0,0,0,0"/>
                     <TextBlock Text="Actions" FontWeight="DemiBold" FontSize="14" Grid.Column="4" Margin="0,0,0,0"/>
                 </Grid>
+
+          
+                                            <TextBlock Text="No items to display" x:Name="NoItemsText"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="Gray" FontSize="14"/>
+                                        
+
                 <ItemsControl ItemsSource="{Binding PickListOrders}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -197,7 +205,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <StackPanel Background="#eff6ff" Margin="0,0,0,0" Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <Grid Margin="0,0,0,0" Height="44">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2.5*"/>
+                                            <ColumnDefinition Width="3*"/>
                                             <ColumnDefinition Width="1*"/>
                                             <ColumnDefinition Width="1*"/>
                                             <ColumnDefinition Width="1.5*"/>
