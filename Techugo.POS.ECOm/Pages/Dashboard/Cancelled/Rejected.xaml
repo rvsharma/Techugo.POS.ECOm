@@ -127,10 +127,10 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Address" Width="280">
+                                <GridViewColumn Header=" Address" Width="280">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Address}" TextWrapping="Wrap" Width="170"/>
+                                            <TextBlock Text="{Binding ShortAddress}" TextWrapping="Wrap" Width="170" HorizontalAlignment="Left"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

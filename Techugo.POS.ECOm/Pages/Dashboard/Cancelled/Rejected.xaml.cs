@@ -101,6 +101,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             address = string.Join(", ", parts);
                         }
                         order.Address = address;
+                        order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                         order.PaymentMode = data.PaymentMode;
                         order.Subscription = data.Subscription;
                         order.OrderDetails = data.OrderDetails;
