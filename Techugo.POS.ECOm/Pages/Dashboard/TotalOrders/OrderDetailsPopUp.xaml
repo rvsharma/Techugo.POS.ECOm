@@ -74,11 +74,17 @@
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Name" FontSize="13" Foreground="#6a7282"/>
-                            <TextBlock Text="{Binding Customer.CustomerName}" FontSize="15" Foreground="#222"/>
+                            <TextBlock Text="Name" FontSize="14" Foreground="#6a7282" Margin="0,0,0,4"/>
+                            <TextBlock FontSize="15" Foreground="#222" Grid.Column="0">
+                                <TextBlock.Text>
+                                    <Binding Path="Customer.CustomerName"
+             TargetNullValue="N/A"
+             FallbackValue="N/A" />
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                         <StackPanel Grid.Column="1">
-                            <TextBlock Text="Contact" FontSize="13" Foreground="#6a7282"/>
+                            <TextBlock Text="Contact" FontSize="14" Foreground="#6a7282" Margin="0,0,0,4"/>
                             <TextBlock  FontSize="15" Foreground="#222">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="+91 {0:00000 00000}">
@@ -89,7 +95,7 @@
                             <!--<TextBlock Text="{Binding Customer.MobileNo}" FontSize="15" Foreground="#222"/>-->
                         </StackPanel>
                     </Grid>
-                    <TextBlock Text="Delivery Address" FontSize="13" Foreground="#6a7282"/>
+                    <TextBlock Text="Delivery Address" FontSize="14" Foreground="#6a7282" Margin="0,0,0,4"/>
                     <TextBlock Text="{Binding Address}" FontSize="15" Foreground="#222" Margin="0,0,0,16" TextWrapping="Wrap"/>
                     <TextBlock Text="Order Items" FontWeight="DemiBold" FontSize="16" Foreground="#222" Margin="0,0,0,8"/>
                     <Grid Margin="0,4,0,8">
@@ -99,7 +105,7 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Item Name" FontWeight="SemiBold" FontSize="14" Foreground="#6a7282" Grid.Column="0"/>
+                        <TextBlock Text="  Item Name" FontWeight="SemiBold" FontSize="14" Foreground="#6a7282" Grid.Column="0"/>
                         <TextBlock Text="Quantity" FontWeight="SemiBold" FontSize="14" Foreground="#6a7282" Grid.Column="1"/>
                         <TextBlock Text="Price" FontWeight="SemiBold" FontSize="14" Foreground="#6a7282" Grid.Column="2"/>
                         <TextBlock Text="Total" FontWeight="SemiBold" FontSize="14" Foreground="#6a7282" Grid.Column="3"/>
@@ -107,22 +113,32 @@
                     <ItemsControl ItemsSource="{Binding OrderDetails}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,0,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="1*"/>
-                                        <ColumnDefinition Width="1*"/>
-                                        <ColumnDefinition Width="1*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Item.ItemName}" FontSize="15" Foreground="#222" Grid.Column="0"/>
-                                    <TextBlock Text="{Binding Quantity}" FontSize="15" Foreground="#222" Grid.Column="1"/>
-                                    <TextBlock Text="{Binding Amount, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="2"/>
-                                    <TextBlock Text="{Binding NetAmount, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="3"/>
-                                </Grid>
+                                <!-- Added a top border for each row -->
+                                <Border BorderThickness="0,1,0,0" BorderBrush="#a6a6a6" Padding="8,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Item.ItemName}"
+                                           FontSize="15"
+                                           Foreground="#222"
+                                           Grid.Column="0"
+                                           TextTrimming="CharacterEllipsis"
+                                           TextWrapping="NoWrap"
+                                           VerticalAlignment="Center"
+                                           ToolTip="{Binding Item.ItemName}" Padding="0,0,4,0"/>
+                                        <TextBlock Text="{Binding Quantity}" FontSize="15" Foreground="#222" Grid.Column="1"/>
+                                        <TextBlock Text="{Binding Amount, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="2"/>
+                                        <TextBlock Text="{Binding NetAmount, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="3"/>
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Separator Margin="0,16,0,8" Background="#E0E0E0"/>
+                    <Separator Margin="0,20,0,12" Background="#a6a6a6"/>
                     <Grid Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"/>

@@ -70,14 +70,14 @@ namespace Techugo.POS.ECom.Model
         public double Long { get; set; }
         public bool IsSocietyAddress { get; set; }
         public int? ZoneID { get; set; }
-        public int SocietyID { get; set; }
-        public string BranchZone { get; set; }
+        public int? SocietyID { get; set; }
+        //public string BranchZone { get; set; }
         public Society Society { get; set; }
     }
 
     public class Society
     {
-        public int SocietyID { get; set; }
+        public int? SocietyID { get; set; }
         public string SocietyName { get; set; }
     }
 }

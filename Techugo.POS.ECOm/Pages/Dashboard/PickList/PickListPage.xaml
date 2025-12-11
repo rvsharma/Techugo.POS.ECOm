@@ -140,7 +140,11 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                        
                                     </Button>
                                     <TextBlock Text="{Binding OrderNo}" FontWeight="SemiBold" FontSize="16" Grid.Column="0" Margin="40,0,0,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding CustomerName}" FontSize="16" Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                    <TextBlock FontSize="16" Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold">
+                                        <TextBlock.Text>
+                                            <Binding Path="CustomerName" TargetNullValue="N/A" FallbackValue="N/A" />
+                                        </TextBlock.Text>
+                                    </TextBlock>
                                     <Border Background="#F3F4F6" CornerRadius="12" Padding="8,2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding TotalItems, StringFormat={}{0} items}" FontWeight="SemiBold" FontSize="14" Foreground="#222"/>
                                     </Border>
@@ -228,7 +232,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                             <DataTemplate>
                                                 <Grid Margin="0,0,0,0" Height="50" Background="White">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="2.5*"/>
+                                                        <ColumnDefinition Width="3*"/>
                                                         <ColumnDefinition Width="1*"/>
                                                         <ColumnDefinition Width="1*"/>
                                                         <ColumnDefinition Width="1.5*"/>

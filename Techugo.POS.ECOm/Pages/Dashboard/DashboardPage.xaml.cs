@@ -4,8 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECOm.ApiClient;
-
-
+using Techugo.POS.ECOm.Services;
+using System.Threading.Tasks;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -46,7 +46,6 @@ namespace Techugo.POS.ECOm.Pages
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UpdatedTime)));
             }
         }
-        // Add events for other tiles
 
         public DashboardPage()
         {
@@ -54,10 +53,11 @@ namespace Techugo.POS.ECOm.Pages
             DataContext = this;
             _apiService = ApiServiceFactory.Create();
 
-            LoadDashboardData();
+            // fire-and-forget initial load (no explicit loader here)
+            _ = LoadDashboardData();
         }
 
-        private async void LoadDashboardData()
+        private async Task LoadDashboardData()
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
             try
@@ -68,9 +68,8 @@ namespace Techugo.POS.ECOm.Pages
                     orderData = data.Data;
                     UpdatedTime = "Last updated: " + DateTime.Now.ToString("h:mm:ss tt");
                 }
-
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { /* consider logging ex */ }
             // TODO: Parse and display data in your dashboard UI
         }
 
@@ -112,16 +111,19 @@ namespace Techugo.POS.ECOm.Pages
         {
             OrderTrackingClicked?.Invoke(this, new RoutedEventArgs());
         }
-        // Add handlers for other tiles
+
         public void TriggerPickList()
         {
-            // reuse same behavior as clicking the tile
             AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadDashboardData();
+            await ApiHelper.RunWithLoader(async () =>
+            {
+                await Task.Delay(500).ConfigureAwait(false); // 2 second delay
+                await LoadDashboardData().ConfigureAwait(false);
+            }, "Refreshing dashboard...");
         }
     }
 }

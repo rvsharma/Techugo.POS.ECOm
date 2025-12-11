@@ -103,7 +103,17 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Customer" Width="120" DisplayMemberBinding="{Binding Customer.CustomerName}" />
+                                <GridViewColumn Header="Customer" Width="120">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+        Text="{Binding Customer.CustomerName, TargetNullValue=N/A, FallbackValue=N/A}"
+        TextTrimming="CharacterEllipsis"
+        TextWrapping="NoWrap"
+        ToolTip="{Binding Customer.CustomerName}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="Contact" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>

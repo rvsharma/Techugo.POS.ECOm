@@ -165,8 +165,10 @@ namespace Techugo.POS.ECOm.Pages
                     SKU = "PLI-002",
                     ItemID = pli.ItemID,
                     ItemName = pli.ItemName,
-                    OrderedQty = $"{pli.Qty}{pli.UOM}",
+                    // Set OrderedQty to numeric string only (no unit), parse will be robust in the VM
+                    OrderedQty = pli.Qty.ToString(CultureInfo.CurrentCulture),
                     MeasuredQty = pli.EditQty,
+                    OriginalQty = pli.EditQty,
                     MeasuredWeight = pli.Weight.ToString(CultureInfo.CurrentCulture),
                     OUM = pli.UOM,
                     //PricePerKg = pli.Rate,

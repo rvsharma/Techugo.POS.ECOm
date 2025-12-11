@@ -3,9 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
         xmlns:services="clr-namespace:Techugo.POS.ECOm.Services"
+        xmlns:pages="clr-namespace:Techugo.POS.ECOm.Pages"
         Title="MainWindow" >
     <Grid>
         <ContentControl x:Name="MainContent" />
+
+        <!-- Global loader overlay (binds to LoadingServiceInstance in App.xaml) -->
+        <pages:LoaderOverlay />
+
         <materialDesign:Snackbar MessageQueue="{x:Static services:SnackbarService.Instance}" x:Name="SuccessSnackbar"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"

@@ -207,9 +207,9 @@
                     <Grid Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="20" />
-                            <!-- spacer -->
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                             
                         </Grid.ColumnDefinitions>
 
                         <!-- Price per KG (left column) -->
@@ -220,28 +220,42 @@
                             </Border>
                         </StackPanel>
 
+                        
                         <!-- Measured Weight (right column) with an editable quantity field beside it -->
-                        <Grid Grid.Column="2">
-                            <!--<Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>-->
 
-                            <!--<StackPanel Grid.Column="0">
+
+                        <StackPanel Grid.Column="1" Margin="6,0,0,0">
                                 <TextBlock Text="Measured Weight" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
                                 <Border Background="#F3F4F6" CornerRadius="6" Padding="10" Margin="0,0,0,0">
                                     <TextBox x:Name="MeasuredWeightDisplayTextBox" Text="{Binding MeasuredWeight, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
                                 </Border>
-                            </StackPanel>-->
+                            </StackPanel>
 
                             <!-- Editable quantity field placed to the right of measured weight -->
-                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Bottom" Width="110">
+                            <StackPanel Grid.Column="2" Margin="6,0,0,0" VerticalAlignment="Bottom">
                                 <TextBlock Text="Qty" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
                                 <Border Background="#F3F4F6" CornerRadius="6" Padding="8">
-                                    <TextBox Text="{Binding MeasuredQty, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" HorizontalContentAlignment="Center"/>
+                                    <TextBox x:Name="MeasuredQtyManualTextBox"
+                 Text="{Binding MeasuredQtyText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Background="Transparent" BorderThickness="0"
+                 FontWeight="SemiBold" HorizontalContentAlignment="Center"/>
                                 </Border>
+
+                                <!-- Validation message (only visible when non-empty) -->
+                                <TextBlock Text="{Binding ValidationMessage}" Foreground="#d4183d" FontSize="12" Margin="4,6,0,0" TextWrapping="Wrap">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="Text" Value="">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </StackPanel>
-                        </Grid>
+                        
                     </Grid>
 
                     <!-- Original / Measured / Diff -->
@@ -280,7 +294,7 @@
                 <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
                     <Button Width="120" Height="40" Margin="0,0,12,0" Click="Cancel_Click"
                         FontWeight="SemiBold" Style="{StaticResource RoundedWhiteButtonStyle}">Cancel</Button>
-                    <Button Width="120" Height="40" Click="Save_Click" FontSize="16">
+                    <Button Width="120" Height="40" Click="Save_Click" FontSize="16" IsEnabled="{Binding CanSave}">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="#030213"/>
