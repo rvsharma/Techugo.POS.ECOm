@@ -217,7 +217,7 @@
                                      VerticalContentAlignment="Center"
                                      Padding="6,0"
                                      TextChanged="SearchBox_TextChanged" />
-                        <TextBlock Text="Search by product name, barcode, or category..."
+                        <TextBlock Text="Search by product name or category..."
                            IsHitTestVisible="False"
                            Foreground="Gray"
                            FontSize="14"
@@ -248,7 +248,7 @@
                     <!-- Overlay ComboBox -->
                     <ComboBox x:Name="BrandFilterCombo"
                           ItemsSource="{Binding BrandList}"
-                          SelectedValuePath="BrandID"
+                          SelectedValuePath="Division"
                           SelectedValue="{Binding SelectedBrandID, Mode=TwoWay}"
                           Width="150"
                           Background="Transparent"

@@ -101,7 +101,7 @@
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="Ordered Quantity" FontSize="12" Foreground="#666" Margin="4,0,0,4"/>
                         <Border Background="#F3F4F6" CornerRadius="6" Padding="10">
-                            <TextBox Text="{Binding OrderedQty}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                            <TextBox Text="{Binding OrderedQtyDisPlay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
                         </Border>
                     </StackPanel>
                 </Grid>
@@ -216,7 +216,7 @@
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Price per KG" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
                             <Border Background="#F3F4F6" CornerRadius="6" Padding="10" Margin="0,0,0,0">
-                                <TextBox Text="{Binding PricePerKgDisplay, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                                <TextBox Text="{Binding SPrice, StringFormat={}{0:N2}, FallbackValue=0.00}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
                             </Border>
                         </StackPanel>
 
@@ -227,7 +227,7 @@
                         <StackPanel Grid.Column="1" Margin="6,0,0,0">
                                 <TextBlock Text="Measured Weight" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
                                 <Border Background="#F3F4F6" CornerRadius="6" Padding="10" Margin="0,0,0,0">
-                                    <TextBox x:Name="MeasuredWeightDisplayTextBox" Text="{Binding MeasuredWeight, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
+                                <TextBox x:Name="MeasuredWeightDisplayTextBox" Text="{Binding Weight, Mode=OneWay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
                                 </Border>
                             </StackPanel>
 
@@ -236,7 +236,7 @@
                                 <TextBlock Text="Qty" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
                                 <Border Background="#F3F4F6" CornerRadius="6" Padding="8">
                                     <TextBox x:Name="MeasuredQtyManualTextBox"
-                 Text="{Binding MeasuredQtyText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Text="{Binding EditedQty, Mode=TwoWay}" TextChanged="MeasuredQtyManualTextBox_TextChanged"
                  Background="Transparent" BorderThickness="0"
                  FontWeight="SemiBold" HorizontalContentAlignment="Center"/>
                                 </Border>
@@ -269,21 +269,53 @@
                         <StackPanel Grid.Column="0" HorizontalAlignment="Left" Margin="0,0,8,0">
                             <TextBlock Text="Original Amount" FontSize="12" Foreground="#4a5565" Margin="0,0,0,6"/>
                             <Border Background="#EDF7FF" Padding="10" CornerRadius="6">
-                                <TextBlock Text="{Binding OriginalAmountDisplay}" FontWeight="SemiBold" Foreground="#0A5BB7"/>
+                                <TextBlock FontWeight="SemiBold" Foreground="#0A5BB7">
+                                    <Run Text="₹"/>
+                                    <Run Text="{Binding Amount, StringFormat={}{0:N2}, FallbackValue=0.00}"/>
+                                </TextBlock>
                             </Border>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,8,0">
                             <TextBlock Text="Measured Amount (POS)" FontSize="12" Foreground="#4a5565" Margin="0,0,0,6"/>
                             <Border Background="#E8FFF1" Padding="10" CornerRadius="6">
-                                <TextBlock Text="{Binding MeasuredAmountDisplay}" FontWeight="SemiBold" Foreground="#0A7F3A"/>
+                                <TextBlock FontWeight="SemiBold" Foreground="#0A7F3A">
+                                    <Run Text="₹"/>
+                                    <Run Text="{Binding MeasuredAmount, StringFormat={}{0:N2}, FallbackValue=0.00}"/>
+                                </TextBlock>
                             </Border>
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" HorizontalAlignment="Center">
                             <TextBlock Text="Difference" FontSize="12" Foreground="#4a5565" Margin="0,0,0,6"/>
-                            <Border Background="#E9FFEE" Padding="10" CornerRadius="6">
-                                <TextBlock Text="{Binding DifferenceDisplay}" FontWeight="SemiBold" Foreground="#0A7F3A"/>
+                            <Border Padding="10" CornerRadius="6">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#E9FFEE"/>
+                                        <Style.Triggers>
+                                            <!-- switch to red when negative -->
+                                            <DataTrigger Binding="{Binding IsDifferenceNegative}" Value="True">
+                                                <Setter Property="Background" Value="#fef2f2"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock FontWeight="SemiBold">
+                                    <Run Text="₹"/>
+                                    <Run Text="{Binding DifferenceAmount, StringFormat={}{0:N2}, FallbackValue=0.00}"/>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <!-- default positive foreground -->
+                                            <Setter Property="Foreground" Value="#0A7F3A"/>
+                                            <Style.Triggers>
+                                                <!-- switch to red when negative -->
+                                                <DataTrigger Binding="{Binding IsDifferenceNegative}" Value="True">
+                                                    <Setter Property="Foreground" Value="#D4183D"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </Border>
                         </StackPanel>
                     </Grid>

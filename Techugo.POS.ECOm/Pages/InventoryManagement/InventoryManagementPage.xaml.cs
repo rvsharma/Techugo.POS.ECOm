@@ -94,7 +94,7 @@ namespace Techugo.POS.ECOm.Pages
             inventoryData = new ObservableCollection<InventoryVM>();
             BrandList = new ObservableCollection<Brand>();
             _apiService = ApiServiceFactory.Create();
-            var queryData = new { page = 1, limit = 1000, brandId = (int?)SelectedBrandID, categoryIds = System.Array.Empty<object>(), search = (string)null };
+            var queryData = new { page = 1, limit = 1000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null, division = SelectedBrandID };
             // start loading; suppression remains true until LoadInventoryData finishes
             LoadInventoryData(queryData);
             GetBrands();
@@ -250,7 +250,7 @@ namespace Techugo.POS.ECOm.Pages
                 if (result != null && result.Success == true)
                 {
                     SnackbarService.Enqueue("Item updated successfully");
-                    var queryData = new { page = 1, limit = 1000, brandId = (int?)SelectedBrandID, categoryIds = System.Array.Empty<object>(), search = (string)null };
+                    var queryData = new { page = 1, limit = 1000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null, division = SelectedBrandID };
 
                     LoadInventoryData(queryData);
                 }
@@ -295,6 +295,8 @@ namespace Techugo.POS.ECOm.Pages
         {
             public int? BrandID { get; set; }
             public string BrandName { get; set; }
+            public int? Division { get; set; }
+
 
         }
 
@@ -304,7 +306,7 @@ namespace Techugo.POS.ECOm.Pages
             {
                 SelectedBrandID = brandId;
             }
-            var queryData = new { page = 1, limit = 1000, brandId = (int?)SelectedBrandID, categoryIds = System.Array.Empty<object>(), search = (string)null };
+            var queryData = new { page = 1, limit = 1000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null, division = SelectedBrandID };
             LoadInventoryData(queryData);
         }
 
@@ -325,7 +327,7 @@ namespace Techugo.POS.ECOm.Pages
             _searchTimer.Stop();
 
             // Call your API function here
-            var queryData = new { page = 1, limit = 1000, brandId = (int?)SelectedBrandID, categoryIds = System.Array.Empty<object>(), search = _pendingSearchText };
+            var queryData = new { page = 1, limit = 1000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = _pendingSearchText, division = SelectedBrandID };
 
             LoadInventoryData(queryData);
         }

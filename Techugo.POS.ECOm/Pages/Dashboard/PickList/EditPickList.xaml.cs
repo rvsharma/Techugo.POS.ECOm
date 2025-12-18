@@ -30,44 +30,10 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             InitializeComponent();
             ItemDetails = itemDetails;
             DataContext = ItemDetails;
-
-            if (ItemDetails != null)
-            {
-                // Ensure initial measured amount equals original amount (if not provided)
-                if (ItemDetails.MeasuredAmount == 0m)
-                    ItemDetails.MeasuredAmount = ItemDetails.Amount;
-
-                // If MeasuredQty is not set, try to derive from OrderedQty (optional)
-                if (ItemDetails.MeasuredQty == 0m && decimal.TryParse(ItemDetails.OrderedQty, NumberStyles.Number, CultureInfo.CurrentCulture, out var parsed))
-                    ItemDetails.MeasuredQty = parsed;
-
-                ItemDetails.UpdateDisplays();
-
-                //if (MeasuredWeightDisplayTextBox != null)
-                //    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight ?? string.Empty;
-            }
-
-            // initialize measured input UI to show quantity (MeasuredQty), not weight
-            MeasuredQtyTextBox.Text = ItemDetails != null ? GetInitialInputText() : string.Empty;
             UpdateKeypadVisibility();
         }
 
-        private string GetInitialInputText()
-        {
-            // Bind keypad input to quantity; use MeasuredQty first, fallback to numeric part of MeasuredWeight
-            if (ItemDetails != null && ItemDetails.MeasuredQty != 0m)
-                return ItemDetails.MeasuredQty.ToString(CultureInfo.CurrentCulture);
-
-            if (!string.IsNullOrWhiteSpace(ItemDetails?.MeasuredWeight))
-            {
-                var s = ItemDetails.MeasuredWeight.Trim();
-                if (s.EndsWith("kg", StringComparison.OrdinalIgnoreCase))
-                    s = s.Substring(0, s.Length - 2).Trim();
-                return s;
-            }
-
-            return string.Empty;
-        }
+       
 
         private void ModeRadio_Checked(object sender, RoutedEventArgs e) => UpdateKeypadVisibility();
 
@@ -84,18 +50,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             if (enterQty)
             {
                 // show quantity in keypad input
-                MeasuredQtyTextBox.Text = ItemDetails?.MeasuredQty.ToString(CultureInfo.CurrentCulture) ?? string.Empty;
-
-                if (ItemDetails != null && decimal.TryParse(MeasuredQtyTextBox.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out decimal qty))
-                {
-                    // measured amount = SPrice * quantity
-                    ItemDetails.MeasuredAmount = Math.Round(ItemDetails.SPrice * qty, 2);
-                    ItemDetails.MeasuredQty = qty;
-                    ItemDetails.UpdateDisplays();
-                }
-
-                //if (MeasuredWeightDisplayTextBox != null)
-                //    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight ?? string.Empty;
+                
             }
 
             if (checkWeight)
@@ -155,17 +110,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 if (TryParseInputAsDecimal(MeasuredQtyTextBox.Text, out decimal measuredQty))
                 {
                     // update quantity and measured amount (SPrice * quantity)
-                    ItemDetails.MeasuredQty = measuredQty;
-                    ItemDetails.MeasuredAmount = Math.Round(ItemDetails.SPrice * measuredQty, 2);
-
-                    ItemDetails.UpdateDisplays();
-
-                    // do not modify MeasuredWeight here since MeasuredQty is units
+                
                 }
                 else
                 {
                     // invalid input — keep previous measured amount/qty
-                    ItemDetails.UpdateDisplays();
+                    
                 }
             }
         }
@@ -178,21 +128,44 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
         {
             if (ItemDetails == null) return;
 
-            if (RbEnterQty?.IsChecked == true)
-            {
-                if (TryParseInputAsDecimal(MeasuredQtyTextBox.Text, out decimal measured))
-                {
-                    ItemDetails.MeasuredQty = measured;
-                    ItemDetails.MeasuredAmount = Math.Round(ItemDetails.SPrice * measured, 2);
-                }
-            }
-
-            ItemDetails.UpdateDisplays();
 
             //if (MeasuredWeightDisplayTextBox != null)
             //    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;
 
             SaveClicked?.Invoke(this, new RoutedEventArgs());
         }
+
+        private void MeasuredQtyManualTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                if (int.TryParse(textBox.Text, out int changedQty))
+                {
+                    ItemDetails.MeasuredAmount = changedQty * ItemDetails.Amount;
+                    if(changedQty > ItemDetails.OrderedQty)
+                    {
+                        ItemDetails.CanSave = false;
+                        ItemDetails.ValidationMessage = "Qty cannot be more than ordered.";
+                    }
+                    else if(changedQty < 0)
+                    {
+                        ItemDetails.CanSave = false;
+                    }
+                    else
+                    {
+                        ItemDetails.CanSave = true;
+                        ItemDetails.ValidationMessage = "";
+                    }
+                    DataContext = ItemDetails;
+                }
+                else
+                {
+                    ItemDetails.CanSave = false;
+                    ItemDetails.ValidationMessage = "Qty cannot empty.";
+                    DataContext = ItemDetails;
+                }
+            }
+        }
+
     }
 }

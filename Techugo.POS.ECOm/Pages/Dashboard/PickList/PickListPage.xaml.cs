@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
+using System.Collections.Specialized;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
@@ -25,7 +27,7 @@ namespace Techugo.POS.ECOm.Pages
         public event PropertyChangedEventHandler PropertyChanged;
         private Window _editPickListPopUpWindow;
 
-        private readonly ApiService _apiService;
+        private readonly ApiService _api_service;
         // public ObservableCollection<PickListOrder> PickListOrders { get; set; } = new();
         private ObservableCollection<PickListOrder> _pickListOrders;
         private ObservableCollection<SocietyOrderGroup1> _groupedOrders;
@@ -64,7 +66,7 @@ namespace Techugo.POS.ECOm.Pages
             NoItemsText.Visibility = Visibility.Collapsed;
             DataContext = this;
             PickListOrders = new ObservableCollection<PickListOrder>();
-            _apiService = ApiServiceFactory.Create();
+            _api_service = ApiServiceFactory.Create();
             LoadPickListData();
         }
 
@@ -74,7 +76,7 @@ namespace Techugo.POS.ECOm.Pages
              //string formattedDate = "2025-10-22";
             try
             {
-                PickListResponse assignRiderOrdersResponse = await _apiService.GetAsync<PickListResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=1000&status=PickListOrder&Date=" + formattedDate + "");
+                PickListResponse assignRiderOrdersResponse = await _api_service.GetAsync<PickListResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=1000&status=PickListOrder&Date=" + formattedDate + "");
                 if (assignRiderOrdersResponse != null)
                 {
 
@@ -95,23 +97,16 @@ namespace Techugo.POS.ECOm.Pages
                     {
                         foreach (var o in groupedOrder.Orders)
                         {
-                            OrderDetailsReponse orderDetails = await _apiService.GetAsync<OrderDetailsReponse>("order/order-detail/" + o.OrderID);
+                            OrderDetailsReponse orderDetails = await _api_service.GetAsync<OrderDetailsReponse>("order/order-detail/" + o.OrderID);
                             if (orderDetails.Data != null)
                             {
-                                PickListOrders.Add(new PickListOrder
-                                {
-                                    OrderID = orderDetails.Data.OrderID,
-                                    OrderNo = orderDetails.Data.OrderNo,
-                                    CustomerName = orderDetails.Data.Customer.CustomerName,
-                                    TotalItems = orderDetails.Data.OrderDetails.Count,
-                                    OrderValue = orderDetails.Data.TotalAmount,
-                                    IsExpanded = false,
-                                    Items = new ObservableCollection<PickListItem>(
+                                // build items collection
+                                var items = new ObservableCollection<PickListItem>(
                                     orderDetails.Data.OrderDetails.Select(od => new PickListItem
                                     {
+                                        OrderID = orderDetails.Data.OrderID,
                                         OrderDetailID = od.ID,
                                         ItemID = od.ItemID,
-                                        
                                         ItemName = od.Item.ItemName.Length > 25 ? od.Item.ItemName.Substring(0, 25) + "..." : od.Item.ItemName,
                                         Size = od.Size,
                                         Qty = od.Quantity,
@@ -123,10 +118,25 @@ namespace Techugo.POS.ECOm.Pages
                                         NetAmount = od.NetAmount,
                                         Discount = od.Discount,
                                         ImageUrl = od.Item.ItemImages[0].ImagePath
-                                        //Rate = od.Rate
                                     }).ToList()
-                                )
-                                });
+                                );
+
+                                // create order
+                                var order = new PickListOrder
+                                {
+                                    OrderID = orderDetails.Data.OrderID,
+                                    OrderNo = orderDetails.Data.OrderNo,
+                                    CustomerName = orderDetails.Data.Customer.CustomerName,
+                                    TotalItems = orderDetails.Data.OrderDetails.Count,
+                                    OrderValue = items?.Sum(i => i.Amount) ?? orderDetails.Data.TotalAmount,
+                                    IsExpanded = false,
+                                    Items = items
+                                };
+
+                                // attach handlers so OrderValue updates when item Amount changes or items collection changes
+                                AttachItemHandlers(order);
+
+                                PickListOrders.Add(order);
                             }
                         }
 
@@ -144,6 +154,74 @@ namespace Techugo.POS.ECOm.Pages
             catch { }
             
         }
+
+        private void AttachItemHandlers(PickListOrder order)
+        {
+            if (order == null || order.Items == null) return;
+
+            // attach to existing items
+            foreach (var item in order.Items.ToList())
+            {
+                AttachPropertyChanged(item);
+            }
+
+            // monitor collection changes (add/remove/replace)
+            // use a named handler so we could remove it later if needed
+            NotifyCollectionChangedEventHandler collectionHandler = (s, e) =>
+            {
+                if (e.OldItems != null)
+                {
+                    foreach (var old in e.OldItems.Cast<PickListItem>())
+                        DetachPropertyChanged(old);
+                }
+                if (e.NewItems != null)
+                {
+                    foreach (var n in e.NewItems.Cast<PickListItem>())
+                        AttachPropertyChanged(n);
+                }
+
+                // Recalculate whenever items added/removed/replaced
+                order.OrderValue = order.Items?.Sum(i => i.Amount) ?? 0m;
+            };
+
+            // prevent multiple subscriptions: remove existing first if present
+            order.Items.CollectionChanged -= collectionHandler;
+            order.Items.CollectionChanged += collectionHandler;
+        }
+
+        private void AttachPropertyChanged(PickListItem item)
+        {
+            if (item is INotifyPropertyChanged inpc)
+            {
+                // Use PropertyChangedEventManager to avoid strong event handler references
+                PropertyChangedEventManager.AddHandler(inpc, OnItemPropertyChanged, string.Empty);
+            }
+        }
+
+        private void DetachPropertyChanged(PickListItem item)
+        {
+            if (item is INotifyPropertyChanged inpc)
+            {
+                PropertyChangedEventManager.RemoveHandler(inpc, OnItemPropertyChanged, string.Empty);
+            }
+        }
+
+        private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            // respond when Amount changes (or when PropertyName is empty/null, which means many properties changed)
+            if (!string.IsNullOrEmpty(e.PropertyName) && e.PropertyName != nameof(PickListItem.Amount))
+                return;
+
+            if (sender is not PickListItem item) return;
+
+            // find parent order that contains this item
+            var parent = PickListOrders?.FirstOrDefault(o => o.Items != null && o.Items.Contains(item));
+            if (parent != null)
+            {
+                parent.OrderValue = parent.Items?.Sum(i => i.Amount) ?? parent.OrderValue;
+            }
+        }
+
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             BackRequested?.Invoke(this, new RoutedEventArgs());
@@ -160,23 +238,20 @@ namespace Techugo.POS.ECOm.Pages
             {
                 itemDetails = new EditQtyViewModel
                 {
+                    OrderID = pli.OrderID,
                     OrderDetailID = pli.OrderDetailID,
-                    TitleText = "Edit Qty - " + pli.ItemName,
                     SKU = "PLI-002",
                     ItemID = pli.ItemID,
                     ItemName = pli.ItemName,
-                    // Set OrderedQty to numeric string only (no unit), parse will be robust in the VM
-                    OrderedQty = pli.Qty.ToString(CultureInfo.CurrentCulture),
-                    MeasuredQty = pli.EditQty,
-                    OriginalQty = pli.EditQty,
-                    MeasuredWeight = pli.Weight.ToString(CultureInfo.CurrentCulture),
-                    OUM = pli.UOM,
-                    //PricePerKg = pli.Rate,
+                    OrderedQty = pli.Qty,
+                    EditedQty = pli.Qty,
+                    OrderedQtyDisPlay = pli.Qty + pli.UOM,
+                    Weight = pli.Weight != null && decimal.TryParse(pli.Weight, out var w) ? w : 0m,
+                    UOM = pli.UOM,
                     SPrice = pli.SPrice,
                     Amount = pli.Amount,
-                    NetAmount = pli.NetAmount,
-                    Discount = pli.Discount,
-                    //OriginalAmount = pli.Rate
+                    MeasuredAmount = pli.Amount,
+                    //DifferenceAmount = 0m
                 };
             }
 
@@ -234,16 +309,7 @@ namespace Techugo.POS.ECOm.Pages
             if (vm == null) return;
 
             // parse numeric weight from vm.MeasuredWeight (it may be "1.23 kg" or "1.23")
-            string weightText = vm.MeasuredWeight ?? string.Empty;
-            if (weightText.EndsWith("kg", StringComparison.OrdinalIgnoreCase))
-                weightText = weightText.Substring(0, weightText.Length - 2).Trim();
-
-            if (!decimal.TryParse(weightText, NumberStyles.Number, CultureInfo.CurrentCulture, out decimal newWeight))
-            {
-                MessageBox.Show("Invalid weight entered", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
+           
             // Find the PickListOrder and PickListItem that match the edited ItemID
             PickListItem? targetItem = null;
             PickListOrder? parentOrder = null;
@@ -274,14 +340,10 @@ namespace Techugo.POS.ECOm.Pages
                 ItemName = targetItem.ItemName,
                 Size = targetItem.Size,
                 Qty = targetItem.Qty,
-                EditQty = Convert.ToInt32(Math.Round(vm.MeasuredQty)), // or adjust conversion rule
-                Weight = Convert.ToString(newWeight),
-                UOM = targetItem.UOM,
+                //EditQty = Convert.ToInt32(Math.Round(vm.MeasuredQty)), // or adjust conversion rule
+                //Weight = Convert.ToString(newWeight),
                 SPrice = targetItem.SPrice,
                 Amount = vm.MeasuredAmount,
-                NetAmount = targetItem.NetAmount,
-                Discount = targetItem.Discount,
-                Rate = targetItem.Rate,
                 Total = targetItem.Total
             };
 
@@ -292,7 +354,7 @@ namespace Techugo.POS.ECOm.Pages
                 parentOrder.Items[itemIndex] = updatedItem;
             }
 
-            // Recalculate parent order totals and replace the parent order in PickListOrders to force UI refresh
+            // Recalculate parent order totals (collection change handler will also recalc; this is defensive)
             parentOrder.OrderValue = parentOrder.Items?.Sum(i => i.Amount) ?? parentOrder.OrderValue;
 
             var orderIndex = PickListOrders.IndexOf(parentOrder);
@@ -301,17 +363,6 @@ namespace Techugo.POS.ECOm.Pages
                 // replace the order to raise CollectionChanged on PickListOrders (UI will refresh header fields)
                 PickListOrders[orderIndex] = parentOrder;
             }
-
-            // Prepare payload for API — replace with your actual expected schema
-            var payload = new
-            {
-                OrderID = parentOrder.OrderID,
-                ItemID = updatedItem.ItemID,
-                MeasuredWeight = newWeight,
-                MeasuredQty = vm.MeasuredQty,
-                MeasuredAmount = vm.MeasuredAmount
-            };
-
             // Close popup window
             CloseOrderDetailsPopUp(popup, new RoutedEventArgs());
         }
@@ -352,11 +403,11 @@ namespace Techugo.POS.ECOm.Pages
                     Items = items
                 };
 
-                BaseResponse itemsSaveResult = await _apiService.PutAsync<BaseResponse>("order/edit-order-item", itemsData);
+                BaseResponse itemsSaveResult = await _api_service.PutAsync<BaseResponse>("order/edit-order-item", itemsData);
                 if(itemsSaveResult != null && itemsSaveResult.Success == true)
                 {
                     var data = new { OrderIDs = new[] { orderID }, BranchStatus = "Packed" };
-                    BaseResponse result = await _apiService.PutAsync<BaseResponse>("order/update-order", data);
+                    BaseResponse result = await _api_service.PutAsync<BaseResponse>("order/update-order", data);
                     if (result != null)
                     {
                         if (result.Success == true)
@@ -412,6 +463,4 @@ namespace Techugo.POS.ECOm.Pages
             return null;
         }
     }
-
-
 }
