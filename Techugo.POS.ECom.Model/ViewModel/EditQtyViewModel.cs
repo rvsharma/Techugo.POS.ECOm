@@ -20,6 +20,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string SKU { get; set; }
         public string UOM { get; set; }
         public decimal SPrice { get; set; }
+        public decimal OriginalAmount { get; set; }
         public decimal Weight { get; set; }
         private decimal _amount;
         public decimal Amount
@@ -73,8 +74,8 @@ namespace Techugo.POS.ECom.Model.ViewModel
         private void UpdateDifference()
         {
             // measured minus original amount
-            DifferenceAmount = (MeasuredAmount - Amount).ToString("0.##", CultureInfo.CurrentCulture); ;
-            IsDifferenceNegative = (MeasuredAmount - Amount) < 0;
+            DifferenceAmount = (MeasuredAmount - OriginalAmount).ToString("0.##", CultureInfo.CurrentCulture); ;
+            IsDifferenceNegative = (MeasuredAmount - OriginalAmount) < 0;
         }
 
         // Validation message (empty/null => no message shown)

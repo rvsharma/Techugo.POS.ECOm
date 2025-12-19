@@ -33,6 +33,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             UpdateKeypadVisibility();
         }
 
+
        
 
         private void ModeRadio_Checked(object sender, RoutedEventArgs e) => UpdateKeypadVisibility();
@@ -141,7 +142,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             {
                 if (int.TryParse(textBox.Text, out int changedQty))
                 {
-                    ItemDetails.MeasuredAmount = changedQty * ItemDetails.Amount;
+                    ItemDetails.MeasuredAmount = changedQty * ItemDetails.SPrice;
                     if(changedQty > ItemDetails.OrderedQty)
                     {
                         ItemDetails.CanSave = false;

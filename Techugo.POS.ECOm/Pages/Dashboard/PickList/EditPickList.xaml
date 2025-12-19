@@ -271,7 +271,7 @@
                             <Border Background="#EDF7FF" Padding="10" CornerRadius="6">
                                 <TextBlock FontWeight="SemiBold" Foreground="#0A5BB7">
                                     <Run Text="₹"/>
-                                    <Run Text="{Binding Amount, StringFormat={}{0:N2}, FallbackValue=0.00}"/>
+                                    <Run Text="{Binding OriginalAmount, StringFormat={}{0:N2}, FallbackValue=0.00}"/>
                                 </TextBlock>
                             </Border>
                         </StackPanel>

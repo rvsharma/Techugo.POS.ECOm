@@ -143,12 +143,12 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <GridViewColumn Header=" Items" Width="80" DisplayMemberBinding="{Binding Items}" />
                                 <GridViewColumn Header=" Total Amount" Width="140" DisplayMemberBinding="{Binding TotalAmount, StringFormat=₹{0}}" />
                                 <GridViewColumn Header=" Payment" Width="120" DisplayMemberBinding="{Binding PaymentMode}" />
-                                <GridViewColumn Header=" Schedule" Width="150">
+                                <GridViewColumn Header=" Placed At" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock>
                                                 <TextBlock.Text>
-                                                    <Binding Path="ExpectedDeliveryDate"
+                                                    <Binding Path="createdAt"
 StringFormat="{}{0:yyyy-MM-dd, hh:mm tt}"
 TargetNullValue=""
 FallbackValue=""/>

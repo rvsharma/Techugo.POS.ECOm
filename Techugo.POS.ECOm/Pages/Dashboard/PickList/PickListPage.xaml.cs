@@ -244,13 +244,14 @@ namespace Techugo.POS.ECOm.Pages
                     ItemID = pli.ItemID,
                     ItemName = pli.ItemName,
                     OrderedQty = pli.Qty,
-                    EditedQty = pli.Qty,
+                    EditedQty = pli.EditQty,
                     OrderedQtyDisPlay = pli.Qty + pli.UOM,
                     Weight = pli.Weight != null && decimal.TryParse(pli.Weight, out var w) ? w : 0m,
                     UOM = pli.UOM,
                     SPrice = pli.SPrice,
                     Amount = pli.Amount,
-                    MeasuredAmount = pli.Amount,
+                    OriginalAmount = pli.SPrice * pli.Qty,
+                    MeasuredAmount = pli.SPrice * pli.Qty,
                     //DifferenceAmount = 0m
                 };
             }
@@ -316,7 +317,7 @@ namespace Techugo.POS.ECOm.Pages
 
             foreach (var order in PickListOrders)
             {
-                var match = order.Items?.FirstOrDefault(i => i.ItemID == vm.ItemID);
+                var match = order.Items?.FirstOrDefault(i => i.OrderDetailID == vm.OrderDetailID);
                 if (match != null)
                 {
                     targetItem = match;
@@ -340,6 +341,7 @@ namespace Techugo.POS.ECOm.Pages
                 ItemName = targetItem.ItemName,
                 Size = targetItem.Size,
                 Qty = targetItem.Qty,
+                EditQty = vm.EditedQty,
                 //EditQty = Convert.ToInt32(Math.Round(vm.MeasuredQty)), // or adjust conversion rule
                 //Weight = Convert.ToString(newWeight),
                 SPrice = targetItem.SPrice,
@@ -391,7 +393,7 @@ namespace Techugo.POS.ECOm.Pages
                         // Size or null
                         Size = string.IsNullOrWhiteSpace(i.Size) ? null : i.Size,
                         // Original amount (use item.Amount or another property if you store original separately)
-                        OrginalAmount = i.Amount,
+                        OrginalAmount = i.Qty * i.SPrice,
                         // MeasuredAmount — if you track measured separately, use that; fallback to Amount
                         MeasuredAmount = i.Amount
                     })

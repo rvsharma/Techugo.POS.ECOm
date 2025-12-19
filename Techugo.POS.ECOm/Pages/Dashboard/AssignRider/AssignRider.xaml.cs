@@ -125,7 +125,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
     ? data.ExpectedDeliveryDate.Value
     : null;
-                            order.TotalAmount = data.TotalAmount;
+                            order.TotalAmount = data.PaidAmount;
                             order.PaidAmount = data.PaidAmount;
                             order.Status = data.Status;
                             order.Address = address;
