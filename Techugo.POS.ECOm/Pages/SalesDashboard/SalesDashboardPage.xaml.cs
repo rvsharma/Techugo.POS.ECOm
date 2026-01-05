@@ -39,7 +39,7 @@ namespace Techugo.POS.ECOm.Pages
         {
             InitializeComponent();
             _apiService = ApiServiceFactory.Create();
-            _viewModel = new WeeklyChartViewModel { MaxY = 1000, Days = new List<string>() };
+            _viewModel = new WeeklyChartViewModel { MaxY = 1000, Days = new List<string>(), SelectedDate = DateTime.Today };
             DataContext = _viewModel;
             _ = LoadDataAsync();
 
@@ -132,7 +132,10 @@ namespace Techugo.POS.ECOm.Pages
                 set { _maxY = value; OnPropertyChanged(nameof(MaxY)); }
             }
 
-            public event PropertyChangedEventHandler PropertyChanged;
+            public DateTime SelectedDate { get; set; }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
             protected void OnPropertyChanged(string name) =>
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
