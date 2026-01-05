@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.IO.Ports;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Globalization;
@@ -9,6 +10,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 {
     public partial class EditPickList : UserControl
     {
+        public string[] portList;
+        private SerialPort _serialPort;
         public event RoutedEventHandler CloseClicked;
         public event RoutedEventHandler SaveClicked;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -31,10 +34,48 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             ItemDetails = itemDetails;
             DataContext = ItemDetails;
             UpdateKeypadVisibility();
+            LoadComPorts();
+        }
+
+        private void LoadComPorts()
+        {
+            portList = SerialPort.GetPortNames();
+            InitializeSerialPort("COM5");
+
+
         }
 
 
-       
+        private void InitializeSerialPort(string portName = "COM5")
+        {
+            // dispose existing
+            try { _serialPort?.Dispose(); } catch { }
+
+            _serialPort = new SerialPort(portName, 9600, Parity.None, 8, StopBits.None);
+            _serialPort.RtsEnable = true; // Essential for many serial adapters
+            _serialPort.DtrEnable = true; // Signals the PC is ready to receive
+            _serialPort.DataReceived += DataReceivedHandler;
+
+
+            try
+            {
+                _serialPort.Open();
+                _serialPort.Write("W");
+                System.Diagnostics.Debug.WriteLine($"Serial port {_serialPort.PortName} opened.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to open serial port: {ex}");
+            }
+        }
+        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort)sender;
+            string data = sp.ReadExisting();
+            // Parse the weight data here (usually a string ending in 'kg' or 'lb')
+            Console.WriteLine("Weight Received: " + data);
+        }
+
 
         private void ModeRadio_Checked(object sender, RoutedEventArgs e) => UpdateKeypadVisibility();
 
@@ -56,10 +97,63 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
             if (checkWeight)
             {
+                
+                
+                
+
                 // Random weight functionality is disabled for now.
                 // If you need to re-enable later, call GenerateRandomMeasuredWeight().
             }
         }
+        private void SerialPort_DataReceived(object? sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                var sp = (SerialPort)sender;
+
+                // Use ReadLine if the scale sends data ending in NewLine (Standard for CAS)
+                // This ensures you get the full weight string like "ST,GS,  1.234kg"
+                string data = sp.ReadExisting();
+
+                System.Diagnostics.Debug.WriteLine($"Raw Data: {data}");
+
+                Dispatcher.Invoke(() =>
+                {
+                    // Logic to parse the weight from the string
+                    // Example: CAS Type A usually has weight at index 9-15
+                    ParseCasWeight(data);
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        private void ParseCasWeight(string rawData)
+        {
+            // Simple regex or substring to extract numbers
+            // This is a common pattern for CAS scales
+            string trimmed = rawData.Replace(" ", "").Replace("kg", "").Trim();
+            if (decimal.TryParse(trimmed, out decimal weight))
+            {
+                MeasuredQtyTextBox.Text = weight.ToString(CultureInfo.CurrentCulture);
+            }
+        }
+
+        // --- cleanup when control is unloaded/desposed ---
+        private void CleanupSerialPort()
+        {
+            if (_serialPort != null)
+            {
+                _serialPort.DataReceived -= SerialPort_DataReceived;
+                try { if (_serialPort.IsOpen) _serialPort.Close(); } catch { }
+                _serialPort.Dispose();
+                _serialPort = null;
+            }
+        }
+
+        // Ensure the port is closed when the application exits
 
         private void GenerateRandomMeasuredWeight()
         {
@@ -121,14 +215,35 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             }
         }
 
-        private void Close_Click(object sender, RoutedEventArgs e) => CloseClicked?.Invoke(this, new RoutedEventArgs());
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            if (_serialPort != null && _serialPort.IsOpen)
+            {
+                _serialPort.Close();
+                _serialPort.Dispose();
+            }
+            CloseClicked?.Invoke(this, new RoutedEventArgs());
+        }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e) => CloseClicked?.Invoke(this, new RoutedEventArgs());
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        { 
+            if (_serialPort != null && _serialPort.IsOpen)
+            {
+                _serialPort.Close();
+                _serialPort.Dispose();
+            }
+            CloseClicked?.Invoke(this, new RoutedEventArgs());
+        }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (ItemDetails == null) return;
 
+            if (_serialPort != null && _serialPort.IsOpen)
+            {
+                _serialPort.Close();
+                _serialPort.Dispose();
+            }
 
             //if (MeasuredWeightDisplayTextBox != null)
             //    MeasuredWeightDisplayTextBox.Text = ItemDetails.MeasuredWeight;

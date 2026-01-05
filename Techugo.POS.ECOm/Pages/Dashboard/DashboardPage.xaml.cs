@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Options;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Techugo.POS.ECom.Model;
+using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Services;
-using System.Threading.Tasks;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -22,8 +23,11 @@ namespace Techugo.POS.ECOm.Pages
         public event RoutedEventHandler OrderTrackingClicked;
 
         private readonly ApiService _apiService;
+        private readonly WeightViewModel _weightVm = new WeightViewModel();
+        public WeightViewModel WeightVM => _weightVm;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
 
         private OrderStatsData _orderData;
         public OrderStatsData orderData
@@ -50,11 +54,15 @@ namespace Techugo.POS.ECOm.Pages
         public DashboardPage()
         {
             InitializeComponent();
+            // keep DataContext as the page so existing bindings (orderData, UpdatedTime, etc.) keep working
             DataContext = this;
             _apiService = ApiServiceFactory.Create();
 
             // fire-and-forget initial load (no explicit loader here)
             _ = LoadDashboardData();
+
+            // start auto-detection of serial settings and reading
+            try { _weightVm.StartSerial("COM6"); } catch { }
         }
 
         private async Task LoadDashboardData()
