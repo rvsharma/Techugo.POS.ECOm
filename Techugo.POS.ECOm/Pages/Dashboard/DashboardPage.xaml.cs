@@ -57,12 +57,7 @@ namespace Techugo.POS.ECOm.Pages
             // keep DataContext as the page so existing bindings (orderData, UpdatedTime, etc.) keep working
             DataContext = this;
             _apiService = ApiServiceFactory.Create();
-
-            // fire-and-forget initial load (no explicit loader here)
             _ = LoadDashboardData();
-
-            // start auto-detection of serial settings and reading
-            try { _weightVm.StartSerial("COM6"); } catch { }
         }
 
         private async Task LoadDashboardData()

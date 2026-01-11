@@ -21,7 +21,17 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string UOM { get; set; }
         public decimal SPrice { get; set; }
         public decimal OriginalAmount { get; set; }
-        public decimal Weight { get; set; }
+        private decimal _weight;
+        public decimal Weight
+        {
+            get => _weight;
+            set
+            {
+                if (_weight == value) return;
+                _weight = value;
+                Notify(nameof(Weight));
+            }
+        }
         private decimal _amount;
         public decimal Amount
         {

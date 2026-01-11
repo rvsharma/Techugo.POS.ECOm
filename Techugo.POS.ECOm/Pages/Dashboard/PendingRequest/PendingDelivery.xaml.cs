@@ -70,8 +70,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
 
         private async void LoadOrdersData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            //string formattedDate = "2025-10-17";
+            //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string formattedDate = "2026-01-11";
             OrdersResponse orderResponse = await _api_service.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=1000&status=PendingRequest&Date=" + formattedDate + "");
             if (orderResponse != null)
             {

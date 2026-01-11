@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Windows;
-using System.IO.Ports;
-using System.Windows.Controls;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO.Ports;
+using System.Management;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
 using Techugo.POS.ECom.Model.ViewModel; // for EditQtyViewModel
 
 namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
@@ -33,25 +36,74 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             InitializeComponent();
             ItemDetails = itemDetails;
             DataContext = ItemDetails;
-            UpdateKeypadVisibility();
-            LoadComPorts();
+            UpdateKeypadVisibility(false);
+            //LoadComPorts();
         }
 
         private void LoadComPorts()
         {
             portList = SerialPort.GetPortNames();
-            InitializeSerialPort("COM5");
+
+            // try to find USB-backed COM ports via WMI (Win32_PnPEntity contains COM name in the 'Name' property)
+            var usbPorts = GetUsbSerialPorts();
+            if (usbPorts.Any())
+            {
+                // pick the first USB serial device (or apply your own heuristics)
+                var portToUse = usbPorts.First().PortName;
+                InitializeSerialPort(portToUse);
+                Debug.WriteLine($"Auto-selected USB serial port: {portToUse}");
+                return;
+            }
+
+            // fallback: if none identified, use first available COM or COM5 default
+            if (portList != null && portList.Length > 0)
+                InitializeSerialPort(portList[0]);
+            else
+                InitializeSerialPort("COM6");
 
 
         }
+        /// <summary>
+        /// Returns detected serial ports backed by USB devices.
+        /// Each tuple contains (PortName, Description, PnpDeviceId).
+        /// Requires System.Management (Windows).
+        /// </summary>
+        private List<(string PortName, string Description, string PnpDeviceId)> GetUsbSerialPorts()
+        {
+            var list = new List<(string, string, string)>();
+            try
+            {
+                using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Name LIKE '%(COM%'");
+                foreach (ManagementObject mo in searcher.Get())
+                {
+                    var name = (mo["Name"] as string) ?? string.Empty;         // e.g. "USB-SERIAL CH340 (COM3)"
+                    var pnp = (mo["PNPDeviceID"] as string) ?? string.Empty;   // contains vendor/usb info on USB devices
+                                                                               // extract COMx from the Name property
+                    var m = Regex.Match(name, @"\((COM\d+)\)");
+                    if (!m.Success) continue;
+                    var port = m.Groups[1].Value;
 
+                    // keep entries where PNPDeviceID or Name mentions "USB" (case-insensitive)
+                    if (name.IndexOf("USB", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                        name.IndexOf("Serial", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        list.Add((port, name, pnp));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"GetUsbSerialPorts failed: {ex.Message}");
+            }
+            return list;
+        }
 
-        private void InitializeSerialPort(string portName = "COM5")
+        private void InitializeSerialPort(string portName = "COM6")
         {
             // dispose existing
             try { _serialPort?.Dispose(); } catch { }
 
-            _serialPort = new SerialPort(portName, 9600, Parity.None, 8, StopBits.None);
+            _serialPort = new SerialPort(portName, 9600, Parity.None, 8, StopBits.One);
             _serialPort.RtsEnable = true; // Essential for many serial adapters
             _serialPort.DtrEnable = true; // Signals the PC is ready to receive
             _serialPort.DataReceived += DataReceivedHandler;
@@ -71,15 +123,50 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            string data = sp.ReadExisting();
-            // Parse the weight data here (usually a string ending in 'kg' or 'lb')
-            Console.WriteLine("Weight Received: " + data);
+            if (sp != null)
+            {
+                string data = sp.ReadLine().Trim();
+
+                try
+                {
+                    string cleaned = Regex.Replace(data, @"[^0-9.]", "");
+
+                    // Remove leading zeros (but keep "0" if it's the only digit)
+                    cleaned = cleaned.TrimStart('0');
+                    if (string.IsNullOrEmpty(cleaned) || cleaned.StartsWith("."))
+                        cleaned = "0" + cleaned;
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        if (ItemDetails != null)
+                        {
+                            ItemDetails.Weight = decimal.Parse(cleaned); ; // now raises PropertyChanged
+                                                         // Optionally update measured amount/other derived fields here
+                                                         // ItemDetails.MeasuredAmount = parsed * ItemDetails.SPrice;
+                            DataContext = ItemDetails; // optional; not required if bindings use INotifyPropertyChanged
+                        }
+
+                        if (MeasuredWeightDisplayTextBox != null)
+                            MeasuredWeightDisplayTextBox.Text = decimal.Parse(cleaned).ToString(CultureInfo.CurrentCulture);
+                    });
+
+                    
+                    //DataContext = ItemDetails;
+                    // Parse the weight data here (usually a string ending in 'kg' or 'lb')
+                    //Console.WriteLine("Weight Received: " + data);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                
+            }
         }
 
 
-        private void ModeRadio_Checked(object sender, RoutedEventArgs e) => UpdateKeypadVisibility();
+        private void ModeRadio_Checked(object sender, RoutedEventArgs e) => UpdateKeypadVisibility(true);
 
-        private void UpdateKeypadVisibility()
+        private void UpdateKeypadVisibility(bool isChanged)
         {
             if (PosKeypadPanel == null || WeighCalloutPanel == null) return;
 
@@ -96,13 +183,13 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             }
 
             if (checkWeight)
-            {
+            { 
+                if(isChanged)
+                {
+                    CleanupSerialPort();
+                    LoadComPorts();
+                }
                 
-                
-                
-
-                // Random weight functionality is disabled for now.
-                // If you need to re-enable later, call GenerateRandomMeasuredWeight().
             }
         }
         private void SerialPort_DataReceived(object? sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -283,5 +370,18 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             }
         }
 
+    }
+
+    internal record struct NewStruct(string port, object name, object pnp)
+    {
+        public static implicit operator (string port, object name, object pnp)(NewStruct value)
+        {
+            return (value.port, value.name, value.pnp);
+        }
+
+        public static implicit operator NewStruct((string port, object name, object pnp) value)
+        {
+            return new NewStruct(value.port, value.name, value.pnp);
+        }
     }
 }

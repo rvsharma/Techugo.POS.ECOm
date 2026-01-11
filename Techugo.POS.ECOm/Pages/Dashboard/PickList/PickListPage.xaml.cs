@@ -343,7 +343,7 @@ namespace Techugo.POS.ECOm.Pages
                 Qty = targetItem.Qty,
                 EditQty = vm.EditedQty,
                 //EditQty = Convert.ToInt32(Math.Round(vm.MeasuredQty)), // or adjust conversion rule
-                //Weight = Convert.ToString(newWeight),
+                Weight = Convert.ToString(vm.Weight),
                 SPrice = targetItem.SPrice,
                 Amount = vm.MeasuredAmount,
                 Total = targetItem.Total
@@ -391,7 +391,7 @@ namespace Techugo.POS.ECOm.Pages
                         // Quantity comes from EditQty (edited quantity)
                         Quantity = i.EditQty,
                         // Size or null
-                        Size = string.IsNullOrWhiteSpace(i.Size) ? null : i.Size,
+                        Size = string.IsNullOrWhiteSpace(i.Weight) ? null : i.Weight,
                         // Original amount (use item.Amount or another property if you store original separately)
                         OrginalAmount = i.Qty * i.SPrice,
                         // MeasuredAmount — if you track measured separately, use that; fallback to Amount
