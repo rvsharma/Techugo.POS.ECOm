@@ -1,15 +1,30 @@
+using System.ComponentModel;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Techugo.POS.ECom.Model;
+using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.OrderTracking;
 
 namespace Techugo.POS.ECOm.Pages
 {
-    public partial class LayoutPage : UserControl
+    public partial class LayoutPage : UserControl, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly ApiService _apiService;
+        private string _notificationCount;
+        public string UnreadAlertsCount
+        {
+            get => _notificationCount;
+            set
+            {
+                _notificationCount = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UnreadAlertsCount)));
+            }
+        }
         private Window _newOrderPopupWindow; // Add this field
 
         // DependencyProperty so XAML bindings (DataTrigger) can observe the state
@@ -25,7 +40,11 @@ namespace Techugo.POS.ECOm.Pages
         public LayoutPage()
         {
             InitializeComponent();
+            _apiService = ApiServiceFactory.Create();
+            _ = LoadNotificationCountAsync();
+            DataContext = this;
             ShowDashboard();
+            UnreadAlertsCount = "Last updated: " + DateTime.Now.ToString("h:mm:ss tt");
             // ensure initial width matches expanded state
             LeftMenu.Width = IsMenuExpanded ? 240 : 48;
         }
@@ -195,6 +214,21 @@ namespace Techugo.POS.ECOm.Pages
                 SetPageContent(dashboard);
             };
             SetPageContent(assignRider);
+        }
+
+        public async Task LoadNotificationCountAsync()
+        {
+            try
+            {
+                NotoficationCountResponse data = await _apiService.GetAsync<NotoficationCountResponse>("branch/notification-count");
+                if (data != null)
+                {
+                    UnreadAlertsCount = data.Data.Count.ToString();
+                    
+                }
+            }
+            catch (Exception ex) { /* consider logging ex */ }
+            // TODO: Parse and display data in your dashboard UI
         }
     }
 }

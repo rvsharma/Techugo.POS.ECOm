@@ -40,6 +40,7 @@
     <None Remove="Assets\Images\inventory_list_icon.svg" />
     <None Remove="Assets\Images\mark_ready.svg" />
     <None Remove="Assets\Images\mobile_icon.svg" />
+    <None Remove="Assets\Images\notification.svg" />
     <None Remove="Assets\Images\orders.svg" />
     <None Remove="Assets\Images\order_list_icon.svg" />
     <None Remove="Assets\Images\partial_returns.svg" />
@@ -112,6 +113,7 @@
     <Resource Include="Assets\Images\inventory_list_icon.svg" />
     <Resource Include="Assets\Images\mark_ready.svg" />
     <Resource Include="Assets\Images\mobile_icon.svg" />
+    <Resource Include="Assets\Images\notification.svg" />
     <Resource Include="Assets\Images\orders.svg" />
     <Resource Include="Assets\Images\order_list_icon.svg" />
     <Resource Include="Assets\Images\partial_returns.svg" />
