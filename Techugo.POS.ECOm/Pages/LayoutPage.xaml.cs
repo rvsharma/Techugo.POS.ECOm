@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.IO.Ports;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,6 +9,7 @@ using Techugo.POS.ECom.Model;
 using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.OrderTracking;
+using Techugo.POS.ECOm.Pages.Notification;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -47,6 +49,52 @@ namespace Techugo.POS.ECOm.Pages
             UnreadAlertsCount = "Last updated: " + DateTime.Now.ToString("h:mm:ss tt");
             // ensure initial width matches expanded state
             LeftMenu.Width = IsMenuExpanded ? 240 : 48;
+            RefreshButton.Click += RefreshButton_Click;
+
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+
+
+            var popup = new QuickListWindow()
+            {
+                Owner = Application.Current.MainWindow,
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                ShowInTaskbar = false
+            };
+
+            // position popup immediately below the RefreshButton (notification icon)
+            // get screen coordinates for the bottom-left of the button
+            var button = RefreshButton;
+            var screenPoint = button.PointToScreen(new Point(0, button.ActualHeight));
+
+            // convert device pixels to WPF units
+            var source = PresentationSource.FromVisual(this);
+            if (source?.CompositionTarget != null)
+            {
+                var transform = source.CompositionTarget.TransformFromDevice;
+                var target = transform.Transform(screenPoint);
+
+                // small horizontal offset to align popup to right edge of button if needed
+                popup.Left = target.X;
+                popup.Top = target.Y + 24;
+
+                // ensure popup stays within primary screen bounds (basic clamp)
+                var primary = SystemParameters.WorkArea;
+                if (popup.Left + popup.Width > primary.Right) popup.Left = primary.Right - popup.Width - 8;
+                if (popup.Top + popup.Height > primary.Bottom) popup.Top = primary.Bottom - popup.Height - 8;
+                if (popup.Left < primary.Left) popup.Left = primary.Left + 8;
+                if (popup.Top < primary.Top) popup.Top = primary.Top + 8;
+            }
+            else
+            {
+                // fallback: center over main window
+                popup.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+
+            // show non-modal (no overlay). window will close automatically on deactivated.
+            popup.Show();
         }
 
         private DashboardPage CreateDashboardPage()
