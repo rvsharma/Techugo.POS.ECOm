@@ -61,7 +61,7 @@ namespace Techugo.POS.ECOm.Pages.Notification
                 if (data != null)
                 {
                     Notifications = new ObservableCollection<NotificationItem>(
-                        data.Data.Select(n => new NotificationItem
+                        data.Data.Where(x => x.IsRead == false).Select(n => new NotificationItem
                         {
                             Title = n.Title,
                             Message = n.Message,

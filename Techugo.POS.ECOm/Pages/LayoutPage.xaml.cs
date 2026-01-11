@@ -95,6 +95,7 @@ namespace Techugo.POS.ECOm.Pages
 
             // show non-modal (no overlay). window will close automatically on deactivated.
             popup.Show();
+            _ = LoadNotificationCountAsync();
         }
 
         private DashboardPage CreateDashboardPage()

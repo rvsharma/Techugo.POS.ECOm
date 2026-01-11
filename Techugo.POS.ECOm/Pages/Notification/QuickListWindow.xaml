@@ -39,9 +39,9 @@
                 <!-- Header -->
                 <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
                     <TextBlock Text="Notifications" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
-                    <Border Background="#FF3B30" CornerRadius="10" Margin="8,0,0,0" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <!--<Border Background="#FF3B30" CornerRadius="10" Margin="8,0,0,0" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <TextBlock Text="1" Foreground="White" FontSize="12" FontWeight="Bold"/>
-                    </Border>
+                    </Border>-->
 
                     <Button Content="✕"
                             Width="26"
