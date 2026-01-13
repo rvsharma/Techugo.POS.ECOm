@@ -273,7 +273,9 @@ namespace Techugo.POS.ECOm.Pages
                 if (data != null)
                 {
                     UnreadAlertsCount = data.Data.Count.ToString();
-                    
+                    UnreadAlertsCountName.Margin = data.Data.Count > 9 ? new Thickness(0, 0, 3, 0) : new Thickness(0, 0, 6, 0);
+
+
                 }
             }
             catch (Exception ex) { /* consider logging ex */ }

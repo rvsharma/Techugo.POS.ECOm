@@ -139,10 +139,10 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                     {
                         if (ItemDetails != null)
                         {
-                            ItemDetails.Weight = decimal.Parse(cleaned); ; // now raises PropertyChanged
-                                                         // Optionally update measured amount/other derived fields here
-                                                         // ItemDetails.MeasuredAmount = parsed * ItemDetails.SPrice;
-                            DataContext = ItemDetails; // optional; not required if bindings use INotifyPropertyChanged
+                            ItemDetails.Weight = decimal.Parse(cleaned);
+                            ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * decimal.Parse(cleaned);
+
+                            DataContext = ItemDetails; 
                         }
 
                         if (MeasuredWeightDisplayTextBox != null)
@@ -192,30 +192,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 
             }
         }
-        private void SerialPort_DataReceived(object? sender, System.IO.Ports.SerialDataReceivedEventArgs e)
-        {
-            try
-            {
-                var sp = (SerialPort)sender;
-
-                // Use ReadLine if the scale sends data ending in NewLine (Standard for CAS)
-                // This ensures you get the full weight string like "ST,GS,  1.234kg"
-                string data = sp.ReadExisting();
-
-                System.Diagnostics.Debug.WriteLine($"Raw Data: {data}");
-
-                Dispatcher.Invoke(() =>
-                {
-                    // Logic to parse the weight from the string
-                    // Example: CAS Type A usually has weight at index 9-15
-                    ParseCasWeight(data);
-                });
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
-            }
-        }
+        
 
         private void ParseCasWeight(string rawData)
         {
@@ -233,7 +210,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
         {
             if (_serialPort != null)
             {
-                _serialPort.DataReceived -= SerialPort_DataReceived;
+                _serialPort.DataReceived -= DataReceivedHandler;
                 try { if (_serialPort.IsOpen) _serialPort.Close(); } catch { }
                 _serialPort.Dispose();
                 _serialPort = null;
