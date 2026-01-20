@@ -20,6 +20,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string SKU { get; set; }
         public string UOM { get; set; }
         public decimal SPrice { get; set; }
+        public bool IsLooseItem { get; set; }
         public decimal OriginalAmount { get; set; }
         private decimal _weight;
         public decimal Weight

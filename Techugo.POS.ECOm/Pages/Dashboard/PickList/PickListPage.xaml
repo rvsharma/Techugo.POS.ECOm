@@ -249,7 +249,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                             </Rectangle.Fill>
                                                         </Rectangle>
 
-                                                        <TextBlock Text="{Binding ItemName}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Margin="0,0,16,0" />
+                                                        <TextBlock Text="{Binding ItemName}" ToolTip="{Binding ItemFullName, RelativeSource={RelativeSource Self}}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Margin="0,0,16,0" />
                                                     </StackPanel>
                                                     <Border Background="#F3F4F6" CornerRadius="8" Padding="8,2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
                                                         <TextBlock Text="{Binding Size}" FontSize="13" Foreground="#222"/>

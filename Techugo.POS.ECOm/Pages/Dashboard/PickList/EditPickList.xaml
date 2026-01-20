@@ -125,12 +125,13 @@
                     </Border>
 
                     <!-- Callout (shown only for Check Weight) -->
-                    <Border x:Name="WeighCalloutPanel" Background="#fefce8" BorderBrush="#fff085" BorderThickness="2" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                    <Border x:Name="WeighCalloutPanel" Background="#fefce8" BorderBrush="#fff085" BorderThickness="2" CornerRadius="8" Padding="12" Margin="0,0,0,12" Visibility="Collapsed">
                         <StackPanel Orientation="Horizontal">
                             <svg:SvgViewbox Source="/Assets/Images/balance.svg" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             <StackPanel>
-                                <TextBlock Text="Put your item in machine to measure" FontWeight="SemiBold" Foreground="#733e0a"/>
-                                <TextBlock Text="Place the item on the weighing scale" Foreground="#a65f00" Opacity="0.8" FontSize="12"/>
+                                <TextBlock x:Name="Message1" Text="Put your item in machine to measure" FontWeight="SemiBold" Foreground="#733e0a"/>
+                                <TextBlock x:Name="Message2" Text="Place the item on the weighing scale" Foreground="#a65f00" Opacity="0.8" FontSize="12"/>
+                                <TextBlock Name="NoScaleMessage" Text="Scale is not connected. Please conect the scale or enter weight mannually." FontWeight="SemiBold" Foreground="#FF0000" Visibility="Collapsed"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

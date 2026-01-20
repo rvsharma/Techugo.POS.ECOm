@@ -101,6 +101,21 @@ namespace Techugo.POS.ECom.Model.ViewModel
             get => _itemName;
             set { if (_itemName == value) return; _itemName = value; OnPropertyChanged(); }
         }
+        private string _itemFullName;
+        public string ItemFullName
+        {
+            get => _itemFullName;
+            set { if (_itemFullName == value) return; _itemFullName = value; OnPropertyChanged(); }
+        }
+
+        private bool _isLooseItem;
+        public bool IsLooseItem
+        {
+            get => _isLooseItem;
+            set { if (_isLooseItem == value) return; _isLooseItem = value; OnPropertyChanged(); }
+        }
+
+        
 
         private string _size;
         public string Size

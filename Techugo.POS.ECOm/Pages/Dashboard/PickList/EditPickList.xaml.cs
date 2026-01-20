@@ -7,7 +7,8 @@ using System.Management;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using Techugo.POS.ECom.Model.ViewModel; // for EditQtyViewModel
+using Techugo.POS.ECom.Model.ViewModel;
+using Techugo.POS.ECOm.Services; // for EditQtyViewModel
 
 namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 {
@@ -36,8 +37,30 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             InitializeComponent();
             ItemDetails = itemDetails;
             DataContext = ItemDetails;
+
+            // Ensure UI reflects whether this is a loose item before any deferred work runs.
+            // Hide weigh callout if item is not loose and show an informational message instead.
+            if (ItemDetails == null || !ItemDetails.IsLooseItem)
+            {
+                try
+                {
+                    WeighCalloutPanel.Visibility = Visibility.Collapsed;
+                    NoScaleMessage.Visibility = Visibility.Visible;
+                    Message1.Visibility = Visibility.Collapsed;
+                    Message2.Visibility = Visibility.Collapsed;
+                }
+                catch
+                {
+                    // swallow if controls not available during InitializeComponent sequence
+                }
+            }
+            else
+            {
+                // for loose items do the usual initialization (deferred to let layout finish)
+                Dispatcher.BeginInvoke(new Action(() => LoadComPorts()), System.Windows.Threading.DispatcherPriority.Render);
+            }
+
             UpdateKeypadVisibility(false);
-            //LoadComPorts();
         }
 
         private void LoadComPorts()
@@ -46,21 +69,40 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
             // try to find USB-backed COM ports via WMI (Win32_PnPEntity contains COM name in the 'Name' property)
             var usbPorts = GetUsbSerialPorts();
-            if (usbPorts.Any())
+            if (usbPorts.Any() && portList != null && portList.Length > 0)
             {
                 // pick the first USB serial device (or apply your own heuristics)
                 var portToUse = usbPorts.First().PortName;
                 InitializeSerialPort(portToUse);
                 Debug.WriteLine($"Auto-selected USB serial port: {portToUse}");
+
+                // Defer UI visibility changes to the UI thread at Render priority so they occur after layout.
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    WeighCalloutPanel.Visibility = Visibility.Visible;
+                    NoScaleMessage.Visibility = Visibility.Collapsed;
+                    Message1.Visibility = Visibility.Visible;
+                    Message2.Visibility = Visibility.Visible;
+
+                    // ensure layout updates immediately on slower systems
+                    try { WeighCalloutPanel.UpdateLayout(); } catch { }
+                }), System.Windows.Threading.DispatcherPriority.Render);
+
                 return;
             }
-
-            // fallback: if none identified, use first available COM or COM5 default
-            if (portList != null && portList.Length > 0)
-                InitializeSerialPort(portList[0]);
             else
-                InitializeSerialPort("COM6");
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    WeighCalloutPanel.Visibility = Visibility.Collapsed;
+                    NoScaleMessage.Visibility = Visibility.Visible;
+                    Message1.Visibility = Visibility.Collapsed;
+                    Message2.Visibility = Visibility.Collapsed;
+                    try { NoScaleMessage.UpdateLayout(); } catch { }
+                }), System.Windows.Threading.DispatcherPriority.Render);
 
+                return;
+            }
 
         }
         /// <summary>
@@ -142,14 +184,14 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                             ItemDetails.Weight = decimal.Parse(cleaned);
                             ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * decimal.Parse(cleaned);
 
-                            DataContext = ItemDetails; 
+                            DataContext = ItemDetails;
                         }
 
                         if (MeasuredWeightDisplayTextBox != null)
                             MeasuredWeightDisplayTextBox.Text = decimal.Parse(cleaned).ToString(CultureInfo.CurrentCulture);
                     });
 
-                    
+
                     //DataContext = ItemDetails;
                     // Parse the weight data here (usually a string ending in 'kg' or 'lb')
                     //Console.WriteLine("Weight Received: " + data);
@@ -159,7 +201,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
                     throw;
                 }
-                
+
             }
         }
 
@@ -172,27 +214,49 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
             bool enterQty = RbEnterQty?.IsChecked == true;
             bool checkWeight = RbCheckWeight?.IsChecked == true;
+            bool isLoose = ItemDetails?.IsLooseItem == true;
 
             PosKeypadPanel.Visibility = enterQty ? Visibility.Visible : Visibility.Collapsed;
-            WeighCalloutPanel.Visibility = checkWeight ? Visibility.Visible : Visibility.Collapsed;
+
+            // If the item is not loose we hide the weigh panel and show the 'no scale' message
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (checkWeight && isLoose)
+                {
+                    WeighCalloutPanel.Visibility = Visibility.Visible;
+                    NoScaleMessage.Visibility = Visibility.Collapsed;
+                    Message1.Visibility = Visibility.Visible;
+                    Message2.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    WeighCalloutPanel.Visibility = Visibility.Collapsed;
+                    NoScaleMessage.Visibility = Visibility.Visible;
+                    Message1.Visibility = Visibility.Collapsed;
+                    Message2.Visibility = Visibility.Collapsed;
+                }
+
+                try { WeighCalloutPanel.UpdateLayout(); } catch { }
+            }), System.Windows.Threading.DispatcherPriority.Render);
 
             if (enterQty)
             {
                 // show quantity in keypad input
-                
+
             }
 
             if (checkWeight)
-            { 
-                if(isChanged)
+            {
+                if (isChanged && isLoose)
                 {
                     CleanupSerialPort();
-                    LoadComPorts();
+                    // Defer LoadComPorts to avoid running before control is fully rendered
+                    Dispatcher.BeginInvoke(new Action(() => LoadComPorts()), System.Windows.Threading.DispatcherPriority.Render);
                 }
-                
+
             }
         }
-        
+
 
         private void ParseCasWeight(string rawData)
         {
@@ -269,12 +333,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 if (TryParseInputAsDecimal(MeasuredQtyTextBox.Text, out decimal measuredQty))
                 {
                     // update quantity and measured amount (SPrice * quantity)
-                
+
                 }
                 else
                 {
                     // invalid input — keep previous measured amount/qty
-                    
+
                 }
             }
         }
@@ -290,7 +354,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
-        { 
+        {
             if (_serialPort != null && _serialPort.IsOpen)
             {
                 _serialPort.Close();

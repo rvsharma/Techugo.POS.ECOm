@@ -43,6 +43,8 @@ namespace Techugo.POS.ECom.Model
         public decimal NetAmount { get; set; }
         public decimal Discount { get; set; }
         public ItemDetails Item { get; set; }
+
+        public bool IsLooseItem { get; set; }
     }
 
     public class ItemDetails

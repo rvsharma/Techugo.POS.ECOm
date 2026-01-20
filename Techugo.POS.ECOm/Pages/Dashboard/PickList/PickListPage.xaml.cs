@@ -107,7 +107,8 @@ namespace Techugo.POS.ECOm.Pages
                                         OrderID = orderDetails.Data.OrderID,
                                         OrderDetailID = od.ID,
                                         ItemID = od.ItemID,
-                                        ItemName = od.Item.ItemName.Length > 25 ? od.Item.ItemName.Substring(0, 25) + "..." : od.Item.ItemName,
+                                        ItemName = od.Item.ItemName.Length > 20 ? od.Item.ItemName.Substring(0, 20) + "..." : od.Item.ItemName,
+                                        ItemFullName = od.Item.ItemName,
                                         Size = od.Size,
                                         Qty = od.Quantity,
                                         EditQty = od.Quantity,
@@ -117,7 +118,8 @@ namespace Techugo.POS.ECOm.Pages
                                         Amount = od.Amount,
                                         NetAmount = od.NetAmount,
                                         Discount = od.Discount,
-                                        ImageUrl = od.Item.ItemImages[0].ImagePath
+                                        ImageUrl = od.Item.ItemImages[0].ImagePath,
+                                        IsLooseItem = od.IsLooseItem
                                     }).ToList()
                                 );
 
@@ -245,13 +247,14 @@ namespace Techugo.POS.ECOm.Pages
                     ItemName = pli.ItemName,
                     OrderedQty = pli.Qty,
                     EditedQty = pli.EditQty,
-                    OrderedQtyDisPlay = pli.Qty + pli.UOM,
+                    OrderedQtyDisPlay = pli.Qty.ToString(),
                     Weight = pli.Weight != null && decimal.TryParse(pli.Weight, out var w) ? w : 0m,
                     UOM = pli.UOM,
                     SPrice = pli.SPrice,
                     Amount = pli.Amount,
                     OriginalAmount = pli.SPrice * pli.Qty,
                     MeasuredAmount = pli.SPrice * pli.Qty,
+                    IsLooseItem = pli.IsLooseItem
                     //DifferenceAmount = 0m
                 };
             }
