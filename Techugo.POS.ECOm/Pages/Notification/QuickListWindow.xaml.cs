@@ -49,8 +49,35 @@ namespace Techugo.POS.ECOm.Pages.Notification
 
         private void QuickListWindow_Deactivated(object? sender, EventArgs e)
         {
-            // close when focus moves away to mimic a lightweight popover
-            Close();
+            // When the popup loses activation we want to close it.
+            // However closing immediately can cause undesirable z-order behavior
+            // (the whole app may move behind other applications). To avoid
+            // stealing focus when the user clicked into another application we:
+            //  - delay briefly so the system updates activation,
+            //  - check if any window in our app is active (meaning the user
+            //    clicked somewhere inside this app), and only then ensure the
+            //    owner is activated after closing the popup.
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                try
+                {
+                    // Determine whether any window in our application has activation.
+                    bool appWindowActive = Application.Current.Windows.OfType<Window>().Any(w => w.IsActive);
+
+                    // Close the popup in all cases.
+                    Close();
+
+                    // If activation moved to a window in our app, ensure the owner is brought to front.
+                    if (appWindowActive && Owner is Window owner && !owner.IsActive)
+                    {
+                        try { owner.Activate(); } catch { /* ignore activation failures */ }
+                    }
+                }
+                catch
+                {
+                    // swallow exceptions to avoid crashing on deactivation.
+                }
+            }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
         public async Task GetNotificationsAsync()

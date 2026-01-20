@@ -101,11 +101,28 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             address = string.Join(", ", parts);
                         }
 
+                        var orderCreatdAt = data.createdAt;
+
+                        try
+                        {
+                            var createdAt = data.createdAt;
+                            if (createdAt.Kind == DateTimeKind.Utc)
+                                orderCreatdAt = createdAt.ToLocalTime();
+                            else if (createdAt.Kind == DateTimeKind.Unspecified)
+                                orderCreatdAt = DateTime.SpecifyKind(createdAt, DateTimeKind.Utc).ToLocalTime();
+                            else
+                                orderCreatdAt = createdAt;
+                        }
+                        catch
+                        {
+                            // Fallback: assign raw value if any unexpected issue occurs
+                            orderCreatdAt = data.createdAt;
+                        }
                         OrderDetailVM order = new OrderDetailVM
                         {
                             OrderID = data.OrderID,
                             OrderNo = data.OrderNo,
-                            createdAt = data.createdAt,
+                            createdAt = orderCreatdAt,
                             ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
     ? data.ExpectedDeliveryDate.Value
     : null,

@@ -88,7 +88,21 @@ namespace Techugo.POS.ECOm.Pages
                         OrderDetailVM order = new OrderDetailVM();
                         order.OrderID = data.OrderID;
                         order.OrderNo = data.OrderNo;
-                        order.createdAt = data.createdAt;
+                        try
+                        {
+                            var createdAt = data.createdAt;
+                            if (createdAt.Kind == DateTimeKind.Utc)
+                                order.createdAt = createdAt.ToLocalTime();
+                            else if (createdAt.Kind == DateTimeKind.Unspecified)
+                                order.createdAt = DateTime.SpecifyKind(createdAt, DateTimeKind.Utc).ToLocalTime();
+                            else
+                                order.createdAt = createdAt;
+                        }
+                        catch
+                        {
+                            // Fallback: assign raw value if any unexpected issue occurs
+                            order.createdAt = data.createdAt;
+                        }
                         order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue ? data.ExpectedDeliveryDate.Value : null;
                         order.TotalAmount = data.PaidAmount;
                         order.PaidAmount = data.PaidAmount;
