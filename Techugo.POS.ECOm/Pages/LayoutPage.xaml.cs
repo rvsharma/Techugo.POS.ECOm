@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Ports;
 using System.Media;
@@ -10,6 +11,7 @@ using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.OrderTracking;
 using Techugo.POS.ECOm.Pages.Notification;
+using static Techugo.POS.ECOm.Pages.Notification.QuickListWindow;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -269,14 +271,16 @@ namespace Techugo.POS.ECOm.Pages
         {
             try
             {
-                NotoficationCountResponse data = await _apiService.GetAsync<NotoficationCountResponse>("branch/notification-count");
+
+                NotificationsResponse data = await _apiService.GetAsync<NotificationsResponse>("branch/notification-list?page=1&limit=100");
                 if (data != null)
                 {
-                    UnreadAlertsCount = data.Data.Count.ToString();
-                    UnreadAlertsCountName.Margin = data.Data.Count > 9 ? new Thickness(0, 0, 3, 0) : new Thickness(0, 0, 6, 0);
 
-
+                    int unread = data.Data?.Count(n => n != null && !n.IsRead) ?? 0;
+                    UnreadAlertsCount = unread.ToString();
+                    UnreadAlertsCountName.Margin = unread > 9 ? new Thickness(0, 0, 3, 0) : new Thickness(0, 0, 6, 0);
                 }
+
             }
             catch (Exception ex) { /* consider logging ex */ }
             // TODO: Parse and display data in your dashboard UI

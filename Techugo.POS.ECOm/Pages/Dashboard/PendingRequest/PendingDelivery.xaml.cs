@@ -70,8 +70,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
 
         private async void LoadOrdersData()
         {
-            //string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            string formattedDate = "2026-01-11";
+            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            //string formattedDate = "2026-01-11";
             OrdersResponse orderResponse = await _api_service.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=1000&status=PendingRequest&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
@@ -291,7 +291,21 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var orderItem = selectable?.Item;
             if (orderItem == null)
                 return;
-
+            try
+            {
+                var createdAt = Convert.ToDateTime(orderItem.ExpectedDeliveryDate);
+                if (createdAt.Kind == DateTimeKind.Utc)
+                    orderItem.ExpectedDeliveryDate = createdAt.ToLocalTime();
+                else if (createdAt.Kind == DateTimeKind.Unspecified)
+                    orderItem.ExpectedDeliveryDate = DateTime.SpecifyKind(createdAt, DateTimeKind.Utc).ToLocalTime();
+                else
+                    orderItem.ExpectedDeliveryDate = createdAt;
+            }
+            catch
+            {
+                // Fallback: assign raw value if any unexpected issue occurs
+                orderItem.ExpectedDeliveryDate = orderItem.ExpectedDeliveryDate;
+            }
             var popup = new PendingRequestDetails(orderItem);
             popup.CloseClicked += CloseOrderDetailsPopUp;
 

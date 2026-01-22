@@ -131,7 +131,7 @@
                                                VerticalAlignment="Center"
                                                ToolTip="{Binding Item.ItemName}" Padding="0,0,4,0"/>
                                             <TextBlock Text="{Binding Quantity}" FontSize="15" Foreground="#222" Grid.Column="1"/>
-                                            <TextBlock Text="{Binding Amount, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="2"/>
+                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="2"/>
                                             <TextBlock Text="{Binding NetAmount, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="3"/>
                                         </Grid>
                                     </Border>
