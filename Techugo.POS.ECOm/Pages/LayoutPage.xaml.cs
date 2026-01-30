@@ -2,21 +2,31 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Ports;
 using System.Media;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.OrderTracking;
 using Techugo.POS.ECOm.Pages.Notification;
+using Techugo.POS.ECOm.Services;
 using static Techugo.POS.ECOm.Pages.Notification.QuickListWindow;
 
 namespace Techugo.POS.ECOm.Pages
 {
     public partial class LayoutPage : UserControl, INotifyPropertyChanged
     {
+
+        private DispatcherTimer _barcodeTimer;
+        private StringBuilder _buffer = new StringBuilder();
+        private DateTime _lastKeystroke = DateTime.MinValue;
+
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly ApiService _apiService;
         private string _notificationCount;
@@ -52,6 +62,84 @@ namespace Techugo.POS.ECOm.Pages
             // ensure initial width matches expanded state
             LeftMenu.Width = IsMenuExpanded ? 240 : 48;
             RefreshButton.Click += RefreshButton_Click;
+
+
+            _barcodeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+            _barcodeTimer.Tick += BarcodeTimer_Tick;
+
+            // Capture scanner input globally
+            this.PreviewTextInput += OnPreviewTextInput;
+        }
+
+        private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Reset buffer if too slow (user typing)
+            if ((DateTime.Now - _lastKeystroke).TotalMilliseconds > 1000)
+                _buffer.Clear();
+
+            _lastKeystroke = DateTime.Now;
+            _buffer.Append(e.Text);
+
+            // Restart flush timer
+            _barcodeTimer.Stop();
+            _barcodeTimer.Start();
+        }
+
+        private void BarcodeTimer_Tick(object sender, EventArgs e)
+        {
+            _barcodeTimer.Stop();
+
+            string scanned = _buffer.ToString();
+            _buffer.Clear();
+
+            if (!string.IsNullOrEmpty(scanned))
+            {
+                OnBarcodeScanned(scanned);
+
+                // Call API with scanned code
+                var queryData = new
+                {
+
+                    search = scanned,
+
+                };
+
+                UpdateInventory(queryData);
+            }
+        }
+        public event EventHandler<string> BarcodeScanned;
+        private void OnBarcodeScanned(string code)
+        {
+            BarcodeScanned?.Invoke(this, code);
+        }
+
+        private async void UpdateInventory(object queryData)
+        {
+            // Works for "ITEM-3\r" too
+            string pattern = @"(?<=-)\d+(?=\r|$)";
+
+            string result = Regex.Match(queryData.ToString(), pattern).Value;
+
+            if (string.IsNullOrEmpty(result))
+                return;
+            int n;
+            bool isNumeric = int.TryParse(result, out n);
+
+            if (isNumeric)
+            {
+                var data = new
+                {
+                    item_id = n,
+                    quantity = 1
+                };
+
+                BaseResponse response = await _apiService.PostAsyncUnAuth<BaseResponse>("buy/add", data);
+                if (response != null)
+                {
+                    SnackbarService.Enqueue(response.Message);
+                }
+            }
+
 
         }
 

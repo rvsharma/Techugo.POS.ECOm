@@ -1,9 +1,11 @@
 using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.Options;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Services;
@@ -29,7 +31,9 @@ namespace Techugo.POS.ECOm.Pages.Login
             DataObject.AddPastingHandler(MobileNumberTextBox, OnPaste);
             SendOtpButton.IsEnabled = false;
             SendOtpButton.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Gray);
+
         }
+
         private void OtpTextBox_PreviewKeyDown(object? sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)

@@ -56,7 +56,7 @@ namespace Techugo.POS.ECom.Model
     }
     public class OrderAddress
     {
-        public int OrderAddressID { get; set; }
+        //public int? OrderAddressID { get; set; }
         public string MobileNo { get; set; }
         public string Name { get; set; }
         public string HouseNo { get; set; }

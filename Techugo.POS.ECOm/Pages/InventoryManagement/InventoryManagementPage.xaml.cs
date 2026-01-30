@@ -1,8 +1,11 @@
 using MaterialDesignColors;
+using Microsoft.Extensions.Options;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,6 +21,10 @@ namespace Techugo.POS.ECOm.Pages
 {
     public partial class InventoryManagementPage : UserControl, INotifyPropertyChanged
     {
+        private DispatcherTimer _barcodeTimer;
+        private StringBuilder _buffer = new StringBuilder();
+        private DateTime _lastKeystroke = DateTime.MinValue;
+
         private DispatcherTimer _searchTimer;
 
         public event RoutedEventHandler BackRequested;
@@ -106,13 +113,91 @@ namespace Techugo.POS.ECOm.Pages
             };
             _searchTimer.Tick += SearchTimer_Tick;
 
+            //_barcodeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+            //_barcodeTimer.Tick += BarcodeTimer_Tick;
+
+            //// Capture scanner input globally
+            //this.PreviewTextInput += OnPreviewTextInput;
+
+        }
+
+        //private void OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        //{
+        //    // Reset buffer if too slow (user typing)
+        //    if ((DateTime.Now - _lastKeystroke).TotalMilliseconds > 1000)
+        //        _buffer.Clear();
+
+        //    _lastKeystroke = DateTime.Now;
+        //    _buffer.Append(e.Text);
+
+        //    // Restart flush timer
+        //    _barcodeTimer.Stop();
+        //    _barcodeTimer.Start();
+        //}
+
+        //private void BarcodeTimer_Tick(object sender, EventArgs e)
+        //{
+        //    _barcodeTimer.Stop();
+
+        //    string scanned = _buffer.ToString();
+        //    _buffer.Clear();
+
+        //    if (!string.IsNullOrEmpty(scanned))
+        //    {
+        //        OnBarcodeScanned(scanned);
+
+        //        // Call API with scanned code
+        //        var queryData = new
+        //        {
+
+        //            search = scanned,
+
+        //        };
+
+        //        //UpdateInventory(queryData);
+        //    }
+        //}
+        //public event EventHandler<string> BarcodeScanned;
+        //private void OnBarcodeScanned(string code)
+        //{
+        //    BarcodeScanned?.Invoke(this, code);
+        //}
+
+        private async void UpdateInventory(object queryData)
+        {
+            // Works for "ITEM-3\r" too
+            string pattern = @"(?<=-)\d+(?=\r|$)";
+
+            string result = Regex.Match(queryData.ToString(), pattern).Value;
+
+            if (string.IsNullOrEmpty(result))
+                return;
+            int n;
+            bool isNumeric = int.TryParse(result, out n);
+
+            if (isNumeric)
+            {
+                var data = new
+                {
+                    item_id = n,
+                    quantity = 1
+                };
+
+                BaseResponse response = await _apiService.PostAsyncUnAuth<BaseResponse>("buy/add", data);
+                if (response != null)
+                {
+                    SnackbarService.Enqueue(response.Message);
+                }
+            }
+            
+
         }
 
         private async void LoadInventoryData(object queryData)
         {
             try
             {
-                
+
                 ItemListResponse itemList = await _apiService.PostAsync<ItemListResponse>("item/item-list", queryData);
                 if (itemList != null && itemList.Data != null)
                 {
@@ -154,15 +239,15 @@ namespace Techugo.POS.ECOm.Pages
             {
                 BrandResponse riderListResponse = await _apiService.GetAsync<BrandResponse>("common/brand-list");
                 var list = riderListResponse?.Data ?? new List<Brand>();
-                list.Insert(0,new Brand { BrandID = null, BrandName = "All Brands" });
+                list.Insert(0, new Brand { BrandID = null, BrandName = "All Brands" });
                 BrandList = new ObservableCollection<Brand>(list);
             }
             catch
             {
 
             }
-            
-            
+
+
         }
         private void UpdateStats()
         {
@@ -175,7 +260,7 @@ namespace Techugo.POS.ECOm.Pages
             OutOfStock = TotalItems - ActiveProducts;
 
             // OutOfStock: uses StockQuantity; ensure StockQuantity is populated from API mapping
-           // OutOfStock = inventoryData?.Count(i => i.StockQuantity <= 0) ?? 0;
+            // OutOfStock = inventoryData?.Count(i => i.StockQuantity <= 0) ?? 0;
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

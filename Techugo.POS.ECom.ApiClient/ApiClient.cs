@@ -13,12 +13,16 @@ namespace Techugo.POS.ECOm.ApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly ApiSettings _apiSettings;
+        private readonly HttpClient _httpClientUnAuth;
+
 
         public ApiService(IOptions<ApiSettings> apiSettings, string bearerToken)
         {
             _apiSettings = apiSettings.Value;
             _httpClient = new HttpClient { BaseAddress = new System.Uri(_apiSettings.BaseUrl) };
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+
+            _httpClientUnAuth = new HttpClient { BaseAddress = new System.Uri(_apiSettings.InventoryEndpoint) };
         }
 
         public async Task<T> GetAsync<T>(string endpoint)
@@ -85,6 +89,24 @@ namespace Techugo.POS.ECOm.ApiClient
                 }
                return result;
             }
+        }
+
+        public async Task<T> PostAsyncUnAuth<T>(string endpoint, object data)
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(data);
+            var request = new HttpRequestMessage(HttpMethod.Post, endpoint)
+            {
+                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
+            };
+            // request.Headers.Add("Accept-Language", "en");
+
+            var response = await _httpClientUnAuth.SendAsync(request);
+            //response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            var result = System.Text.Json.JsonSerializer.Deserialize<T>(responseString);
+            if (result is null)
+                throw new System.InvalidOperationException("Deserialization returned null.");
+            return result;
         }
     }
 }
