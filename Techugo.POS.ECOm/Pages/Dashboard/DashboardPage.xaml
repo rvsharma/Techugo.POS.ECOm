@@ -58,7 +58,7 @@
                 </StackPanel>
             </Border>
         </StackPanel>-->
-        <UniformGrid Columns="4" Rows="2" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+        <UniformGrid x:Name="TilesGrid" Columns="4" Rows="2" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <!-- Total Orders -->
             <Border
                 Background="#f3f8ff"

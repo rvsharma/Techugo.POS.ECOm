@@ -69,12 +69,13 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
             // try to find USB-backed COM ports via WMI (Win32_PnPEntity contains COM name in the 'Name' property)
             var usbPorts = GetUsbSerialPorts();
-            if (usbPorts.Any() && portList != null && portList.Length > 0)
-            {
+            //if (usbPorts.Any() && portList != null && portList.Length > 0)
+            //{
                 // pick the first USB serial device (or apply your own heuristics)
-                var portToUse = usbPorts.First().PortName;
-                InitializeSerialPort(portToUse);
-                Debug.WriteLine($"Auto-selected USB serial port: {portToUse}");
+                //var portToUse = usbPorts.First().PortName;
+            //if(string.IsNullOrEmpty(portToUse) || portToUse != "COM1")
+                InitializeSerialPort("COM1");
+                //Debug.WriteLine($"Auto-selected USB serial port: {portToUse}");
 
                 // Defer UI visibility changes to the UI thread at Render priority so they occur after layout.
                 Dispatcher.BeginInvoke(new Action(() =>
@@ -89,20 +90,20 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 }), System.Windows.Threading.DispatcherPriority.Render);
 
                 return;
-            }
-            else
-            {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    WeighCalloutPanel.Visibility = Visibility.Collapsed;
-                    NoScaleMessage.Visibility = Visibility.Visible;
-                    Message1.Visibility = Visibility.Collapsed;
-                    Message2.Visibility = Visibility.Collapsed;
-                    try { NoScaleMessage.UpdateLayout(); } catch { }
-                }), System.Windows.Threading.DispatcherPriority.Render);
+            //}
+            //else
+            //{
+            //    Dispatcher.BeginInvoke(new Action(() =>
+            //    {
+            //        WeighCalloutPanel.Visibility = Visibility.Collapsed;
+            //        NoScaleMessage.Visibility = Visibility.Visible;
+            //        Message1.Visibility = Visibility.Collapsed;
+            //        Message2.Visibility = Visibility.Collapsed;
+            //        try { NoScaleMessage.UpdateLayout(); } catch { }
+            //    }), System.Windows.Threading.DispatcherPriority.Render);
 
-                return;
-            }
+            //    return;
+            //}
 
         }
         /// <summary>
@@ -140,7 +141,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             return list;
         }
 
-        private void InitializeSerialPort(string portName = "COM6")
+        private void InitializeSerialPort(string portName = "COM1")
         {
             // dispose existing
             try { _serialPort?.Dispose(); } catch { }

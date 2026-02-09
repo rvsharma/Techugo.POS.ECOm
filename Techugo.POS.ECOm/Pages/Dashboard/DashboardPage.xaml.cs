@@ -51,6 +51,8 @@ namespace Techugo.POS.ECOm.Pages
             }
         }
 
+        private const double TileDesiredWidth = 250; // desired tile width in px
+        private const double TileHorizontalGutter = 16;
         public DashboardPage()
         {
             InitializeComponent();
@@ -58,6 +60,47 @@ namespace Techugo.POS.ECOm.Pages
             DataContext = this;
             _apiService = ApiServiceFactory.Create();
             _ = LoadDashboardData();
+            Loaded += DashboardPage_Loaded;
+            SizeChanged += DashboardPage_SizeChanged;
+
+        }
+
+        private void DashboardPage_Loaded(object? sender, RoutedEventArgs e)
+        {
+            UpdateTilesGridLayout();
+        }
+
+        private void DashboardPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateTilesGridLayout();
+        }
+
+        private void UpdateTilesGridLayout()
+        {
+            if (TilesGrid == null) return;
+
+            // Prefer the grid's actual width (already constrained by parent). Fallback to control width minus margins.
+            double available = TilesGrid.ActualWidth;
+            if (available <= 0)
+            {
+                // DashboardPage has a StackPanel Margin="32", subtract that when falling back to control width
+                available = Math.Max(0, ActualWidth - 64);
+            }
+
+            if (available <= 0)
+            {
+                // can't compute yet
+                return;
+            }
+
+            double effectiveTileWidth = TileDesiredWidth + TileHorizontalGutter;
+            // compute how many columns fit, always at least 1
+            int columns = Math.Max(1, (int)Math.Floor(available / effectiveTileWidth));
+
+            // apply columns; compute rows based on number of children
+            TilesGrid.Columns = columns;
+            int children = TilesGrid.Children?.Count ?? 0;
+            TilesGrid.Rows = (int)Math.Ceiling(children / (double)columns);
         }
 
         private async Task LoadDashboardData()

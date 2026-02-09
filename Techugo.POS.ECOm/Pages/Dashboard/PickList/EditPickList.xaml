@@ -4,7 +4,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Techugo.POS.ECOm.Pages.Dashboard.PickList" Height="Auto" Width="Auto">
+        xmlns:local="clr-namespace:Techugo.POS.ECOm.Pages.Dashboard.PickList"
+        xmlns:helpers="clr-namespace:Techugo.POS.ECOm.Helper"
+             Height="Auto" Width="Auto">
     <UserControl.Resources>
         <!-- Implicit style that makes RadioButton outer border invisible while keeping a checked indicator -->
         <Style TargetType="RadioButton">
@@ -236,7 +238,7 @@
                             <StackPanel Grid.Column="2" Margin="6,0,0,0" VerticalAlignment="Bottom">
                                 <TextBlock Text="Qty" FontSize="12" Foreground="#666" Margin="0,0,0,6"/>
                                 <Border Background="#F3F4F6" CornerRadius="6" Padding="8">
-                                    <TextBox x:Name="MeasuredQtyManualTextBox"
+                                <TextBox x:Name="MeasuredQtyManualTextBox" helpers:TouchKeyboardHelper.Enable="True"
                  Text="{Binding EditedQty, Mode=TwoWay}" TextChanged="MeasuredQtyManualTextBox_TextChanged"
                  Background="Transparent" BorderThickness="0"
                  FontWeight="SemiBold" HorizontalContentAlignment="Center"/>
