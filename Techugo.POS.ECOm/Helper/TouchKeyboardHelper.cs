@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Techugo.POS.ECOm.Helper
 {
@@ -19,6 +20,8 @@ namespace Techugo.POS.ECOm.Helper
         public static void SetEnable(DependencyObject element, bool value) => element.SetValue(EnableProperty, value);
         public static bool GetEnable(DependencyObject element) => (bool)element.GetValue(EnableProperty);
 
+        private static DispatcherTimer? _delayedHideTimer;
+
         private static void OnEnableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is UIElement ui)
@@ -27,7 +30,7 @@ namespace Techugo.POS.ECOm.Helper
                 {
                     ui.GotKeyboardFocus += Ui_GotKeyboardFocus;
                     ui.LostKeyboardFocus += Ui_LostKeyboardFocus;
-                    ui.PreviewMouseDown += Ui_PreviewMouseDown; // ensure focus when clicked/touched
+                    ui.PreviewMouseDown += Ui_PreviewMouseDown;
                 }
                 else
                 {
@@ -38,13 +41,20 @@ namespace Techugo.POS.ECOm.Helper
             }
         }
 
-        private static void Ui_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private static void Ui_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is UIElement ui) ui.Focus();
         }
 
         private static void Ui_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
+            try
+            {
+                _delayedHideTimer?.Stop();
+                _delayedHideTimer = null;
+            }
+            catch { }
+
             ShowTouchKeyboard();
         }
 
