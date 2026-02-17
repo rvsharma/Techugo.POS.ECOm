@@ -1,0 +1,181 @@
+﻿<UserControl x:Class="Techugo.POS.ECOm.Pages.Dashboard.AssignRiderPopUp"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:convertors="clr-namespace:Techugo.POS.ECOm.Convertors"
+             mc:Ignorable="d" 
+             d:DesignHeight="225" d:DesignWidth="450"
+             Background="Transparent">
+    <UserControl.Resources>
+        <convertors:OnlineStatusConverter x:Key="OnlineStatusConverter"/>
+        <convertors:OnlineStatusColorConverter x:Key="OnlineStatusColorConverter"/>
+    </UserControl.Resources>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <!-- Overlay -->
+        <Rectangle Fill="#AA888888" Opacity="0.6" 
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"/>
+        <!-- Centered Popup -->
+        <Border Background="White"
+            CornerRadius="16"
+            Padding="32"
+            BorderBrush="#FF868686"
+            BorderThickness="0.5"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Width="500"
+            Height="Auto">
+            <Border.Effect>
+                <DropShadowEffect Color="#888" BlurRadius="16" ShadowDepth="0" Opacity="0.5"/>
+            </Border.Effect>
+            <Grid>
+                <!-- Close Button -->
+                <Button Content="✕"
+                        Width="32"
+                        Height="32"
+                        
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="18"
+                        Foreground="#888"
+                        Click="Cancel_Click"/>
+                <StackPanel Margin="0,0,0,0">
+                    <TextBlock Text="Assign Rider"
+                               FontSize="18"
+                               FontWeight="DemiBold"
+                               Foreground="#222"
+                               Margin="0,0,0,8"/>
+                    <TextBlock Text="{Binding SelectRiderText}"
+                               FontSize="14"
+                               Foreground="#555"
+                               Margin="0,0,0,24"/>
+                    <TextBlock Text="Available Riders"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="#222"
+                               Margin="0,0,0,0"/>
+                    <ComboBox x:Name="RiderComboBox"
+          ItemsSource="{Binding RiderList}"
+          SelectedValuePath="RiderID"
+          SelectedValue="{Binding SelectedRiderId, Mode=TwoWay}"
+          SelectionChanged="RiderComboBox_SelectionChanged"
+          FontSize="16"
+          Height="36"
+          Margin="0,8,0,0"
+          Padding="12,0"
+          Background="{DynamicResource MaterialDesignPaper}"
+          BorderBrush="{DynamicResource MaterialDesignDivider}"
+          materialDesign:HintAssist.Hint="Select a rider"
+          FocusVisualStyle="{x:Null}"
+          BorderThickness="0"
+          materialDesign:TextFieldAssist.UnderlineBrush="Transparent">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                    <TextBlock Text="{Binding IsOnline, Converter={StaticResource OnlineStatusConverter}}"
+                           Foreground="{Binding IsOnline, Converter={StaticResource OnlineStatusColorConverter}}"
+                           FontWeight="Regular" FontSize="12"
+                           Margin="0,4,8,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="Height" Value="40"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsOnline}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Foreground" Value="#888"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+
+                    <!-- Buttons: two equal columns, buttons fill full column width -->
+                    <Grid Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                Height="40"
+                                Margin="0,0,8,0"
+                                Click="Cancel_Click"
+                                FontWeight="SemiBold"
+                                Style="{StaticResource RoundedWhiteButtonStyle}"
+                                HorizontalAlignment="Stretch"
+                                Width="Auto">
+                            Cancel
+                        </Button>
+
+                        <Button Grid.Column="1"
+                                Height="40"
+                                Margin="0,0,0,0"
+                                Foreground="#ffffff"
+                                Click="AssignRider_Click"
+                                x:Name="AssignRiderButton"
+                                FontWeight="SemiBold"
+                                
+                                HorizontalAlignment="Stretch"
+                                Width="Auto">
+                            
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#030213"/>
+                                <Setter Property="BorderBrush" Value="#030213"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="12"/>
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border"
+Background="{TemplateBinding Background}"
+BorderBrush="{TemplateBinding BorderBrush}"
+BorderThickness="{TemplateBinding BorderThickness}"
+CornerRadius="8"
+SnapsToDevicePixels="True">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                                            </Border>
+                                            
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="#030213"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="#030213"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="border" Property="Opacity" Value="0.6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                    <Style.Triggers>
+                                        <!-- disable button when no rider selected (SelectedRiderId == 0) -->
+                                        <DataTrigger Binding="{Binding SelectedRiderId}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="Background" Value="#b8b8b8"/>
+                                            <Setter Property="BorderBrush" Value="#b8b8b8"/>
+                                            <Setter Property="Foreground" Value="#ffffff"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                        </Button.Style>
+                            Assign Rider
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
