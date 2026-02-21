@@ -61,88 +61,10 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             else
             {
                 // for loose items do the usual initialization (deferred to let layout finish)
-                Dispatcher.BeginInvoke(new Action(() => LoadComPorts()), System.Windows.Threading.DispatcherPriority.Render);
+                Dispatcher.BeginInvoke(new Action(() => InitializeSerialPort()), System.Windows.Threading.DispatcherPriority.Render);
             }
 
             UpdateKeypadVisibility(false);
-        }
-
-        private void LoadComPorts()
-        {
-            portList = SerialPort.GetPortNames();
-
-            // try to find USB-backed COM ports via WMI (Win32_PnPEntity contains COM name in the 'Name' property)
-            var usbPorts = GetUsbSerialPorts();
-            //if (usbPorts.Any() && portList != null && portList.Length > 0)
-            //{
-                // pick the first USB serial device (or apply your own heuristics)
-                //var portToUse = usbPorts.First().PortName;
-            //if(string.IsNullOrEmpty(portToUse) || portToUse != "COM1")
-                InitializeSerialPort();
-                //Debug.WriteLine($"Auto-selected USB serial port: {portToUse}");
-
-                // Defer UI visibility changes to the UI thread at Render priority so they occur after layout.
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    WeighCalloutPanel.Visibility = Visibility.Visible;
-                    NoScaleMessage.Visibility = Visibility.Collapsed;
-                    Message1.Visibility = Visibility.Visible;
-                    Message2.Visibility = Visibility.Visible;
-
-                    // ensure layout updates immediately on slower systems
-                    try { WeighCalloutPanel.UpdateLayout(); } catch { }
-                }), System.Windows.Threading.DispatcherPriority.Render);
-
-                return;
-            //}
-            //else
-            //{
-            //    Dispatcher.BeginInvoke(new Action(() =>
-            //    {
-            //        WeighCalloutPanel.Visibility = Visibility.Collapsed;
-            //        NoScaleMessage.Visibility = Visibility.Visible;
-            //        Message1.Visibility = Visibility.Collapsed;
-            //        Message2.Visibility = Visibility.Collapsed;
-            //        try { NoScaleMessage.UpdateLayout(); } catch { }
-            //    }), System.Windows.Threading.DispatcherPriority.Render);
-
-            //    return;
-            //}
-
-        }
-        /// <summary>
-        /// Returns detected serial ports backed by USB devices.
-        /// Each tuple contains (PortName, Description, PnpDeviceId).
-        /// Requires System.Management (Windows).
-        /// </summary>
-        private List<(string PortName, string Description, string PnpDeviceId)> GetUsbSerialPorts()
-        {
-            var list = new List<(string, string, string)>();
-            try
-            {
-                using var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Name LIKE '%(COM%'");
-                foreach (ManagementObject mo in searcher.Get())
-                {
-                    var name = (mo["Name"] as string) ?? string.Empty;         // e.g. "USB-SERIAL CH340 (COM3)"
-                    var pnp = (mo["PNPDeviceID"] as string) ?? string.Empty;   // contains vendor/usb info on USB devices
-                                                                               // extract COMx from the Name property
-                    var m = Regex.Match(name, @"\((COM\d+)\)");
-                    if (!m.Success) continue;
-                    var port = m.Groups[1].Value;
-
-                    // keep entries where PNPDeviceID or Name mentions "USB" (case-insensitive)
-                    if (name.IndexOf("USB", StringComparison.OrdinalIgnoreCase) >= 0 &&
-                        name.IndexOf("Serial", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        list.Add((port, name, pnp));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"GetUsbSerialPorts failed: {ex.Message}");
-            }
-            return list;
         }
 
         private void InitializeSerialPort()
@@ -175,7 +97,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             };
 
             _serialPort.DataReceived += DataReceivedHandler;
-
+           
 
 
             try
@@ -191,59 +113,126 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             catch (UnauthorizedAccessException ex)
             {
                 LocalFileLogger.Info($"Port {portName} is already in use or reserved: {ex.Message}");
+                SnackbarService.Enqueue($"Port {portName} is unavailable. Please ensure no other application is using the scale and try again.");
             }
             catch (Exception ex)
             {
+                SnackbarService.Enqueue($"Failed to open serial port {portName}. Please check the configuration and ensure the scale is connected.");
                 LocalFileLogger.Error("Failed to read WeighingScalePortName from configuration.", ex);
                 System.Diagnostics.Debug.WriteLine($"Failed to open serial port: {ex}");
             }
         }
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
-            SerialPort sp = (SerialPort)sender;
-            LocalFileLogger.Info($"Data received on {sp?.PortName}: {sp?.BytesToRead} bytes {e}");
-            if (sp != null)
+            if (sender is not SerialPort sp)
             {
-                string data = sp.ReadLine().Trim();
-                NoScaleMessage.Text = data;
-                TestTextBlck.Text = data;
-                TestTextBlck.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
-                try
-                {
-                    string cleaned = Regex.Replace(data, @"[^0-9.]", "");
+                LocalFileLogger.Warn("DataReceivedHandler invoked with non-SerialPort sender.");
+                return;
+            }
 
-                    // Remove leading zeros (but keep "0" if it's the only digit)
-                    cleaned = cleaned.TrimStart('0');
-                    if (string.IsNullOrEmpty(cleaned) || cleaned.StartsWith("."))
-                        cleaned = "0" + cleaned;
-                    Dispatcher.BeginInvoke(() =>
+            string line;
+            try
+            {
+                // Read exactly once (do not call ReadLine() multiple times).
+                line = sp.ReadLine()?.Trim() ?? string.Empty;
+                LocalFileLogger.Info($"Serial read on {sp.PortName}: '{line}'");
+                LogSerialPortInfo(sp);
+            }
+            catch (TimeoutException)
+            {
+                // No complete line available; ignore.
+                return;
+            }
+            catch (Exception ex)
+            {
+                LocalFileLogger.Error("Failed reading line from serial port.", ex);
+                return;
+            }
+
+            try
+            {
+                // Normalize input: keep digits and dot (device uses '.' as decimal separator)
+                var cleaned = Regex.Replace(line ?? string.Empty, @"[^0-9.]", "");
+                // Remove leading zeros but keep a single zero when appropriate
+                cleaned = cleaned.TrimStart('0');
+                if (string.IsNullOrEmpty(cleaned) || cleaned.StartsWith("."))
+                    cleaned = "0" + cleaned;
+
+                // Parse using invariant culture first (device usually uses '.')
+                if (!decimal.TryParse(cleaned, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var parsed))
+                {
+                    decimal.TryParse(cleaned, NumberStyles.Number, CultureInfo.CurrentCulture, out parsed);
+                }
+
+                LocalFileLogger.Info($"Parsed weight '{cleaned}' => {parsed}");
+
+                // Marshal UI and view-model updates to the UI thread
+                Dispatcher.BeginInvoke(() =>
+                {
+                    try
                     {
                         if (ItemDetails != null)
                         {
-                            ItemDetails.Weight = decimal.Parse(cleaned);
-                            ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * decimal.Parse(cleaned);
-
-                            DataContext = ItemDetails;
+                            ItemDetails.Weight = parsed;
+                            ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * parsed;
+                            // If ItemDetails implements INotifyPropertyChanged you do NOT need to reassign DataContext
                         }
 
                         if (MeasuredWeightDisplayTextBox != null)
-                            MeasuredWeightDisplayTextBox.Text = decimal.Parse(cleaned).ToString(CultureInfo.CurrentCulture);
-                    });
+                            MeasuredWeightDisplayTextBox.Text = parsed.ToString(CultureInfo.CurrentCulture);
 
-
-                    //DataContext = ItemDetails;
-                    // Parse the weight data here (usually a string ending in 'kg' or 'lb')
-                    //Console.WriteLine("Weight Received: " + data);
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-
+                        // This will now always run (unless UI update throws)
+                        LocalFileLogger.Info("Inside if (UI updated)");
+                    }
+                    catch (Exception uiEx)
+                    {
+                        LocalFileLogger.Error("UI update failed in DataReceivedHandler.", uiEx);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                LocalFileLogger.Error("Error processing serial data.", ex);
             }
         }
 
+        private void LogSerialPortInfo(SerialPort? sp)
+        {
+            if (sp == null)
+            {
+                LocalFileLogger.Info("SerialPort: null");
+                return;
+            }
+
+            try
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine("SerialPort info:");
+                sb.AppendLine($"  PortName     : {sp.PortName}");
+                sb.AppendLine($"  BaudRate     : {sp.BaudRate}");
+                sb.AppendLine($"  Parity       : {sp.Parity}");
+                sb.AppendLine($"  DataBits     : {sp.DataBits}");
+                sb.AppendLine($"  StopBits     : {sp.StopBits}");
+                sb.AppendLine($"  Handshake    : {sp.Handshake}");
+                sb.AppendLine($"  RtsEnable    : {sp.RtsEnable}");
+                sb.AppendLine($"  DtrEnable    : {sp.DtrEnable}");
+                sb.AppendLine($"  Encoding     : {sp.Encoding?.WebName ?? "null"}");
+        sb.AppendLine($"  NewLine      : {(sp.NewLine == null ? "(null)" : sp.NewLine.Replace("\r","\\r").Replace("\n","\\n"))}");
+        sb.AppendLine($"  IsOpen       : {sp.IsOpen}");
+        // BytesToRead/Write may be valid only when open; wrap in try to be safe
+        try { sb.AppendLine($"  BytesToRead   : {sp.BytesToRead}"); } catch { sb.AppendLine("  BytesToRead   : (unavailable)"); }
+        try { sb.AppendLine($"  BytesToWrite  : {sp.BytesToWrite}"); } catch { sb.AppendLine("  BytesToWrite  : (unavailable)"); }
+        try { sb.AppendLine($"  ReadTimeout   : {sp.ReadTimeout}"); } catch { }
+        try { sb.AppendLine($"  WriteTimeout  : {sp.WriteTimeout}"); } catch { }
+
+        LocalFileLogger.Info(sb.ToString());
+    }
+    catch (Exception ex)
+    {
+        // Logging should not throw — swallow but persist error
+        LocalFileLogger.Error("Failed to collect SerialPort info", ex);
+            }
+}
 
         private void ModeRadio_Checked(object sender, RoutedEventArgs e) => UpdateKeypadVisibility(true);
 
@@ -284,16 +273,16 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
             }
 
-            if (checkWeight)
-            {
-                if (isChanged && isLoose)
-                {
-                    CleanupSerialPort();
-                    // Defer LoadComPorts to avoid running before control is fully rendered
-                    Dispatcher.BeginInvoke(new Action(() => LoadComPorts()), System.Windows.Threading.DispatcherPriority.Render);
-                }
+            //if (checkWeight)
+            //{
+            //    if (isChanged && isLoose)
+            //    {
+            //        CleanupSerialPort();
+            //        // Defer LoadComPorts to avoid running before control is fully rendered
+            //        Dispatcher.BeginInvoke(new Action(() => InitializeSerialPort()), System.Windows.Threading.DispatcherPriority.Render);
+            //    }
 
-            }
+            //}
         }
 
 

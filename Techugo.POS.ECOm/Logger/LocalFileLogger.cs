@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace Techugo.POS.ECOm.Logger
                     sw.WriteLine($"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss.fff} [{level}] {message}");
                     if (ex != null)
                     {
-                        sw.WriteLine(ex.ToString());
+                        sw.WriteLine(FormatException(ex));
                     }
                 }
             }
@@ -45,5 +46,58 @@ namespace Techugo.POS.ECOm.Logger
         public static void Debug(string message) => Log("DBG", message);
         public static void Warn(string message) => Log("WRN", message);
         public static void Error(string message, Exception? ex = null) => Log("ERR", message, ex);
+
+        private static string FormatException(Exception ex)
+        {
+            var sb = new StringBuilder();
+            FormatExceptionInternal(ex, sb, 0);
+            return sb.ToString();
+        }
+
+        private static void FormatExceptionInternal(Exception ex, StringBuilder sb, int level)
+        {
+            if (ex == null) return;
+
+            var indent = new string(' ', level * 2);
+            sb.AppendLine($"{indent}Exception Type : {ex.GetType().FullName}");
+            sb.AppendLine($"{indent}Message        : {ex.Message}");
+            sb.AppendLine($"{indent}StackTrace     :");
+            if (!string.IsNullOrEmpty(ex.StackTrace))
+            {
+                foreach (var line in ex.StackTrace.Split(new[] { Environment.NewLine }, StringSplitOptions.None))
+                    sb.AppendLine($"{indent}  {line}");
+            }
+            else
+            {
+                sb.AppendLine($"{indent}  (no stack trace)");
+            }
+
+            // Exception.Data
+            if (ex.Data != null && ex.Data.Count > 0)
+            {
+                sb.AppendLine($"{indent}Data:");
+                foreach (DictionaryEntry entry in ex.Data)
+                {
+                    sb.AppendLine($"{indent}  {entry.Key} = {entry.Value}");
+                }
+            }
+
+            // AggregateException inner exceptions
+            if (ex is AggregateException aex)
+            {
+                var i = 0;
+                foreach (var inner in aex.InnerExceptions)
+                {
+                    sb.AppendLine($"{indent}Aggregate InnerException[{i}]:");
+                    FormatExceptionInternal(inner, sb, level + 1);
+                    i++;
+                }
+            }
+            else if (ex.InnerException != null)
+            {
+                sb.AppendLine($"{indent}InnerException:");
+                FormatExceptionInternal(ex.InnerException, sb, level + 1);
+            }
+        }
     }
 }

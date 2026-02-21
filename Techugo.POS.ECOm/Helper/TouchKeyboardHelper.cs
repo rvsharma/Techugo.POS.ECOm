@@ -60,8 +60,8 @@ namespace Techugo.POS.ECOm.Helper
 
         private static void Ui_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            // small delay not required here — simply hide if focus is not another TextBox
-            if (Keyboard.FocusedElement is TextBox) return;
+            // Always hide the touch keyboard when a control loses keyboard focus.
+            // This removes the previous behavior that kept the keyboard open when focus moved to another TextBox.
             HideTouchKeyboard();
         }
 

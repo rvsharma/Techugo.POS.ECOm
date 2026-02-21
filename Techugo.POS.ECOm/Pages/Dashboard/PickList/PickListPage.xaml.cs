@@ -128,7 +128,7 @@ namespace Techugo.POS.ECOm.Pages
                                 {
                                     OrderID = orderDetails.Data.OrderID,
                                     OrderNo = orderDetails.Data.OrderNo,
-                                    CustomerName = orderDetails.Data.Customer.CustomerName,
+                                    CustomerName = orderDetails.Data.Customer?.CustomerName,
                                     TotalItems = orderDetails.Data.OrderDetails.Count,
                                     OrderValue = items?.Sum(i => i.Amount) ?? orderDetails.Data.TotalAmount,
                                     IsExpanded = false,
