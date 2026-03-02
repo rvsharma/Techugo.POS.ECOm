@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Media;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,6 +15,7 @@ using Techugo.POS.ECom.Model;
 using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.OrderTracking;
+using Techugo.POS.ECOm.Pages.Login;
 using Techugo.POS.ECOm.Pages.Notification;
 using Techugo.POS.ECOm.Services;
 using static Techugo.POS.ECOm.Pages.Notification.QuickListWindow;
@@ -372,6 +374,24 @@ namespace Techugo.POS.ECOm.Pages
             }
             catch (Exception ex) { /* consider logging ex */ }
             // TODO: Parse and display data in your dashboard UI
+        }
+
+        private void LogOutButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                TokenService.BearerToken = null;
+            }
+            catch { /* ignore if TokenService not available */ }
+
+            // Ask MainWindow to show the login page (MainWindow manages navigation)
+            var mainWindow = Window.GetWindow(this) as Techugo.POS.ECOm.MainWindow;
+            if (mainWindow != null)
+            {
+                mainWindow.GetType()
+                    .GetMethod("ShowLogin", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    ?.Invoke(mainWindow, null);
+            }
         }
     }
 }

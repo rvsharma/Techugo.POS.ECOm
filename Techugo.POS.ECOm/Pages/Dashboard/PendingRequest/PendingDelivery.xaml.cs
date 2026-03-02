@@ -124,9 +124,9 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             OrderNo = data.OrderNo,
                             createdAt = orderCreatdAt,
                             ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
-    ? data.ExpectedDeliveryDate.Value
+    ? data.ExpectedDeliveryDate.Value.ToLocalTime()
     : null,
-                            TotalAmount = data.PaidAmount,
+                            TotalAmount = data.TotalAmount,
                             PaidAmount = data.PaidAmount,
                             Status = data.Status,
                             Address = address,
@@ -135,7 +135,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             Subscription = data.Subscription,
                             OrderType = data.Subscription == null ? "One Time Order" : "Subscription Order",
                             OrderDetails = data.OrderDetails,
-                            Customer = data.Customer,
+                            CustomerName = data.OrderAddress?.Name,
+                            MobileNo = data.OrderAddress?.MobileNo,
                             BranchDeliverySlot = or.BranchDeliverySlot?.StartTime + " - " + or.BranchDeliverySlot?.EndTime,
                             ItemImages = or.ItemImages,
                             Items = data.OrderDetails.Count + " items(s)"

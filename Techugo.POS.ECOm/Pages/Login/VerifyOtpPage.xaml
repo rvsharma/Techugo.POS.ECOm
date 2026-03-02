@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
+             xmlns:helpers="clr-namespace:Techugo.POS.ECOm.Helper"
              d:DesignHeight="900" d:DesignWidth="800">
     <UserControl.Resources>
         <!-- Brushes -->
@@ -145,7 +146,7 @@
                     <!-- OTP boxes -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,36">
                         <!-- First box: left rounded -->
-                        <TextBox x:Name="OtpBox1" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
+                        <TextBox x:Name="OtpBox1" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged" helpers:TouchKeyboardHelper.Enable="True" InputScope="Number">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="8,0,0,8"/>
@@ -153,28 +154,28 @@
                             </TextBox.Resources>
                         </TextBox>
                         <!-- Middle boxes: no radius -->
-                        <TextBox x:Name="OtpBox2" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
+                        <TextBox x:Name="OtpBox2" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged" helpers:TouchKeyboardHelper.Enable="True" InputScope="Number">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0"/>
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBox x:Name="OtpBox3" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
+                        <TextBox x:Name="OtpBox3" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged" helpers:TouchKeyboardHelper.Enable="True" InputScope="Number">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0"/>
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBox x:Name="OtpBox4" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
+                        <TextBox x:Name="OtpBox4" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged" helpers:TouchKeyboardHelper.Enable="True" InputScope="Number">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0"/>
                                 </Style>
                             </TextBox.Resources>
                         </TextBox>
-                        <TextBox x:Name="OtpBox5" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
+                        <TextBox x:Name="OtpBox5" Style="{StaticResource OtpBoxStyle}" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged" helpers:TouchKeyboardHelper.Enable="True" InputScope="Number">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0"/>
@@ -182,7 +183,7 @@
                             </TextBox.Resources>
                         </TextBox>
                         <!-- Last box: right rounded -->
-                        <TextBox x:Name="OtpBox6" Style="{StaticResource OtpBoxStyle}" Margin="0" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged">
+                        <TextBox x:Name="OtpBox6" Style="{StaticResource OtpBoxStyle}" Margin="0" PreviewKeyDown="OtpBox_PreviewKeyDown" TextChanged="OtpBox_TextChanged" helpers:TouchKeyboardHelper.Enable="True" InputScope="Number">
                             <TextBox.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="0,8,8,0"/>

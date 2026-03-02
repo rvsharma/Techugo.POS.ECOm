@@ -128,9 +128,9 @@ namespace Techugo.POS.ECOm.Pages
                                 {
                                     OrderID = orderDetails.Data.OrderID,
                                     OrderNo = orderDetails.Data.OrderNo,
-                                    CustomerName = orderDetails.Data.Customer?.CustomerName,
+                                    CustomerName = o.OrderAddress?.Name,
                                     TotalItems = orderDetails.Data.OrderDetails.Count,
-                                    OrderValue = items?.Sum(i => i.Amount) ?? orderDetails.Data.TotalAmount,
+                                    OrderValue = items?.Sum(i => i.NetAmount) ?? orderDetails.Data.TotalAmount,
                                     IsExpanded = false,
                                     Items = items
                                 };
@@ -153,7 +153,9 @@ namespace Techugo.POS.ECOm.Pages
 
                 }
             }
-            catch { }
+            catch(Exception ex) {
+            
+            }
             
         }
 
@@ -346,9 +348,10 @@ namespace Techugo.POS.ECOm.Pages
                 Qty = targetItem.Qty,
                 EditQty = vm.EditedQty,
                 //EditQty = Convert.ToInt32(Math.Round(vm.MeasuredQty)), // or adjust conversion rule
-                Weight = Convert.ToString(vm.Weight),
+                Weight = Convert.ToString(vm.Weight == 0 ? targetItem.Size : vm.Weight),
                 SPrice = targetItem.SPrice,
                 Amount = vm.MeasuredAmount,
+                NetAmount = vm.MeasuredAmount,
                 Total = targetItem.Total
             };
 

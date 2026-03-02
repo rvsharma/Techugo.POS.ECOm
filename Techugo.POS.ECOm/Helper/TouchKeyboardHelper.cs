@@ -30,6 +30,7 @@ namespace Techugo.POS.ECOm.Helper
                 {
                     ui.GotKeyboardFocus += Ui_GotKeyboardFocus;
                     ui.LostKeyboardFocus += Ui_LostKeyboardFocus;
+                    // prefer MouseLeftButtonDown instead of PreviewMouseDown to avoid focus re-entrancy
                     ui.PreviewMouseDown += Ui_PreviewMouseDown;
                 }
                 else
@@ -43,7 +44,10 @@ namespace Techugo.POS.ECOm.Helper
 
         private static void Ui_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (sender is UIElement ui) ui.Focus();
+            // remove direct Focus() call to avoid re-entrancy that can cause flicker
+            // Instead, let the normal focus behavior proceed.
+            // If you still need to force focus for certain scenarios, set focus on MouseLeftButtonDown after a short dispatcher delay:
+            // if (sender is UIElement ui) ui.Dispatcher.BeginInvoke(() => ui.Focus(), DispatcherPriority.Input);
         }
 
         private static void Ui_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -55,13 +59,43 @@ namespace Techugo.POS.ECOm.Helper
             }
             catch { }
 
-            ShowTouchKeyboard();
+            if (!(sender is UIElement ui)) return;
+
+            // Start the touch keyboard on a background thread so the startup doesn't block UI.
+            // After starting, restore focus to the control on the UI thread to mitigate focus steal by the keyboard process.
+            _ = StartKeyboardAndRestoreFocusAsync(ui);
+        }
+
+        private static async Task StartKeyboardAndRestoreFocusAsync(UIElement ui)
+        {
+            try
+            {
+                await Task.Run(() => ShowTouchKeyboard());
+
+                // restore focus back to the control in the UI thread after the keyboard process started
+                // using ApplicationIdle priority to wait until the keyboard window has had a chance to show
+                ui.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        ui.Focus();
+                    }
+                    catch
+                    {
+                        // swallow - best-effort restoration
+                    }
+                }), DispatcherPriority.ApplicationIdle);
+            }
+            catch
+            {
+                // ignore any exceptions - this is best-effort
+            }
         }
 
         private static void Ui_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            // Always hide the touch keyboard when a control loses keyboard focus.
-            // This removes the previous behavior that kept the keyboard open when focus moved to another TextBox.
+            // small delay not required here — simply hide if focus is not another TextBox
+            if (Keyboard.FocusedElement is TextBox) return;
             HideTouchKeyboard();
         }
 

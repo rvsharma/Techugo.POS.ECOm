@@ -68,11 +68,11 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Name" FontSize="13" Foreground="#6a7282"/>
-                            <TextBlock Text="{Binding Customer.CustomerName}" FontSize="15" Foreground="#222"/>
+                            <TextBlock Text="{Binding CustomerName}" FontSize="15" Foreground="#222"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <TextBlock Text="Contact" FontSize="13" Foreground="#6a7282"/>
-                            <TextBlock Text="{Binding Customer.MobileNo}" FontSize="15" Foreground="#222"/>
+                            <TextBlock Text="{Binding MobileNo}" FontSize="15" Foreground="#222"/>
                         </StackPanel>
                     </Grid>
                     <TextBlock Text="Delivery Address" FontSize="13" Foreground="#6a7282"/>

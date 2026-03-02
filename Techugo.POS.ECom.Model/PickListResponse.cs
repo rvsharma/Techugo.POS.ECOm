@@ -74,8 +74,8 @@ namespace Techugo.POS.ECom.Model
         [JsonPropertyName("BranchDeliverySlot")]
         public BranchDeliverySlot? BranchDeliverySlot { get; set; }
 
-        [JsonPropertyName("AddressList")]
-        public AddressList1 AddressList { get; set; }
+        [JsonPropertyName("OrderAddress")]
+        public AddressList1 OrderAddress { get; set; }
 
         [JsonPropertyName("ItemImages")]
         public List<string> ItemImages { get; set; }
@@ -83,8 +83,6 @@ namespace Techugo.POS.ECom.Model
 
     public class AddressList1
     {
-        [JsonPropertyName("AddressID")]
-        public int AddressID { get; set; }
 
         [JsonPropertyName("ZoneID")]
         public int? ZoneID { get; set; }
@@ -97,6 +95,9 @@ namespace Techugo.POS.ECom.Model
 
         [JsonPropertyName("Name")]
         public string Name { get; set; }
+
+        [JsonPropertyName("MobileNo")]
+        public string MobileNo { get; set; }
 
         [JsonPropertyName("HouseNo")]
         public string HouseNo { get; set; }

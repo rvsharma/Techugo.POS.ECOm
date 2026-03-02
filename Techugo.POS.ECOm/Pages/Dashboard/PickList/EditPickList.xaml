@@ -242,8 +242,10 @@
                                 <TextBox x:Name="MeasuredQtyManualTextBox" helpers:TouchKeyboardHelper.Enable="True"
                  Text="{Binding EditedQty, Mode=TwoWay}" TextChanged="MeasuredQtyManualTextBox_TextChanged"
                  Background="Transparent" BorderThickness="0"
-                 FontWeight="SemiBold" HorizontalContentAlignment="Center"/>
-                                </Border>
+                 FontWeight="SemiBold" HorizontalContentAlignment="Center" InputScope="Number">
+
+                                </TextBox>
+                            </Border>
 
                                 <!-- Validation message (only visible when non-empty) -->
                                 <TextBlock Text="{Binding ValidationMessage}" Foreground="#d4183d" FontSize="12" Margin="4,6,0,0" TextWrapping="Wrap">

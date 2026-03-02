@@ -206,6 +206,9 @@ namespace Techugo.POS.ECom.Model.ViewModel
             set { if (_imageUrl == value) return; _imageUrl = value; OnPropertyChanged(); }
         }
 
+        public bool IsEditQtyDifferent => EditQty != Qty;
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

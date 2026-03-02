@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Services;
 
 
 namespace Techugo.POS.ECOm.Pages.Dashboard
@@ -75,15 +76,23 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         private async void AssignRider_Click(object sender, RoutedEventArgs e)
         {
             var data = new { RiderID = SelectedRiderId, OrderIDs = new[] { OrderDetails.OrderID } };
-            BaseResponse result = await _apiService.PutAsync<BaseResponse>("rider/assign-rider", data);
-            if (result != null)
+            try
             {
-                if (result.Success == true)
+                BaseResponse result = await _apiService.PutAsync<BaseResponse>("rider/assign-rider", data);
+                if (result != null)
                 {
+                    if (result.Success == true)
+                    {
 
-                    AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
+                        AssignRiderClicked?.Invoke(this, new RoutedEventArgs());
+                    }
                 }
             }
+             catch(Exception ex)
+            {
+                SnackbarService.Enqueue(ex.Message);
+            }
+           
             
         }
 

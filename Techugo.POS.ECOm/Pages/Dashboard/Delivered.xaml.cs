@@ -126,9 +126,9 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                                 order.createdAt = data.createdAt;
                             }
                             order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
-    ? data.ExpectedDeliveryDate.Value
+    ? data.ExpectedDeliveryDate.Value.ToLocalTime()
     : null;
-                            order.TotalAmount = data.PaidAmount;
+                            order.TotalAmount = data.TotalAmount;
                             order.PaidAmount = data.PaidAmount;
                             order.Status = data.Status;
                             order.Address = address;
@@ -137,7 +137,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.PaymentMode = data.PaymentMode;
                             order.Subscription = data.Subscription;
                             order.OrderDetails = data.OrderDetails;
-                            order.Customer = data.Customer;
+                            order.CustomerName = data.OrderAddress?.Name;
+                            order.MobileNo = data.OrderAddress?.MobileNo;
                             order.BranchDeliverySlot = o.BranchDeliverySlot?.StartTime + " - " + o.BranchDeliverySlot?.EndTime;
                             order.ItemImages = o.ItemImages;
                             order.Status = o.Status;

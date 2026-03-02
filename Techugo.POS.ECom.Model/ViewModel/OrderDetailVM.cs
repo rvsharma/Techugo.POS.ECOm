@@ -21,6 +21,11 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string RiderStatus { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
         public CustomerDetails Customer { get; set; }
+
+        public string CustomerName { get; set; }
+        public string MobileNo { get; set; }
+
+
         public string Address { get; set; }
         public string ShortAddress { get; set; }
         public string Rider { get; set; }

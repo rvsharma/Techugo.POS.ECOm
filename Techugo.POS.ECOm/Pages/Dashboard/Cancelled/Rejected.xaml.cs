@@ -92,7 +92,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.createdAt = data.createdAt;
                         }
                         order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
-    ? data.ExpectedDeliveryDate.Value
+    ? data.ExpectedDeliveryDate.Value.ToLocalTime()
     : null;
                         order.TotalAmount = data.TotalAmount;
                         order.PaidAmount = data.PaidAmount;

@@ -103,8 +103,8 @@ namespace Techugo.POS.ECOm.Pages
                             // Fallback: assign raw value if any unexpected issue occurs
                             order.createdAt = data.createdAt;
                         }
-                        order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue ? data.ExpectedDeliveryDate.Value : null;
-                        order.TotalAmount = data.PaidAmount;
+                        order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue ? data.ExpectedDeliveryDate.Value.ToLocalTime() : null;
+                        order.TotalAmount = data.TotalAmount;
                         order.PaidAmount = data.PaidAmount;
                         order.Status = data.Status;
                         order.Address = address;
@@ -112,7 +112,8 @@ namespace Techugo.POS.ECOm.Pages
                         order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                         order.Subscription = data.Subscription;
                         order.OrderDetails = data.OrderDetails;
-                        order.Customer = data.Customer;
+                        order.CustomerName = data.OrderAddress?.Name;
+                        order.MobileNo = data.OrderAddress?.MobileNo;
                         order.BranchDeliverySlot = or.BranchDeliverySlot?.StartTime + " - " + or.BranchDeliverySlot?.EndTime;
                         order.ItemImages = or.ItemImages;
                         order.Items = data.OrderDetails.Count + " items(s)";

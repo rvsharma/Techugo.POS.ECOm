@@ -112,10 +112,10 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
   <GridViewColumn.CellTemplate>
     <DataTemplate>
       <TextBlock
-        Text="{Binding Customer.CustomerName, TargetNullValue=N/A, FallbackValue=N/A}"
+        Text="{Binding CustomerName, TargetNullValue=N/A, FallbackValue=N/A}"
         TextTrimming="CharacterEllipsis"
         TextWrapping="NoWrap"
-        ToolTip="{Binding Customer.CustomerName}" />
+        ToolTip="{Binding CustomerName}" />
     </DataTemplate>
   </GridViewColumn.CellTemplate>
 </GridViewColumn>
@@ -125,7 +125,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                             <TextBlock>
                                                 <TextBlock.Text>
                                                     <MultiBinding StringFormat="+91 {0:00000 00000}">
-                                                        <Binding Path="Customer.MobileNo"/>
+                                                        <Binding Path="MobileNo"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>

@@ -79,7 +79,7 @@
                                 <TextBlock Text="Name" FontSize="14" Foreground="#6a7282" Margin="0,0,0,4"/>
                                 <TextBlock FontSize="15" Foreground="#222" Grid.Column="0">
                                     <TextBlock.Text>
-                                        <Binding Path="Customer.CustomerName"
+                                        <Binding Path="CustomerName"
                  TargetNullValue="N/A"
                  FallbackValue="N/A" />
                                     </TextBlock.Text>
@@ -90,7 +90,7 @@
                                 <TextBlock  FontSize="15" Foreground="#222">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="+91 {0:00000 00000}">
-                                            <Binding Path="Customer.MobileNo"/>
+                                            <Binding Path="MobileNo"/>
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>

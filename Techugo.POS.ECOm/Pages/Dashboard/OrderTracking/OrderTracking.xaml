@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:conv="clr-namespace:Techugo.POS.ECOm.Converters"
              xmlns:local="clr-namespace:Techugo.POS.ECOm"
+             xmlns:helpers="clr-namespace:Techugo.POS.ECOm.Helper"
     Height="Auto" Width="Auto">
     <UserControl.Resources>
         <conv:ActiveStateConverter x:Key="ActiveStateConverter"/>
@@ -195,6 +196,7 @@ BorderBrush="#00c951"
                                      FontSize="14"
                                      Foreground="#111827"
                                      VerticalContentAlignment="Center"
+                                     helpers:TouchKeyboardHelper.Enable="True"
                                      Padding="6,0"/>
                             <TextBlock Text="Search by product name, barcode, or category..."
                                        FontSize="14"
