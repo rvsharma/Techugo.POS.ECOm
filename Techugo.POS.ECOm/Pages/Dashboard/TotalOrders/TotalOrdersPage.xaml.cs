@@ -118,6 +118,11 @@ namespace Techugo.POS.ECOm.Pages
                         order.ItemImages = or.ItemImages;
                         order.Items = data.OrderDetails.Count + " items(s)";
                         order.Status = data.Status;
+                        order.Membership = data.Membership;
+                        order.IsMembershipPurchase = data.IsMembershipPurchase;
+                        order.Offer = data.Offer;
+                        order.OfferDiscount = data.OfferDiscount;
+                        order.MembershipDiscount = data.MembershipDiscount;
                         orderData.Add(order);
                     }
 

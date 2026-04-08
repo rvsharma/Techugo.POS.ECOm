@@ -81,11 +81,11 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                 </StackPanel>
                 <Grid Margin="0,0,0,12" x:Name="PickListHeader">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2.5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="1.5*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2.5*" MinWidth="200"/>
+                        <ColumnDefinition Width="2*" MinWidth="200"/>
+                        <ColumnDefinition Width="1.5*" MinWidth="100"/>
+                        <ColumnDefinition Width="2*" MinWidth="100"/>
+                        <ColumnDefinition Width="2*" MinWidth="200"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Order Details" FontWeight="DemiBold" FontSize="14" Grid.Column="0" Margin="0,0,0,0"/>
                     <TextBlock Text="Customer" FontWeight="DemiBold" FontSize="14" Grid.Column="1" Margin="0,0,0,0"/>
@@ -108,11 +108,11 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <!-- Order Row -->
                                 <Grid Background="#F7F8FA" Height="56" VerticalAlignment="Center">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2.5*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="1.5*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2.5*" MinWidth="200"/>
+                                        <ColumnDefinition Width="2*" MinWidth="200"/>
+                                        <ColumnDefinition Width="1.5*" MinWidth="100"/>
+                                        <ColumnDefinition Width="2*" MinWidth="100"/>
+                                        <ColumnDefinition Width="2*" MinWidth="200"/>
                                     </Grid.ColumnDefinitions>
                                     <Button Width="32" Height="32" Background="Transparent" BorderThickness="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
                                     Command="{Binding ToggleExpandCommand}">
@@ -209,14 +209,14 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 <StackPanel Background="#eff6ff" Margin="0,0,0,0" Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <Grid Margin="0,0,0,0" Height="44">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="3*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="1.5*"/>
-                                            <ColumnDefinition Width="1.5*"/>
-                                            <ColumnDefinition Width="1.5*"/>
-                                            <ColumnDefinition Width="2*"/>
-                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*" MinWidth="200"/>
+                                            <ColumnDefinition Width="1*" MinWidth="50"/>
+                                            <ColumnDefinition Width="1*" MinWidth="50"/>
+                                            <ColumnDefinition Width="1.5*" MinWidth="70"/>
+                                            <ColumnDefinition Width="1.5*" MinWidth="90"/>
+                                            <ColumnDefinition Width="1.5*" MinWidth="70"/>
+                                            <ColumnDefinition Width="2*" MinWidth="70"/>
+                                            <ColumnDefinition Width="2*" MinWidth="90"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Item Name" FontWeight="SemiBold" FontSize="14" Grid.Column="0" Foreground="#888" Margin="16,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Size" FontWeight="SemiBold" FontSize="14" Grid.Column="1" Foreground="#888" VerticalAlignment="Center"/>
@@ -232,14 +232,14 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                             <DataTemplate>
                                                 <Grid Margin="0,0,0,0" Height="50" Background="White">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="3*"/>
-                                                        <ColumnDefinition Width="1*"/>
-                                                        <ColumnDefinition Width="1*"/>
-                                                        <ColumnDefinition Width="1.5*"/>
-                                                        <ColumnDefinition Width="1.5*"/>
-                                                        <ColumnDefinition Width="1.5*"/>
-                                                        <ColumnDefinition Width="2*"/>
-                                                        <ColumnDefinition Width="2*"/>
+                                                        <ColumnDefinition Width="3*" MinWidth="200"/>
+                                                        <ColumnDefinition Width="1*" MinWidth="50"/>
+                                                        <ColumnDefinition Width="1*" MinWidth="50"/>
+                                                        <ColumnDefinition Width="1.5*" MinWidth="70"/>
+                                                        <ColumnDefinition Width="1.5*" MinWidth="90"/>
+                                                        <ColumnDefinition Width="1.5*" MinWidth="70"/>
+                                                        <ColumnDefinition Width="2*" MinWidth="70"/>
+                                                        <ColumnDefinition Width="2*" MinWidth="90"/>
                                                     </Grid.ColumnDefinitions>
                                                     <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center">
                                                         <!-- Rounded image using Rectangle with ImageBrush to respect corner radius -->

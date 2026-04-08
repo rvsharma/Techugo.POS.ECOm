@@ -34,6 +34,27 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string OrderType { get; set; }
         public string BranchDeliverySlot { get; set; }
         public List<string> ItemImages { get; set; }
-        public string Items { get; set; }  
+        public string Items { get; set; }
+        public decimal TotalDiscount { get; set; }
+        public decimal MembershipDiscount { get; set; }
+        public decimal OfferDiscount { get; set; }
+        public bool IsMembershipPurchase { get; set; }
+        public Offer Offer { get;set; }
+        public Membership Membership { get;set; }
+
     }
+
+    public class Offer
+    {
+        public string OfferName { get; set; }
+    }
+
+    public class Membership
+    {
+        public int MembershipID { get; set; }
+        public decimal Amount { get;set; }
+        public string MembershipName { get; set; }
+    }
+
+    
 }

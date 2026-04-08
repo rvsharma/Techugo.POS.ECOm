@@ -20,6 +20,8 @@ namespace Techugo.POS.ECOm.ApiClient
         {
             _apiSettings = apiSettings.Value;
             _httpClient = new HttpClient { BaseAddress = new System.Uri(_apiSettings.BaseUrl) };
+            _httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("MyWPFApp", "1.0"));
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
 
             _httpClientUnAuth = new HttpClient { BaseAddress = new System.Uri(_apiSettings.InventoryEndpoint) };

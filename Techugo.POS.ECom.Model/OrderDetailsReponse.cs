@@ -1,5 +1,6 @@
 ﻿
 using System.Text.Json.Serialization;
+using Techugo.POS.ECom.Model.ViewModel;
 
 namespace Techugo.POS.ECom.Model
 {
@@ -29,6 +30,12 @@ namespace Techugo.POS.ECom.Model
         public List<OrderTimeline> OrderTimelines { get; set; }
         public string Subscription { get; set; }
         public BranchDeliverySlot? BranchDeliverySlot { get; set; }
+        public decimal TotalDiscount { get; set; }
+        public decimal MembershipDiscount { get; set; }
+        public decimal OfferDiscount { get; set; }
+        public bool IsMembershipPurchase { get; set; }
+        public Offer Offer { get; set; }
+        public Membership Membership { get; set; }
     }
 
     public class OrderDetail

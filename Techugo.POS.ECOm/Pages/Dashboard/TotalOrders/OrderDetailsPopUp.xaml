@@ -127,9 +127,9 @@
                                                Foreground="#222"
                                                Grid.Column="0"
                                                TextTrimming="CharacterEllipsis"
-                                               TextWrapping="NoWrap"
+                                               TextWrapping="Wrap"
                                                VerticalAlignment="Center"
-                                               ToolTip="{Binding Item.ItemName}" Padding="0,0,4,0"/>
+                                               ToolTip="{Binding Item.ItemName}" Padding="4,0,4,0"/>
                                             <TextBlock Text="{Binding Quantity}" FontSize="15" Foreground="#222" Grid.Column="1"/>
                                             <TextBlock Text="{Binding SPrice, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="2"/>
                                             <TextBlock Text="{Binding NetAmount, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="3"/>
@@ -138,7 +138,10 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <Separator Margin="0,20,0,12" Background="#a6a6a6"/>
+                        <Separator Margin="0,5,0,12" Background="#a6a6a6"/>
+                        
+                        
+                        
                         <Grid Margin="0,0,0,8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>

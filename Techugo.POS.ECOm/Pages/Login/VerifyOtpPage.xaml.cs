@@ -172,7 +172,7 @@ namespace Techugo.POS.ECOm.Pages.Login
         {
             string otp = $"{OtpBox1.Text}{OtpBox2.Text}{OtpBox3.Text}{OtpBox4.Text}{OtpBox5.Text}{OtpBox6.Text}";
 
-            if (otp == "123456")
+            if (otp.Length == 6)
             {
                 var data = new { MobileNo = PhoneNumberWithoutCode, OTP = otp };
                 try
