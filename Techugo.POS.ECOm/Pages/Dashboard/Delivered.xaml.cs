@@ -129,7 +129,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
     ? data.ExpectedDeliveryDate.Value.ToLocalTime()
     : null;
                             order.TotalAmount = data.TotalAmount;
-                            order.PaidAmount = data.PaidAmount;
+                            order.PaidAmount = data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount : data.PaidAmount;
+
                             order.Status = data.Status;
                             order.Address = address;
 
@@ -142,6 +143,13 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.BranchDeliverySlot = o.BranchDeliverySlot?.StartTime + " - " + o.BranchDeliverySlot?.EndTime;
                             order.ItemImages = o.ItemImages;
                             order.Status = o.Status;
+                            order.Membership = data.Membership;
+                            order.IsMembershipPurchase = data.IsMembershipPurchase;
+                            order.Offer = data.Offer;
+                            order.OfferDiscount = data.OfferDiscount;
+                            order.DeliveryCharge = data.DeliveryCharge;
+                            order.MembershipDiscount = data.MembershipDiscount;
+                            order.TotalDiscount = data.TotalDiscount;
                             order.Items = data.OrderDetails.Count + " items(s)";
                             orderData.Add(order);
                         }

@@ -180,7 +180,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                 </GridViewColumn>
 
                                 <GridViewColumn Header="Items" Width="80" DisplayMemberBinding="{Binding Item.Items}" />
-                                <GridViewColumn Header="Total Amount" Width="100" DisplayMemberBinding="{Binding Item.TotalAmount, StringFormat=₹{0}}" />
+                                <GridViewColumn Header="Total Amount" Width="100" DisplayMemberBinding="{Binding Item.PaidAmount, StringFormat=₹{0}}" />
                                 <GridViewColumn Header="Payment" Width="80" DisplayMemberBinding="{Binding Item.PaymentMode}" />
                                 <GridViewColumn Header="Placed At" Width="150">
                                     <GridViewColumn.CellTemplate>

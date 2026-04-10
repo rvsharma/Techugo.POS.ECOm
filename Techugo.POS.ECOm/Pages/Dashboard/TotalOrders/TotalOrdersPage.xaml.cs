@@ -53,6 +53,7 @@ namespace Techugo.POS.ECOm.Pages
         private async void LoadOrdersData()
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+
             OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=1000&status=TotalOrders&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
@@ -104,13 +105,23 @@ namespace Techugo.POS.ECOm.Pages
                             order.createdAt = data.createdAt;
                         }
                         order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue ? data.ExpectedDeliveryDate.Value.ToLocalTime() : null;
-                        order.TotalAmount = data.TotalAmount;
-                        order.PaidAmount = data.PaidAmount;
+                        order.TotalAmount = data.TotalAmount + data.DeliveryCharge + (data.Membership != null ? data.Membership.Amount : 0) - data.TotalDiscount;
+                        order.PaidAmount = data.IsMembershipPurchase == true ? data.Membership.Amount +  data.PaidAmount : data.PaidAmount;
                         order.Status = data.Status;
                         order.Address = address;
                         order.PaymentMode = data.PaymentMode;
                         order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                         order.Subscription = data.Subscription;
+                        
+                        // Calculate Amount for each OrderDetail as Quantity * SPrice
+                        if (data.OrderDetails != null)
+                        {
+                            foreach (var detail in data.OrderDetails)
+                            {
+                                detail.Amount = detail.Quantity * detail.SPrice;
+                            }
+                        }
+                        
                         order.OrderDetails = data.OrderDetails;
                         order.CustomerName = data.OrderAddress?.Name;
                         order.MobileNo = data.OrderAddress?.MobileNo;
@@ -122,7 +133,9 @@ namespace Techugo.POS.ECOm.Pages
                         order.IsMembershipPurchase = data.IsMembershipPurchase;
                         order.Offer = data.Offer;
                         order.OfferDiscount = data.OfferDiscount;
+                        order.DeliveryCharge = data.DeliveryCharge;
                         order.MembershipDiscount = data.MembershipDiscount;
+                        order.TotalDiscount = data.TotalDiscount;
                         orderData.Add(order);
                     }
 

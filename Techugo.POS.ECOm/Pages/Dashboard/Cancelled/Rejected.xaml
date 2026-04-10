@@ -136,7 +136,7 @@
                                 </GridViewColumn>
 
                                 <GridViewColumn Header="Items" Width="80" DisplayMemberBinding="{Binding Items}" />
-                                <GridViewColumn Header="Total Amount" Width="140" DisplayMemberBinding="{Binding TotalAmount, StringFormat=₹{0}}" />
+                                <GridViewColumn Header="Total Amount" Width="140" DisplayMemberBinding="{Binding PaidAmount, StringFormat=₹{0}}" />
                                 <GridViewColumn Header="Payment" Width="120" DisplayMemberBinding="{Binding PaymentMode}" />
                                 <GridViewColumn Header="Placed At" Width="150">
                                     <GridViewColumn.CellTemplate>

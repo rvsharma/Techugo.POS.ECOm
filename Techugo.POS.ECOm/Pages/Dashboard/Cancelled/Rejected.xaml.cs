@@ -115,6 +115,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             address = string.Join(", ", parts);
                         }
                         order.Address = address;
+                        order.PaidAmount = data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount : data.PaidAmount;
                         order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                         order.PaymentMode = data.PaymentMode;
                         order.Subscription = data.Subscription;
@@ -123,6 +124,13 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                         order.BranchDeliverySlot = or.BranchDeliverySlot?.StartTime + " - " + or.BranchDeliverySlot?.EndTime;
                         order.ItemImages = or.ItemImages;
                         order.Status = or.Status;
+                        order.Membership = data.Membership;
+                        order.IsMembershipPurchase = data.IsMembershipPurchase;
+                        order.Offer = data.Offer;
+                        order.OfferDiscount = data.OfferDiscount;
+                        order.DeliveryCharge = data.DeliveryCharge;
+                        order.MembershipDiscount = data.MembershipDiscount;
+                        order.TotalDiscount = data.TotalDiscount;
                         order.Items = data.OrderDetails.Count + " items(s)";
                         orderData.Add(order);
                     }
