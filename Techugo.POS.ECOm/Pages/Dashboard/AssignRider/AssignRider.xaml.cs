@@ -160,6 +160,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.DeliveryCharge = data.DeliveryCharge;
                             order.MembershipDiscount = data.MembershipDiscount;
                             order.TotalDiscount = data.TotalDiscount;
+                            order.HandlingCharge = data.HandlingCharge;
                             order.Items = data.OrderDetails.Count + " items(s)";
                             orderData.Add(order);
                         }

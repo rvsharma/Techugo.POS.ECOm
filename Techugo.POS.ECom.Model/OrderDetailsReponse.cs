@@ -36,6 +36,7 @@ namespace Techugo.POS.ECom.Model
         public bool IsMembershipPurchase { get; set; }
         public Offer Offer { get; set; }
         public Membership Membership { get; set; }
+        public decimal HandlingCharge { get; set; }
     }
 
     public class OrderDetail

@@ -42,7 +42,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         {
             if (_orderDetails == null)
                 return;
-            DeliveryChargeAmount.Text = _orderDetails.DeliveryCharge > 0 ? $"+₹{_orderDetails.DeliveryCharge}" : $"₹{_orderDetails.DeliveryCharge}";
+            DeliveryChargeAmount.Text = _orderDetails.DeliveryCharge > 0 ? $"+₹{_orderDetails.DeliveryCharge}" : $"Free";
+            HandlingCharge.Text = _orderDetails.HandlingCharge > 0 ? $"+₹{_orderDetails.HandlingCharge}" : $"Free";
             // Handle Membership Display
             if (_orderDetails.Membership != null)
             {

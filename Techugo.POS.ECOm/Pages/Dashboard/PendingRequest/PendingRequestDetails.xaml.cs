@@ -37,6 +37,83 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
             OrderDetails = orderDetail;
             DataContext = OrderDetails;
             _apiService = ApiServiceFactory.Create();
+            UpdateMembershipAndOfferUI();
+        }
+
+        private void UpdateMembershipAndOfferUI()
+        {
+            if (_orderDetails == null)
+                return;
+            DeliveryChargeAmount.Text = _orderDetails.DeliveryCharge > 0 ? $"+₹{_orderDetails.DeliveryCharge}" : $"Free";
+            HandlingCharge.Text = _orderDetails.HandlingCharge > 0 ? $"+₹{_orderDetails.HandlingCharge}" : $"Free";
+
+            // Handle Membership Display
+            if (_orderDetails.Membership != null)
+            {
+                if (_orderDetails.IsMembershipPurchase)
+                {
+                    // Membership purchased in this order
+                    MembershipPurchasedPanel.Visibility = Visibility.Visible;
+                    MembershipExistingPanel.Visibility = Visibility.Collapsed;
+
+                    MembershipNamePurchased.Text = _orderDetails.Membership.MembershipName;
+                    MembershipAmountPurchased.Text = $"+₹{_orderDetails.Membership.Amount}";
+                }
+                else
+                {
+                    if (_orderDetails.MembershipDiscount > 0)
+                    {
+
+                        // Membership was already existing (applied to this order)
+                        MembershipPurchasedPanel.Visibility = Visibility.Collapsed;
+                        MembershipExistingPanel.Visibility = Visibility.Visible;
+                        MembershipDiscount.Text = $"-₹{_orderDetails.MembershipDiscount}";
+
+
+                        MembershipNameExisting.Text = _orderDetails.Membership.MembershipName;
+                    }
+                }
+            }
+            else
+            {
+                // No membership
+                MembershipPurchasedPanel.Visibility = Visibility.Collapsed;
+                MembershipExistingPanel.Visibility = Visibility.Collapsed;
+            }
+
+            // Handle Offer Display
+            if (_orderDetails.Offer != null)
+            {
+                OfferPanel.Visibility = Visibility.Visible;
+                OfferName.Text = _orderDetails.Offer.OfferName;
+
+                if (_orderDetails.OfferDiscount > 0)
+                {
+                    OfferDiscount.Text = $"-₹{_orderDetails.OfferDiscount}";
+                }
+                else
+                {
+                    OfferDiscount.Text = "Offer Applied";
+                }
+            }
+            else
+            {
+                OfferPanel.Visibility = Visibility.Collapsed;
+            }
+
+            // Handle Total Saved Display
+            if (_orderDetails.TotalDiscount > 0)
+            {
+                TotalSaved.Visibility = Visibility.Visible;
+                TotalSavedAmount.Text = $"-₹{_orderDetails.TotalDiscount}";
+                TotalSavedAmount.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TotalSavedAmount.Text = "-₹0";
+                TotalSavedAmount.Visibility = Visibility.Visible;
+            }
+            TotalAmount.Text = (_orderDetails.PaidAmount).ToString();
         }
 
         private async void AcceptRow_Click(object sender, RoutedEventArgs e)

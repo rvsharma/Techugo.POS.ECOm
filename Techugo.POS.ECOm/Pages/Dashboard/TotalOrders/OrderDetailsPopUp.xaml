@@ -141,7 +141,21 @@ Background="Transparent">
                         </ItemsControl>
                         <Separator Margin="0,5,0,6" Background="#a6a6a6"/>
                         <StackPanel x:Name="DeliveryChargePanel" Margin="0,0,0,0">
-                           
+                            <Grid Margin="0,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Handling Fees"
+                                   FontSize="12"
+                                   FontWeight="DemiBold"
+                                   Grid.Column="0"/>
+                                <TextBlock x:Name="HandlingCharge"
+                                   FontSize="12"
+                                   FontWeight="DemiBold"
+                                   Grid.Column="1"
+                                   HorizontalAlignment="Center"/>
+                            </Grid>
                             <Grid Margin="0,0,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="2*"/>

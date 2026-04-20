@@ -41,6 +41,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public bool IsMembershipPurchase { get; set; }
         public Offer Offer { get;set; }
         public Membership Membership { get;set; }
+        public decimal HandlingCharge { get; set; }
 
     }
 
