@@ -106,7 +106,7 @@ namespace Techugo.POS.ECOm.Pages
                         }
                         order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue ? data.ExpectedDeliveryDate.Value.ToLocalTime() : null;
                         order.TotalAmount = data.TotalAmount + data.DeliveryCharge + (data.Membership != null ? data.Membership.Amount : 0) - data.TotalDiscount;
-                        order.PaidAmount = data.IsMembershipPurchase == true ? data.Membership.Amount +  data.PaidAmount : data.PaidAmount;
+                        order.PaidAmount = (decimal)(data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount) : data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount));
                         order.Status = data.Status;
                         order.Address = address;
                         order.PaymentMode = data.PaymentMode;
@@ -136,6 +136,7 @@ namespace Techugo.POS.ECOm.Pages
                         order.DeliveryCharge = data.DeliveryCharge;
                         order.MembershipDiscount = data.MembershipDiscount;
                         order.TotalDiscount = data.TotalDiscount;
+                        order.RefundAmount = data.RefundAmount;
                         order.HandlingCharge = data.HandlingCharge;
                         orderData.Add(order);
                     }
@@ -158,7 +159,10 @@ namespace Techugo.POS.ECOm.Pages
             var orderItem = button?.DataContext as OrderDetailVM;
             if (orderItem == null)
                 return;
-
+            foreach (var item in orderItem.OrderDetails)
+            {
+                item.DeliveredQuantity = item.IsLooseItem ? item.Quantity + " x " + item.Size + "" + item.UOM : item.Quantity.ToString();
+            }
             var popup = new OrderDetailsPopUp(orderItem);
             popup.CloseClicked += CloseOrderDetailsPopUp;
 

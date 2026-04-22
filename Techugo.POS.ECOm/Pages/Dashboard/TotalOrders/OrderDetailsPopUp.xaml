@@ -115,7 +115,7 @@ Background="Transparent">
                         <ItemsControl ItemsSource="{Binding OrderDetails}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderThickness="0,1,0,0" BorderBrush="#a6a6a6" Padding="8,6">
+                                    <Border BorderThickness="0,1,0,0" BorderBrush="#a6a6a6" Padding="0,4">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="2*"/>
@@ -124,16 +124,16 @@ Background="Transparent">
                                                 <ColumnDefinition Width="1*"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="{Binding Item.ItemName}"
-                                               FontSize="15"
+                                               FontSize="12"
                                                Foreground="#222"
                                                Grid.Column="0"
                                                TextTrimming="CharacterEllipsis"
                                                TextWrapping="Wrap"
                                                VerticalAlignment="Center"
                                                ToolTip="{Binding Item.ItemName}" Padding="4,0,4,0"/>
-                                            <TextBlock Text="{Binding Quantity}" FontSize="15" Foreground="#222" Grid.Column="1"/>
-                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="2"/>
-                                            <TextBlock Text="{Binding Amount, StringFormat=₹{0}}" FontSize="15" Foreground="#222" Grid.Column="3"/>
+                                            <TextBlock Text="{Binding DeliveredQuantity}" FontSize="12" Foreground="#222" Grid.Column="1"/>
+                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0}}" FontSize="12" Foreground="#222" Grid.Column="2" HorizontalAlignment="Right" Padding="50,0"/>
+                                            <TextBlock Text="{Binding Amount, StringFormat=₹{0}}" FontSize="12" Foreground="#222" Grid.Column="3" HorizontalAlignment="Right" Padding="60,0"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

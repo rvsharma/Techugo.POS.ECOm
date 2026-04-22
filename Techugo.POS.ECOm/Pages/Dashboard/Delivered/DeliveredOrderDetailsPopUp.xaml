@@ -133,8 +133,8 @@ Background="Transparent">
                                                        
                                                ToolTip="{Binding Item.ItemName}" Padding="4,0,4,0"/>
                                             <TextBlock Text="{Binding DeliveredQuantity}" FontSize="12" Foreground="#222" Grid.Column="1"/>
-                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0}}" FontSize="12" Foreground="#222" Grid.Column="2"/>
-                                            <TextBlock Text="{Binding Amount, StringFormat=₹{0}}" FontSize="12" Foreground="#222" Grid.Column="3"/>
+                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0}}" FontSize="12" Foreground="#222" Grid.Column="2" HorizontalAlignment="Right" Padding="50,0"/>
+                                            <TextBlock Text="{Binding Amount, StringFormat=₹{0}}" FontSize="12" Foreground="#222" Grid.Column="3" HorizontalAlignment="Right" Padding="60,0"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

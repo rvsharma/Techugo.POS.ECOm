@@ -37,6 +37,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string Items { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal MembershipDiscount { get; set; }
+        public decimal? RefundAmount { get; set; }
         public decimal OfferDiscount { get; set; }
         public bool IsMembershipPurchase { get; set; }
         public Offer Offer { get;set; }

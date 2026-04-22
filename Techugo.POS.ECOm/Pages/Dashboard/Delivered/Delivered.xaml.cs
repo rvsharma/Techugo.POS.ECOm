@@ -129,7 +129,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
     ? data.ExpectedDeliveryDate.Value.ToLocalTime()
     : null;
                             order.TotalAmount = data.TotalAmount;
-                            order.PaidAmount = data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount : data.PaidAmount;
+                            order.PaidAmount = (decimal)(data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount) : data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount));
 
                             order.Status = data.Status;
                             order.Address = address;
@@ -147,6 +147,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.IsMembershipPurchase = data.IsMembershipPurchase;
                             order.Offer = data.Offer;
                             order.OfferDiscount = data.OfferDiscount;
+                            order.RefundAmount = data.RefundAmount;
                             order.DeliveryCharge = data.DeliveryCharge;
                             order.MembershipDiscount = data.MembershipDiscount;
                             order.TotalDiscount = data.TotalDiscount;

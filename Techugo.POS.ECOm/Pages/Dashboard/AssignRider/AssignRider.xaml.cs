@@ -138,12 +138,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             }
                             order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
     ? data.ExpectedDeliveryDate.Value.ToLocalTime()
-    : null;
+    : null;                     
                             order.TotalAmount = data.PaidAmount;
                             order.PaidAmount = data.PaidAmount;
                             order.Status = data.Status;
                             order.Address = address;
-                            order.PaidAmount = data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount : data.PaidAmount;
+                            order.PaidAmount = (decimal)(data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount) : data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount));
                             order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                             order.PaymentMode = data.PaymentMode;
                             order.Subscription = data.Subscription;
@@ -182,7 +182,10 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var orderItem = button?.DataContext as OrderDetailVM;
             if (orderItem == null)
                 return;
-
+            foreach (var item in orderItem.OrderDetails)
+            {
+                item.DeliveredQuantity = item.IsLooseItem ? item.Quantity + " x " + item.Size + "" + item.UOM : item.Quantity.ToString();
+            }
             var popup = new AssignRiderPopUp(orderItem);
             popup.CloseClicked += CloseOrderDetailsPopUp;
             popup.AssignRiderClicked += AssignRiderToOrder;

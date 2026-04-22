@@ -127,7 +127,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
     ? data.ExpectedDeliveryDate.Value.ToLocalTime()
     : null,
                             TotalAmount = data.TotalAmount,
-                            PaidAmount = data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount : data.PaidAmount,
+                            PaidAmount = (decimal)(data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount - (data.RefundAmount== null ? 0m: data.RefundAmount) : data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount)),
                             Status = data.Status,
                             Address = address,
                             ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address,
@@ -300,6 +300,10 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var orderItem = selectable?.Item;
             if (orderItem == null)
                 return;
+            foreach (var item in orderItem.OrderDetails)
+            {
+                item.DeliveredQuantity = item.IsLooseItem ? item.Quantity + " x " + item.Size + "" + item.UOM : item.Quantity.ToString();
+            }
             try
             {
                 var createdAt = Convert.ToDateTime(orderItem.ExpectedDeliveryDate);
