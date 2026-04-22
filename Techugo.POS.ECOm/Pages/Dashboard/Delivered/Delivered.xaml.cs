@@ -222,8 +222,11 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var orderItem = button?.DataContext as OrderDetailVM;
             if (orderItem == null)
                 return;
-
-            var popup = new OrderDetailsPopUp(orderItem);
+            foreach (var item in orderItem.OrderDetails)
+            {
+                item.DeliveredQuantity = item.IsLooseItem ? item.Quantity + " x " + item.Size + "" + item.UOM : item.Quantity.ToString();
+            }
+            var popup = new DeliveredOrderDetailsPopUp(orderItem);
             popup.CloseClicked += CloseOrderDetailsPopUp;
 
             // Option 1: Show as overlay in PageContent (replace current content)

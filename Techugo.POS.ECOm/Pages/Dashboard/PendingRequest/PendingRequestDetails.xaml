@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="Techugo.POS.ECOm.Pages.Dashboard.PendingRequest.PendingRequestDetails"
-             xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="Transparent">
+xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+Background="Transparent">
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <!-- Overlay -->
         <Rectangle Fill="#AA888888" Opacity="0.6" 

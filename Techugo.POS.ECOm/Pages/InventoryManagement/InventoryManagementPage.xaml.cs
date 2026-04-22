@@ -67,6 +67,11 @@ namespace Techugo.POS.ECOm.Pages
             get => _outOfStock;
             set => SetField(ref _outOfStock, value);
         }
+        
+        // Store total stats from API (for filtered/searched results)
+        private int _filteredTotalItems;
+        private int _filteredActiveProducts;
+        private int _filteredOutOfStock;
         private string _totalItemText;
         public string TotalItemText
         {
@@ -93,6 +98,44 @@ namespace Techugo.POS.ECOm.Pages
         // Prevent Toggle Checked/Unchecked handlers from reacting to programmatic bindings/initialization
         private bool _suppressToggleEvents = true;
         private string _pendingSearchText;
+        
+        // Pagination properties
+        private const int ITEMS_PER_PAGE = 10;
+        private int _currentPage = 1;
+        private int _totalPages = 1;
+        
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set => SetField(ref _currentPage, value);
+        }
+        
+        public int TotalPages
+        {
+            get => _totalPages;
+            set => SetField(ref _totalPages, value);
+        }
+        
+        private string _paginationText;
+        public string PaginationText
+        {
+            get => _paginationText;
+            set => SetField(ref _paginationText, value);
+        }
+        
+        private bool _canGoToPreviousPage;
+        public bool CanGoToPreviousPage
+        {
+            get => _canGoToPreviousPage;
+            set => SetField(ref _canGoToPreviousPage, value);
+        }
+        
+        private bool _canGoToNextPage;
+        public bool CanGoToNextPage
+        {
+            get => _canGoToNextPage;
+            set => SetField(ref _canGoToNextPage, value);
+        }
 
         public InventoryManagementPage()
         {
@@ -101,7 +144,7 @@ namespace Techugo.POS.ECOm.Pages
             inventoryData = new ObservableCollection<InventoryVM>();
             BrandList = new ObservableCollection<Brand>();
             _apiService = ApiServiceFactory.Create();
-            var queryData = new { page = 1, limit = 1000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null, division = SelectedBrandID };
+            var queryData = new { page = _currentPage, limit = ITEMS_PER_PAGE, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null, division = SelectedBrandID };
             // start loading; suppression remains true until LoadInventoryData finishes
             LoadInventoryData(queryData);
             GetBrands();
@@ -197,12 +240,14 @@ namespace Techugo.POS.ECOm.Pages
         {
             try
             {
-
                 ItemListResponse itemList = await _apiService.PostAsync<ItemListResponse>("item/item-list", queryData);
                 if (itemList != null && itemList.Data != null)
                 {
                     inventoryData.Clear();
 
+                    // Build current page display items
+                    List<InventoryVM> currentPageItems = new List<InventoryVM>();
+                    
                     foreach (var or in itemList.Data)
                     {
                         InventoryVM inventory = new InventoryVM();
@@ -220,17 +265,131 @@ namespace Techugo.POS.ECOm.Pages
                             ? or.ItemBranchLists[0].IsActive
                             : "Inactive";
 
+                        currentPageItems.Add(inventory);
                         inventoryData.Add(inventory);
                     }
-                    UpdateStats();
+                    
+                    // Update pagination info
+                    TotalPages = itemList.TotalPages;
+                    UpdatePaginationUI();
+                    
+                    // Update stats from API response (reflects filtered/searched results)
+                    await UpdateStatsFromApiResponse(itemList);
                 }
-                TotalItemText = $"Products Inventory ({itemList?.TotalItems})";
             }
             finally
             {
                 // Allow handlers to run only after initial population finishes
                 _suppressToggleEvents = false;
             }
+        }
+        
+        private async Task UpdateStatsFromApiResponse(ItemListResponse itemList)
+        {
+            if (itemList == null) return;
+            
+            // Store total counts from API
+            _filteredTotalItems = itemList.TotalItems;
+            
+            // Check if API provided active/inactive counts
+            if (itemList.ActiveItems > 0 || itemList.InactiveItems > 0)
+            {
+                // Use API counts if available
+                _filteredActiveProducts = itemList.ActiveItems;
+                _filteredOutOfStock = itemList.InactiveItems;
+            }
+            else
+            {
+                // Fetch all items without pagination to get accurate counts
+                await FetchAllItemsForAccurateCount();
+            }
+            
+            // Update displayed stats
+            TotalItems = _filteredTotalItems;
+            ActiveProducts = _filteredActiveProducts;
+            InactiveProducts = _filteredOutOfStock;
+            OutOfStock = _filteredOutOfStock;
+            
+            // Update the text to show filtered results
+            TotalItemText = $"Products Inventory ({_filteredTotalItems}";
+            
+            if (!string.IsNullOrWhiteSpace(_pendingSearchText))
+            {
+                TotalItemText += $" search results";
+            }
+            
+            if (SelectedBrandID.HasValue && SelectedBrandID > 0)
+            {
+                TotalItemText += $" filtered by brand";
+            }
+            
+            TotalItemText += ")";
+        }
+        
+        private async Task FetchAllItemsForAccurateCount()
+        {
+            try
+            {
+                // Create query without pagination to get all items for counting
+                var countQueryData = new { page = 1, limit = 10000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = _pendingSearchText, division = SelectedBrandID };
+                
+                ItemListResponse allItemsList = await _apiService.PostAsync<ItemListResponse>("item/item-list", countQueryData);
+                
+                if (allItemsList != null && allItemsList.Data != null)
+                {
+                    // Count active and inactive items
+                    int activeCount = allItemsList.Data.Count(item => 
+                        item.ItemBranchLists != null && item.ItemBranchLists.Count > 0 &&
+                        string.Equals(item.ItemBranchLists[0].IsActive, "Active", System.StringComparison.OrdinalIgnoreCase));
+                    
+                    int inactiveCount = allItemsList.Data.Count(item => 
+                        item.ItemBranchLists != null && item.ItemBranchLists.Count > 0 &&
+                        string.Equals(item.ItemBranchLists[0].IsActive, "Inactive", System.StringComparison.OrdinalIgnoreCase));
+                    
+                    _filteredActiveProducts = activeCount;
+                    _filteredOutOfStock = inactiveCount;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                // Fallback: use current page counts if API call fails
+                int activeOnCurrentPage = inventoryData?.Count(i => string.Equals(i.IsActive, "Active", System.StringComparison.OrdinalIgnoreCase)) ?? 0;
+                int inactiveOnCurrentPage = inventoryData?.Count(i => string.Equals(i.IsActive, "Inactive", System.StringComparison.OrdinalIgnoreCase)) ?? 0;
+                
+                _filteredActiveProducts = activeOnCurrentPage;
+                _filteredOutOfStock = inactiveOnCurrentPage;
+            }
+        }
+        
+        private void UpdatePaginationUI()
+        {
+            CanGoToPreviousPage = CurrentPage > 1;
+            CanGoToNextPage = CurrentPage < TotalPages;
+            PaginationText = $"Page {CurrentPage} of {TotalPages}";
+        }
+        
+        private void GoToPreviousPage()
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+                ReloadCurrentPage();
+            }
+        }
+        
+        private void GoToNextPage()
+        {
+            if (CurrentPage < TotalPages)
+            {
+                CurrentPage++;
+                ReloadCurrentPage();
+            }
+        }
+        
+        private void ReloadCurrentPage()
+        {
+            var queryData = new { page = CurrentPage, limit = ITEMS_PER_PAGE, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = _pendingSearchText, division = SelectedBrandID };
+            LoadInventoryData(queryData);
         }
 
         private async void GetBrands()
@@ -251,16 +410,8 @@ namespace Techugo.POS.ECOm.Pages
         }
         private void UpdateStats()
         {
-            // compute totals from inventoryData
-            TotalItems = inventoryData?.Count ?? 0;
-
-            // ActiveProducts: check IsActive string; adjust if you use bool
-            ActiveProducts = inventoryData?.Count(i => string.Equals(i.IsActive, "Active", System.StringComparison.OrdinalIgnoreCase)) ?? 0;
-
-            OutOfStock = TotalItems - ActiveProducts;
-
-            // OutOfStock: uses StockQuantity; ensure StockQuantity is populated from API mapping
-            // OutOfStock = inventoryData?.Count(i => i.StockQuantity <= 0) ?? 0;
+            // This method is kept for legacy compatibility
+            // Actual stats are now updated in UpdateStatsFromApiResponse()
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -335,9 +486,8 @@ namespace Techugo.POS.ECOm.Pages
                 if (result != null && result.Success == true)
                 {
                     SnackbarService.Enqueue("Item updated successfully");
-                    var queryData = new { page = 1, limit = 1000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null, division = SelectedBrandID };
-
-                    LoadInventoryData(queryData);
+                    // Reload current page with same filters
+                    ReloadCurrentPage();
                 }
                 else
                 {
@@ -391,7 +541,8 @@ namespace Techugo.POS.ECOm.Pages
             {
                 SelectedBrandID = brandId;
             }
-            var queryData = new { page = 1, limit = 1000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = (string)null, division = SelectedBrandID };
+            CurrentPage = 1; // Reset to first page when filter changes
+            var queryData = new { page = CurrentPage, limit = ITEMS_PER_PAGE, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = _pendingSearchText, division = SelectedBrandID };
             LoadInventoryData(queryData);
         }
 
@@ -411,10 +562,21 @@ namespace Techugo.POS.ECOm.Pages
         {
             _searchTimer.Stop();
 
-            // Call your API function here
-            var queryData = new { page = 1, limit = 1000, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = _pendingSearchText, division = SelectedBrandID };
+            // Reset to first page when search changes
+            CurrentPage = 1;
+            var queryData = new { page = CurrentPage, limit = ITEMS_PER_PAGE, brandId = (int?)null, categoryIds = System.Array.Empty<object>(), search = _pendingSearchText, division = SelectedBrandID };
 
             LoadInventoryData(queryData);
+        }
+
+        private void PreviousButton_Click(object sender, RoutedEventArgs e)
+        {
+            GoToPreviousPage();
+        }
+
+        private void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            GoToNextPage();
         }
     }
 }

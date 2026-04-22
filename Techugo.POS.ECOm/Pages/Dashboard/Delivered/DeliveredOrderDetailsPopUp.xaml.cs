@@ -12,7 +12,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
     /// <summary>
     /// Interaction logic for OrderDetailsPopUp.xaml
     /// </summary>
-    public partial class OrderDetailsPopUp : UserControl, INotifyPropertyChanged
+    public partial class DeliveredOrderDetailsPopUp : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event RoutedEventHandler CloseClicked;
@@ -28,7 +28,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                 //UpdateMembershipAndOfferUI();
             }
         }
-        public OrderDetailsPopUp(OrderDetailVM orderDetail)
+        public DeliveredOrderDetailsPopUp(OrderDetailVM orderDetail)
         {
             InitializeComponent();
             OrderDetails = orderDetail;

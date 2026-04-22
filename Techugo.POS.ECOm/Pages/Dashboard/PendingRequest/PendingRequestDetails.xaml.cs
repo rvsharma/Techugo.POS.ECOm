@@ -44,8 +44,14 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
         {
             if (_orderDetails == null)
                 return;
+            
+            // Set Delivery Charge text and color
             DeliveryChargeAmount.Text = _orderDetails.DeliveryCharge > 0 ? $"+₹{_orderDetails.DeliveryCharge}" : $"Free";
+            DeliveryChargeAmount.Foreground = _orderDetails.DeliveryCharge == 0 ? new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 0, 166, 62)) : new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 106, 114, 130));
+            
+            // Set Handling Charge text and color
             HandlingCharge.Text = _orderDetails.HandlingCharge > 0 ? $"+₹{_orderDetails.HandlingCharge}" : $"Free";
+            HandlingCharge.Foreground = _orderDetails.HandlingCharge == 0 ? new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 0, 166, 62)) : new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 106, 114, 130));
 
             // Handle Membership Display
             if (_orderDetails.Membership != null)

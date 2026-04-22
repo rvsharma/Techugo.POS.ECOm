@@ -14,6 +14,12 @@ namespace Techugo.POS.ECom.Model
 
         [JsonPropertyName("totalPages")]
         public int TotalPages { get; set; }
+        
+        [JsonPropertyName("activeItems")]
+        public int ActiveItems { get; set; }
+        
+        [JsonPropertyName("inactiveItems")]
+        public int InactiveItems { get; set; }
 
         [JsonPropertyName("data")]
         public List<Item> Data { get; set; }

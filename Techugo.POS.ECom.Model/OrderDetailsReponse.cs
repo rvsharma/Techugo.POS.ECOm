@@ -52,6 +52,7 @@ namespace Techugo.POS.ECom.Model
         public decimal Discount { get; set; }
         public ItemDetails Item { get; set; }
 
+        public string DeliveredQuantity { get; set; }
         public bool IsLooseItem { get; set; }
     }
 
