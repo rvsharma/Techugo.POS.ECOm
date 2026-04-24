@@ -339,20 +339,36 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 var txt = MeasuredQtyTextBox.Text;
                 if (txt.Length > 0)
                     MeasuredQtyTextBox.Text = txt.Substring(0, txt.Length - 1);
+                MeasuredWeightDisplayTextBox.Text = txt.Substring(0, txt.Length - 1);
             }
             else if (tag == "CLEAR")
             {
                 if (!MeasuredQtyTextBox.Text.Contains(decSep))
                 {
                     if (string.IsNullOrEmpty(MeasuredQtyTextBox.Text))
-                        MeasuredQtyTextBox.Text = "0" + decSep;
-                    else
-                        MeasuredQtyTextBox.Text += decSep;
+                    { 
+                    MeasuredQtyTextBox.Text = "0" + decSep;
+                    MeasuredWeightDisplayTextBox.Text = "0" + decSep;
+                }
+                else
+                    MeasuredQtyTextBox.Text += decSep;
+                    MeasuredWeightDisplayTextBox.Text += decSep;
                 }
             }
             else
             {
                 MeasuredQtyTextBox.Text += tag;
+                MeasuredWeightDisplayTextBox.Text += tag;
+
+                if (ItemDetails != null)
+                {
+                    ItemDetails.Weight = string.IsNullOrEmpty(MeasuredWeightDisplayTextBox.Text) ? 0 : Convert.ToDecimal(MeasuredWeightDisplayTextBox.Text);
+                    ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * (string.IsNullOrEmpty(MeasuredWeightDisplayTextBox.Text) ? 0 : Convert.ToDecimal(MeasuredWeightDisplayTextBox.Text));
+                    // If ItemDetails implements INotifyPropertyChanged you do NOT need to reassign DataContext
+                }
+
+                //if (MeasuredWeightDisplayTextBox != null)
+                //    MeasuredWeightDisplayTextBox.Text = tag;
             }
 
             // When in Enter Measured Qty mode, interpret keypad input as quantity (not weight)
