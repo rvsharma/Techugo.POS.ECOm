@@ -64,34 +64,38 @@ namespace Techugo.POS.ECOm.Pages
                     //TodayEarningsTextBlock.Text = $"{data.TodayEarnings:N0}";
                     //TodayEarningsIncreaseTextBlock.Text = data.TodayEarningsIncrease + " increase from yesterday";
                     // Update chart with actual weekly comparison data
-                    var overlayValues = new ChartValues<double>(
+                    var amount = new ChartValues<double>(
                         data.WeeklyComparison.Select(wc => (double)wc.Amount));
-                    var maxY = CeilingToNearest(overlayValues.Max(), 200);
-                    var baseRemainderValues = new ChartValues<double>(
-                        overlayValues.Select(v => maxY - v));
+                    var lastWeek = new ChartValues<double>(
+                        data.WeeklyComparison.Select(wc => (double)wc.LastWeek));
+                    var maxY = CeilingToNearest(amount.Concat(lastWeek).Max(), 200);
+
                    
                     _viewModel.Days = data.WeeklyComparison.Select(wc => wc.Day).ToList();
                     _viewModel.MaxY = maxY == 0 ? 1000 : maxY;
                     _viewModel.SeriesCollection = new SeriesCollection
                     {
-                        new StackedColumnSeries
+                        new ColumnSeries
                         {
                             Title = string.Empty,
-                            Values = overlayValues,
+                            Values = amount,
                             Fill = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
                             MaxColumnWidth = 40,
                             DataLabels = false,
                             LabelPoint = point => $"?{point.Y:N0}",
-                            IsHitTestVisible = false
+                            IsHitTestVisible = false,
+                            FontFamily = new FontFamily("Segoe UI, Noto Color Emoji")
                         },
-                        new StackedColumnSeries
+                        new ColumnSeries
                         {
                             Title = string.Empty,
-                            Values = baseRemainderValues,
+                            Values = lastWeek,
                             Fill = new SolidColorBrush(Color.FromArgb(80, 144, 202, 249)),
                             MaxColumnWidth = 40,
                             DataLabels = false,
-                            IsHitTestVisible = false
+                            LabelPoint = point => $"?{point.Y:N0}",
+                            IsHitTestVisible = false,
+                            FontFamily = new FontFamily("Segoe UI, Noto Color Emoji")
                         }
                     };
                     //DataContext = _viewModel;
@@ -158,7 +162,7 @@ namespace Techugo.POS.ECOm.Pages
             {
                 SelectedDate = picker.SelectedDate.Value;
             }
-            
+            _ = LoadDataAsync();
 
         }
     }

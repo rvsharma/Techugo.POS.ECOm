@@ -206,19 +206,20 @@
 
                         <Grid>
                             <!-- Background band for base ceiling -->
-                            <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="300">
+                            <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="300" FontFamily="Segoe UI, Noto Color Emoji">
                                 <lvc:CartesianChart.DataTooltip>
                                     <lvc:DefaultTooltip SelectionMode="OnlySender"
                             Background="Black"
                             Foreground="White"
-                            FontSize="14"/>
+                            FontSize="14"
+                            FontFamily="Segoe UI, Noto Color Emoji"/>
                                 </lvc:CartesianChart.DataTooltip>
 
                                 <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis Title="" Labels="{Binding Days}" FontSize="14" Foreground="#222"/>
+                                    <lvc:Axis Title="" Labels="{Binding Days}" FontSize="14" Foreground="#222" FontFamily="Segoe UI, Noto Color Emoji"/>
                                 </lvc:CartesianChart.AxisX>
                                 <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis Title="" MinValue="0" MaxValue="{Binding MaxY}" FontSize="14" Foreground="#222"/>
+                                    <lvc:Axis Title="" MinValue="0" MaxValue="{Binding MaxY}" FontSize="14" Foreground="#222" FontFamily="Segoe UI, Noto Color Emoji"/>
                                 </lvc:CartesianChart.AxisY>
                             </lvc:CartesianChart>
 
