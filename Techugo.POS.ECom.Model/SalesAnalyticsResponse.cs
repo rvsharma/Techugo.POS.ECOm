@@ -10,16 +10,13 @@ namespace Techugo.POS.ECom.Model
 
     public class SalesData
     {
-        [JsonPropertyName("averageDailySales")]
-        public int AverageDailySales { get; set; }
-        [JsonPropertyName("averageDailySalesIncrease")]
-        public string AverageDailySalesIncrease { get; set; }
-        [JsonPropertyName("todayEarnings")]
-        public int TodayEarnings { get; set; }
-        [JsonPropertyName("todayEarningsIncrease")]
-        public string TodayEarningsIncrease { get; set; }
         [JsonPropertyName("weeklyComparison")]
         public List<WeeklyComparison> WeeklyComparison { get; set; }
+        public Sales Sales { get; set; }
+        public Orders2 Orders { get; set; }
+        public AverageSale AverageSale { get; set; }
+
+
     }
 
     public class WeeklyComparison
@@ -27,7 +24,22 @@ namespace Techugo.POS.ECom.Model
         [JsonPropertyName("day")]
         public string Day { get; set; }
         [JsonPropertyName("amount")]
-        public int Amount { get; set; }
+        public decimal Amount { get; set; }
+        [JsonPropertyName("lastWeek")]
+        public decimal LastWeek { get; set; }
     }
 
+    public class Sales
+    {
+        public decimal TotalSale { get; set; }
+    }
+    public class Orders2
+    {
+        public decimal TotalOrders { get; set; }
+    }
+
+    public class AverageSale
+    {
+        public string AvgSale { get; set; }
+    }
 }

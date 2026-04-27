@@ -92,7 +92,7 @@
 			</Grid>
 
 			<!-- Stat cards -->
-			<UniformGrid HorizontalAlignment="Stretch" Margin="0,0,0,18" Columns="2">
+			<UniformGrid HorizontalAlignment="Stretch" Margin="0,0,0,18" Columns="3">
 				<!-- Total Sales -->
 				<Border
 					Background="#fff7ed"
@@ -159,7 +159,7 @@
 				</Border>
 
 				<!-- Average Order Value -->
-				<!--<Border
+				<Border
 					Background="#fff7ed"
 					BorderBrush="#e0e0e0"
 					BorderThickness="1"
@@ -178,14 +178,20 @@
 									<ColumnDefinition Width="*" />
 									<ColumnDefinition Width="Auto" />
 								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" Text="Pending Request" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+								<TextBlock Grid.Column="0" Text="Total Sales" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
 								<svg:SvgViewbox Source="/Assets/Images/indicator.svg" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
 							</Grid>
-							<TextBlock Text="₹12,450" FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#8200db"/>
-							<TextBlock Text="Per order average" FontSize="12" Foreground="#ad46ff" Margin="0,8,0,0" />
+
+                        <TextBlock FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#8200db">
+<Run Text="₹"/>
+<Run Name="TotalSalesBlock1"/>
+                        </TextBlock>
+                        <TextBlock Name="TotalSalesBlock1Increase" FontSize="12" Foreground="#ad46ff" Margin="0,8,0,0" />
+
+
 						</StackPanel>
 					</Border>
-				</Border>-->
+				</Border>
 			</UniformGrid>
 
 			<!-- Two info panels side-by-side -->

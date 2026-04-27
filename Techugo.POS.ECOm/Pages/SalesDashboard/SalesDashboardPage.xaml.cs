@@ -27,7 +27,7 @@ namespace Techugo.POS.ECOm.Pages
                     _selectedDate = DateTime.Today; // clamp to today
                 else
                     _selectedDate = value;
-                _ = LoadDataAsync();
+                //_ = LoadDataAsync();
                 // Trigger analytics refresh logic here
             }
         }
@@ -59,10 +59,10 @@ namespace Techugo.POS.ECOm.Pages
                 if (response != null && response.Success && response.Data != null)
                 {
                     var data = response.Data;
-                    AverageDailySalesTextBlock.Text = $"{data.AverageDailySales:N0}";
-                    AverageDailySalesIncreaseTextBlock.Text = data.AverageDailySalesIncrease + " increase from yesterday";
-                    TodayEarningsTextBlock.Text = $"{data.TodayEarnings:N0}";
-                    TodayEarningsIncreaseTextBlock.Text = data.TodayEarningsIncrease + " increase from yesterday";
+                    //AverageDailySalesTextBlock.Text = $"{data.AverageDailySales:N0}";
+                    //AverageDailySalesIncreaseTextBlock.Text = data.AverageDailySalesIncrease + " increase from yesterday";
+                    //TodayEarningsTextBlock.Text = $"{data.TodayEarnings:N0}";
+                    //TodayEarningsIncreaseTextBlock.Text = data.TodayEarningsIncrease + " increase from yesterday";
                     // Update chart with actual weekly comparison data
                     var overlayValues = new ChartValues<double>(
                         data.WeeklyComparison.Select(wc => (double)wc.Amount));
@@ -96,9 +96,16 @@ namespace Techugo.POS.ECOm.Pages
                     };
                     //DataContext = _viewModel;
 
+                    SalesAnalyticsResponse ledger = await _apiService.GetAsync<SalesAnalyticsResponse>("branch/sales-ledger?date=" + formattedDate + "");
+                    if(ledger != null)
+                    {
+                        AverageDailySalesTextBlock.Text = $"{ledger.Data.AverageSale.AvgSale:N0}";
+                        TodayEarningsTextBlock.Text = $"{ledger.Data.Orders.TotalOrders:N0}";
+                        TotalSalesBlock1.Text = $"{ledger.Data.Sales.TotalSale:N0}";
+                    }
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // Handle exceptions (e.g., log error, show message to user)
             }
