@@ -1,4 +1,4 @@
-using LiveCharts;
+﻿using LiveCharts;
 using LiveCharts.Wpf;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -82,7 +82,7 @@ namespace Techugo.POS.ECOm.Pages
                             Fill = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
                             MaxColumnWidth = 40,
                             DataLabels = false,
-                            LabelPoint = point => $"?{point.Y:N0}",
+                            LabelPoint = point => $"₹{point.Y:N0}",
                             IsHitTestVisible = false,
                             FontFamily = new FontFamily("Segoe UI, Noto Color Emoji")
                         },
@@ -93,7 +93,7 @@ namespace Techugo.POS.ECOm.Pages
                             Fill = new SolidColorBrush(Color.FromArgb(80, 144, 202, 249)),
                             MaxColumnWidth = 40,
                             DataLabels = false,
-                            LabelPoint = point => $"?{point.Y:N0}",
+                            LabelPoint = point => $"₹{point.Y:N0}",
                             IsHitTestVisible = false,
                             FontFamily = new FontFamily("Segoe UI, Noto Color Emoji")
                         }

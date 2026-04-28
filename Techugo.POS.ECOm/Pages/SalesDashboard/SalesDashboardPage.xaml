@@ -209,10 +209,10 @@
                             <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="300" FontFamily="Segoe UI, Noto Color Emoji">
                                 <lvc:CartesianChart.DataTooltip>
                                     <lvc:DefaultTooltip SelectionMode="OnlySender"
-                            Background="Black"
-                            Foreground="White"
-                            FontSize="14"
-                            FontFamily="Segoe UI, Noto Color Emoji"/>
+Background="Black"
+Foreground="White"
+FontSize="14"
+FontFamily="Segoe UI, Noto Color Emoji"/>
                                 </lvc:CartesianChart.DataTooltip>
 
                                 <lvc:CartesianChart.AxisX>
