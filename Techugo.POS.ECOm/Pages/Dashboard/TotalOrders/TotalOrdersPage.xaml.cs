@@ -111,6 +111,7 @@ namespace Techugo.POS.ECOm.Pages
                         order.Address = address;
                         order.PaymentMode = data.PaymentMode;
                         order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
+                        order.PlatformCharge = or.PlatformCharge;
                         order.Subscription = data.Subscription;
                         
                         // Calculate Amount for each OrderDetail as Quantity * SPrice

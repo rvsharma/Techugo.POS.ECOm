@@ -21,6 +21,7 @@ namespace Techugo.POS.ECOm.Pages
         public event RoutedEventHandler PartialReturnsClicked;
         public event RoutedEventHandler CarryForwardClicked;
         public event RoutedEventHandler OrderTrackingClicked;
+        public event RoutedEventHandler RefreshRequested;
 
         private readonly ApiService _apiService;
         private readonly WeightViewModel _weightVm = new WeightViewModel();
@@ -59,7 +60,7 @@ namespace Techugo.POS.ECOm.Pages
             // keep DataContext as the page so existing bindings (orderData, UpdatedTime, etc.) keep working
             DataContext = this;
             _apiService = ApiServiceFactory.Create();
-            _ = LoadDashboardData();
+            DashboardDatePicker.SelectedDate = DateTime.Today;
             Loaded += DashboardPage_Loaded;
             SizeChanged += DashboardPage_SizeChanged;
 
@@ -103,9 +104,9 @@ namespace Techugo.POS.ECOm.Pages
             TilesGrid.Rows = (int)Math.Ceiling(children / (double)columns);
         }
 
-        private async Task LoadDashboardData()
+        private async Task LoadDashboardData(DateTime dateToLoad)
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string formattedDate = dateToLoad.ToString("yyyy-MM-dd");
             try
             {
                 DashboardResponse data = await _apiService.GetAsync<DashboardResponse>("order/dashboard?Date=" + formattedDate + "");
@@ -165,11 +166,27 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
+            DateTime date = DashboardDatePicker.SelectedDate ?? DateTime.Today;
             await ApiHelper.RunWithLoader(async () =>
             {
                 await Task.Delay(500).ConfigureAwait(false); // 2 second delay
-                await LoadDashboardData().ConfigureAwait(false);
+                await LoadDashboardData(date).ConfigureAwait(false);
+
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    RefreshRequested?.Invoke(this, new RoutedEventArgs());
+                });
+
             }, "Refreshing dashboard...");
+        }
+
+        private async void DashboardDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DateTime date = DashboardDatePicker.SelectedDate ?? DateTime.Today;
+            await ApiHelper.RunWithLoader(async () =>
+            {
+                await LoadDashboardData(date);
+            }, "Loading data for selected date...");
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -15,12 +15,25 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public string ItemName { get; set; }
         public int ItemID { get; set; }
         public int OrderedQty { get; set; }
-        public int EditedQty { get; set; }
+        private int _editedQty;
+        public int EditedQty
+        {
+            get => _editedQty;
+            set
+            {
+                if (_editedQty == value) return;
+                _editedQty = value;
+                Notify(nameof(EditedQty));
+            }
+        }
         public string OrderedQtyDisPlay { get; set; }
         public string SKU { get; set; }
         public string UOM { get; set; }
         public decimal SPrice { get; set; }
         public bool IsLooseItem { get; set; }
+        public bool IsEdited { get; set; }
+        public bool CanEditQty => IsLooseItem ? !IsEdited : true;
+        public decimal UnitFactor { get; set; } = 1m;
         public decimal OriginalAmount { get; set; }
         private decimal _weight;
         public decimal Weight

@@ -143,6 +143,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             IsMembershipPurchase = data.IsMembershipPurchase,
                             Offer = data.Offer,
                             OfferDiscount = data.OfferDiscount,
+                            PlatformCharge = or.PlatformCharge,
                             DeliveryCharge = data.DeliveryCharge,
                             MembershipDiscount = data.MembershipDiscount,
                             TotalDiscount = data.TotalDiscount,

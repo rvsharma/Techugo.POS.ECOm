@@ -202,6 +202,7 @@ namespace Techugo.POS.ECOm.Pages
             dashboardPage.PartialReturnsClicked += DashboardPage_PartialReturnsClicked;
             dashboardPage.CarryForwardClicked += DashboardPage_CarryForwardClicked;
             dashboardPage.OrderTrackingClicked += DashboardPage_OrderTrackingClicked;
+            dashboardPage.RefreshRequested += (s, e) => _ = LoadNotificationCountAsync();
             return dashboardPage;
         }
 

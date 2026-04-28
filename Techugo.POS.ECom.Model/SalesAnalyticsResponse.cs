@@ -28,6 +28,8 @@ namespace Techugo.POS.ECom.Model
         public string Day { get; set; }
         [JsonPropertyName("amount")]
         public int Amount { get; set; }
+        [JsonPropertyName("lastWeek")]
+        public int LastWeek { get; set; }
     }
 
 }

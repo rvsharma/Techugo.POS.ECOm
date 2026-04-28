@@ -133,8 +133,8 @@ Background="Transparent">
                                                        
                                                ToolTip="{Binding Item.ItemName}" Padding="4,0,4,0"/>
                                             <TextBlock Text="{Binding DeliveredQuantity}" FontSize="12" Foreground="#222" Grid.Column="1"/>
-                                            <TextBlock Text="{Binding SPrice, StringFormat=₹{0}}" FontSize="12" Foreground="#222" Grid.Column="2" HorizontalAlignment="Right" Padding="50,0"/>
-                                            <TextBlock Text="{Binding Amount, StringFormat=₹{0}}" FontSize="12" Foreground="#222" Grid.Column="3" HorizontalAlignment="Right" Padding="60,0"/>
+                                            <TextBlock Text="{Binding SPrice, StringFormat=Rs.{0}}" FontSize="12" Foreground="#222" Grid.Column="2" HorizontalAlignment="Right" Padding="50,0"/>
+                                            <TextBlock Text="{Binding Amount, StringFormat=Rs.{0}}" FontSize="12" Foreground="#222" Grid.Column="3" HorizontalAlignment="Right" Padding="60,0"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -142,6 +142,21 @@ Background="Transparent">
                         </ItemsControl>
                         <Separator Margin="0,5,0,6" Background="#a6a6a6"/>
                         <StackPanel x:Name="DeliveryChargePanel" Margin="0,0,0,0">
+                            <Grid Margin="0,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Gross Amount"
+                                   FontSize="12"
+                                   FontWeight="DemiBold"
+                                   Grid.Column="0"/>
+                                <TextBlock x:Name="GrossAmount"
+                                   FontSize="12"
+                                   FontWeight="DemiBold"
+                                   Grid.Column="1"
+                                   HorizontalAlignment="Center"/>
+                            </Grid>
                             <Grid Margin="0,0,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="2*"/>
@@ -167,6 +182,21 @@ Background="Transparent">
                                    FontWeight="DemiBold"
                                    Grid.Column="0"/>
                                 <TextBlock x:Name="DeliveryChargeAmount"
+                                   FontSize="12"
+                                   FontWeight="DemiBold"
+                                   Grid.Column="1"
+                                   HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Platform Fee"
+                                   FontSize="12"
+                                   FontWeight="DemiBold"
+                                   Grid.Column="0"/>
+                                <TextBlock x:Name="PlatformChargeAmount"
                                    FontSize="12"
                                    FontWeight="DemiBold"
                                    Grid.Column="1"
@@ -262,7 +292,43 @@ Background="Transparent">
                                        Foreground="#00A63E"
                                        HorizontalAlignment="Center"/>
                         </Grid>
-                        
+
+                        <Grid Margin="0,3,0,4" x:Name="GrandTotal">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Grand Total"
+                                       FontSize="14"
+                                       FontWeight="DemiBold"
+                                       Foreground="#6a7282"
+                                       Grid.Column="0"/>
+                            <TextBlock x:Name="GrandTotalAmount"
+                                       FontSize="16"
+                                       FontWeight="DemiBold"
+                                       Grid.Column="1"
+                                       Foreground="#6a7282"
+                                       HorizontalAlignment="Center"/>
+                        </Grid>
+
+                        <Grid Margin="0,3,0,4" x:Name="Refund" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Refund Amount"
+                                       FontSize="14"
+                                       FontWeight="DemiBold"
+                                       Foreground="OrangeRed"
+                                       Grid.Column="0"/>
+                            <TextBlock x:Name="RefundAmount"
+                                       FontSize="16"
+                                       FontWeight="DemiBold"
+                                       Grid.Column="1"
+                                       Foreground="OrangeRed"
+                                       HorizontalAlignment="Center"/>
+                        </Grid>
+
                         <Grid Margin="0,0,0,8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>

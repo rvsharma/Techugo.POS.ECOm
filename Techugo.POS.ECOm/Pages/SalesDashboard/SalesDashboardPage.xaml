@@ -117,7 +117,7 @@
 								<svg:SvgViewbox Source="/Assets/Images/dollar.svg" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
 							</Grid>
                         <TextBlock  FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#008236" >
-                        <Run Text="₹"/>
+                        <Run Text="Rs."/>
                         <Run Name="AverageDailySalesTextBlock"/>
                         </TextBlock>
 
@@ -150,7 +150,7 @@
 								<svg:SvgViewbox Source="/Assets/Images/box.svg" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
 							</Grid>
                         <TextBlock FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#1447e6">
-                        <Run Text="₹"/>
+                        <Run Text="Rs."/>
                         <Run Name="TodayEarningsTextBlock"/>
                         </TextBlock>
                         <TextBlock Name="TodayEarningsIncreaseTextBlock" FontSize="12" Foreground="#2b7fff" Margin="0,8,0,0" />
@@ -181,7 +181,7 @@
 								<TextBlock Grid.Column="0" Text="Pending Request" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
 								<svg:SvgViewbox Source="/Assets/Images/indicator.svg" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
 							</Grid>
-							<TextBlock Text="₹12,450" FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#8200db"/>
+							<TextBlock Text="Rs.12,450" FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#8200db"/>
 							<TextBlock Text="Per order average" FontSize="12" Foreground="#ad46ff" Margin="0,8,0,0" />
 						</StackPanel>
 					</Border>
@@ -235,7 +235,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="9-10 AM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="3" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="₹450" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="Rs.450" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -243,7 +243,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="10-11 AM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="5" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="₹750" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="Rs.750" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -251,7 +251,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="11-12 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="8" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="₹1200" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="Rs.1200" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -259,7 +259,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="12-1 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="12" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="₹1850" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="Rs.1850" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -267,7 +267,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="1-2 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="6" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="₹900" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="Rs.900" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -275,7 +275,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="2-3 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="4" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="₹600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="Rs.600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -283,7 +283,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="3-4 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="4" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="₹600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="Rs.600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -291,7 +291,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="4-5 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="4" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="₹600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="Rs.600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 					</UniformGrid>
@@ -313,7 +313,7 @@
 											<Ellipse Width="4" Height="4" Fill="#000000" VerticalAlignment="Center"/>
 										</BulletDecorator.Bullet>
 										<TextBlock TextWrapping="Wrap" FontSize="14" Foreground="#1b2b33" Margin="8,0,0,0">
-											Peak hour was 12-1 PM with 12 orders (₹1,850)
+											Peak hour was 12-1 PM with 12 orders (Rs.1,850)
 										</TextBlock>
 									</BulletDecorator>
 

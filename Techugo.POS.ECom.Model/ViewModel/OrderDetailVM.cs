@@ -16,6 +16,7 @@ namespace Techugo.POS.ECom.Model.ViewModel
         public decimal PaidAmount { get; set; }
         public string Status { get; set; }
         public decimal DeliveryCharge { get; set; }
+        public decimal? PlatformCharge { get; set; }
         public string PaymentMode { get; set; }
         public string BranchStatus { get; set; }
         public string RiderStatus { get; set; }

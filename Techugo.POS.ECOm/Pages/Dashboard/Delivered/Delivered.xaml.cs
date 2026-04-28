@@ -149,6 +149,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.OfferDiscount = data.OfferDiscount;
                             order.RefundAmount = data.RefundAmount;
                             order.DeliveryCharge = data.DeliveryCharge;
+                            order.PlatformCharge = o.PlatformCharge;
                             order.MembershipDiscount = data.MembershipDiscount;
                             order.TotalDiscount = data.TotalDiscount;
                             order.Items = data.OrderDetails.Count + " items(s)";

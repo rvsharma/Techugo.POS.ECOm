@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Net;
@@ -15,6 +15,8 @@ using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.PickList;
 using Techugo.POS.ECOm.Services;
+using Techugo.POS.ECOm.Helper;
+using Techugo.POS.ECOm.Convertors;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -116,8 +118,10 @@ namespace Techugo.POS.ECOm.Pages
                                         UOM = od.UOM,
                                         SPrice = od.SPrice,
                                         Amount = od.Amount,
+                                        OriginalAmount = od.Quantity * od.SPrice,
                                         NetAmount = od.NetAmount,
                                         Discount = od.Discount,
+                                        OriginalDiscount = od.Discount,
                                         ImageUrl = od.Item.ItemImages[0].ImagePath,
                                         IsLooseItem = od.IsLooseItem
                                     }).ToList()
@@ -250,15 +254,38 @@ namespace Techugo.POS.ECOm.Pages
                     OrderedQty = pli.Qty,
                     EditedQty = pli.EditQty,
                     OrderedQtyDisPlay = pli.Qty.ToString(),
-                    Weight = pli.Weight != null && decimal.TryParse(pli.Weight, out var w) ? w : 0m,
+                    Weight = (pli.IsLooseItem && pli.Weight != null && decimal.TryParse(pli.Weight, out var w)) ? w : 1m,
                     UOM = pli.UOM,
                     SPrice = pli.SPrice,
                     Amount = pli.Amount,
-                    OriginalAmount = pli.SPrice * pli.Qty,
-                    MeasuredAmount = pli.SPrice * pli.Qty,
-                    IsLooseItem = pli.IsLooseItem
-                    //DifferenceAmount = 0m
+                    OriginalAmount = pli.OriginalAmount, // Always show the original order total
+                    MeasuredAmount = pli.IsLooseItem ? 0m : pli.Amount, // For loose items, start at 0 to prompt weighing
+                    IsLooseItem = pli.IsLooseItem,
+                    IsEdited = pli.IsEdited
                 };
+
+                // Dynamic Unit Factor Calculation
+                // Handles cases where units mismatch (e.g. Price is per Kg but Weight/Qty is in grams)
+                // Always base the calculation on the ORIGINAL API amount and original Size, not the currently edited amount/weight
+                decimal initialWeight = 1m;
+                if (pli.IsLooseItem && !string.IsNullOrEmpty(pli.Size))
+                {
+                    // Extract numeric part from original Size (in case it contains letters like "500G")
+                    var cleanSize = System.Text.RegularExpressions.Regex.Replace(pli.Size, @"[^0-9.]", "");
+                    if (decimal.TryParse(cleanSize, out var parsedS))
+                        initialWeight = parsedS;
+                }
+                
+                decimal initialCalc = pli.Qty * pli.SPrice * initialWeight;
+                if (initialCalc != 0 && Math.Abs(pli.OriginalAmount - initialCalc) > 0.01m)
+                {
+                    if (Math.Abs(pli.OriginalAmount - (initialCalc / 1000m)) < 0.01m)
+                        itemDetails.UnitFactor = 0.001m;
+                    else if (Math.Abs(pli.OriginalAmount - (initialCalc * 1000m)) < 0.01m)
+                        itemDetails.UnitFactor = 1000m;
+                    else
+                        itemDetails.UnitFactor = pli.OriginalAmount / initialCalc;
+                }
             }
 
             if (itemDetails == null)
@@ -339,6 +366,11 @@ namespace Techugo.POS.ECOm.Pages
             }
 
             // Create a new item instance with updated values and replace it in the observable collection
+            // Discount remains exactly the same as originally ordered, no proportional recalculation
+            decimal newAmount = vm.MeasuredAmount;
+            decimal newDiscount = targetItem.OriginalDiscount;
+            decimal newNetAmount = newAmount - newDiscount;
+
             var updatedItem = new PickListItem
             {
                 OrderDetailID = targetItem.OrderDetailID,
@@ -347,12 +379,16 @@ namespace Techugo.POS.ECOm.Pages
                 Size = targetItem.Size,
                 Qty = targetItem.Qty,
                 EditQty = vm.EditedQty,
-                //EditQty = Convert.ToInt32(Math.Round(vm.MeasuredQty)), // or adjust conversion rule
-                Weight = Convert.ToString(vm.Weight == 0 ? targetItem.Size : vm.Weight),
+                Weight = Convert.ToString(vm.Weight == 0m ? targetItem.Size : vm.Weight),
                 SPrice = targetItem.SPrice,
-                Amount = vm.MeasuredAmount,
-                NetAmount = vm.MeasuredAmount,
-                Total = targetItem.Total
+                Amount = newAmount,
+                OriginalAmount = targetItem.OriginalAmount,
+                Discount = newDiscount,
+                OriginalDiscount = targetItem.OriginalDiscount,
+                NetAmount = newNetAmount,
+                Total = targetItem.Total,
+                ImageUrl = targetItem.ImageUrl,
+                IsEdited = true // Mark as edited so quantity can't be changed again
             };
 
             // Replace item in the parent's Items collection to raise CollectionChanged and update UI
@@ -363,7 +399,8 @@ namespace Techugo.POS.ECOm.Pages
             }
 
             // Recalculate parent order totals (collection change handler will also recalc; this is defensive)
-            parentOrder.OrderValue = parentOrder.Items?.Sum(i => i.Amount) ?? parentOrder.OrderValue;
+            // Recalculate parent order totals using NetAmount to respect discounts
+            parentOrder.OrderValue = parentOrder.Items?.Sum(i => i.NetAmount) ?? parentOrder.OrderValue;
 
             var orderIndex = PickListOrders.IndexOf(parentOrder);
             if (orderIndex >= 0)
@@ -385,6 +422,14 @@ namespace Techugo.POS.ECOm.Pages
             // Fix: Cast selectable to PickListOrder before accessing OrderID
             if (selectable is PickListOrder order)
             {
+                // Validation: Ensure all loose items have been explicitly verified/edited
+                var uneditedLoose = order.Items?.FirstOrDefault(i => i.IsLooseItem && !i.IsEdited);
+                if (uneditedLoose != null)
+                {
+                    SnackbarService.Enqueue($"Please edit the loose items.");
+                    return;
+                }
+
                 var orderID = order.OrderID;
                 var selectedOrder = PickListOrders.First(x => x.OrderID == orderID);
                

@@ -349,7 +349,7 @@ Height="Auto" Width="Auto">
                                 <GridViewColumn Header="Payment Mode" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding SellingPrice, StringFormat=₹{0:F2}}" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding SellingPrice, StringFormat=Rs.{0:F2}}" HorizontalAlignment="Left"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -358,7 +358,7 @@ Height="Auto" Width="Auto">
                                 <GridViewColumn Header="Refund Date" Width="100">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding MRP, StringFormat=₹{0:F2}}" HorizontalAlignment="Left" Foreground="#6B7280"/>
+                                            <TextBlock Text="{Binding MRP, StringFormat=Rs.{0:F2}}" HorizontalAlignment="Left" Foreground="#6B7280"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

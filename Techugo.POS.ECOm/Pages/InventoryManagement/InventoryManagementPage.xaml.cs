@@ -98,6 +98,10 @@ namespace Techugo.POS.ECOm.Pages
         // Prevent Toggle Checked/Unchecked handlers from reacting to programmatic bindings/initialization
         private bool _suppressToggleEvents = true;
         private string _pendingSearchText;
+
+        // Cache for stats to avoid redundant heavy API calls
+        private string _lastSearchForCount;
+        private int? _lastBrandIdForCount;
         
         // Pagination properties
         private const int ITEMS_PER_PAGE = 10;
@@ -240,6 +244,7 @@ namespace Techugo.POS.ECOm.Pages
         {
             try
             {
+                LoadingService.Instance.Show();
                 ItemListResponse itemList = await _apiService.PostAsync<ItemListResponse>("item/item-list", queryData);
                 if (itemList != null && itemList.Data != null)
                 {
@@ -279,6 +284,7 @@ namespace Techugo.POS.ECOm.Pages
             }
             finally
             {
+                LoadingService.Instance.Hide();
                 // Allow handlers to run only after initial population finishes
                 _suppressToggleEvents = false;
             }
@@ -300,8 +306,14 @@ namespace Techugo.POS.ECOm.Pages
             }
             else
             {
-                // Fetch all items without pagination to get accurate counts
-                await FetchAllItemsForAccurateCount();
+                // Optimization: ONLY fetch full inventory for counts if search/filter changed OR if we don't have counts yet.
+                // This prevents the UI from freezing due to fetching and processing 10k items on every page turn.
+                if (_pendingSearchText != _lastSearchForCount || SelectedBrandID != _lastBrandIdForCount || (_filteredActiveProducts == 0 && _filteredOutOfStock == 0))
+                {
+                    await FetchAllItemsForAccurateCount();
+                    _lastSearchForCount = _pendingSearchText;
+                    _lastBrandIdForCount = SelectedBrandID;
+                }
             }
             
             // Update displayed stats
@@ -337,17 +349,20 @@ namespace Techugo.POS.ECOm.Pages
                 
                 if (allItemsList != null && allItemsList.Data != null)
                 {
-                    // Count active and inactive items
-                    int activeCount = allItemsList.Data.Count(item => 
-                        item.ItemBranchLists != null && item.ItemBranchLists.Count > 0 &&
-                        string.Equals(item.ItemBranchLists[0].IsActive, "Active", System.StringComparison.OrdinalIgnoreCase));
-                    
-                    int inactiveCount = allItemsList.Data.Count(item => 
-                        item.ItemBranchLists != null && item.ItemBranchLists.Count > 0 &&
-                        string.Equals(item.ItemBranchLists[0].IsActive, "Inactive", System.StringComparison.OrdinalIgnoreCase));
-                    
-                    _filteredActiveProducts = activeCount;
-                    _filteredOutOfStock = inactiveCount;
+                    // Offload counting to background thread to keep UI responsive during large data processing
+                    await Task.Run(() =>
+                    {
+                        int activeCount = allItemsList.Data.Count(item =>
+                            item.ItemBranchLists != null && item.ItemBranchLists.Count > 0 &&
+                            string.Equals(item.ItemBranchLists[0].IsActive, "Active", System.StringComparison.OrdinalIgnoreCase));
+
+                        int inactiveCount = allItemsList.Data.Count(item =>
+                            item.ItemBranchLists != null && item.ItemBranchLists.Count > 0 &&
+                            string.Equals(item.ItemBranchLists[0].IsActive, "Inactive", System.StringComparison.OrdinalIgnoreCase));
+
+                        _filteredActiveProducts = activeCount;
+                        _filteredOutOfStock = inactiveCount;
+                    });
                 }
             }
             catch (System.Exception ex)
@@ -481,11 +496,15 @@ namespace Techugo.POS.ECOm.Pages
             {
                 var payload = new { status = newValue };
 
-                // Example endpoint — replace with the actual API contract
+                // Example endpoint â€” replace with the actual API contract
                 BaseResponse result = await _apiService.PutAsync<BaseResponse>("item/update-item-stock/" + vm.ItemID, payload);
                 if (result != null && result.Success == true)
                 {
                     SnackbarService.Enqueue("Item updated successfully");
+
+                    // Reset cache to force count refresh on next load
+                    _lastSearchForCount = null;
+
                     // Reload current page with same filters
                     ReloadCurrentPage();
                 }

@@ -59,10 +59,40 @@ namespace Techugo.POS.ECOm.Pages
                 if (response != null && response.Success && response.Data != null)
                 {
                     var data = response.Data;
+                    // Correct Average Daily Sales Calculation
+                    double currentWeekSum = data.WeeklyComparison.Sum(wc => (double)wc.Amount);
+                    double lastWeekSum = data.WeeklyComparison.Sum(wc => (double)wc.LastWeek);
+                    int count = data.WeeklyComparison.Count;
+
+                    data.AverageDailySales = count > 0 ? (int)(currentWeekSum / count) : 0;
+                    double lastWeekAvg = count > 0 ? lastWeekSum / count : 0;
+                    
+                    double avgPercentage = 0;
+                    if (lastWeekAvg > 0)
+                    {
+                        avgPercentage = (( (currentWeekSum / count) - lastWeekAvg) / lastWeekAvg) * 100;
+                    }
+
+                    // Today's Earnings Calculation
+                    var selectedDayName = SelectedDate.ToString("ddd");
+                    var todayData = data.WeeklyComparison.FirstOrDefault(x => x.Day == selectedDayName);
+                    
+                    data.TodayEarnings = todayData?.Amount ?? 0;
+                    double todayAmount = data.TodayEarnings;
+                    double lastWeekAmount = todayData?.LastWeek ?? 0;
+
+                    double todayPercentage = 0;
+                    if (lastWeekAmount > 0)
+                    {
+                        todayPercentage = ((todayAmount - lastWeekAmount) / lastWeekAmount) * 100;
+                    }
+
+                    // Update UI Labels
                     AverageDailySalesTextBlock.Text = $"{data.AverageDailySales:N0}";
-                    AverageDailySalesIncreaseTextBlock.Text = data.AverageDailySalesIncrease + " increase from yesterday";
+                    AverageDailySalesIncreaseTextBlock.Text = $"{(avgPercentage >= 0 ? "+" : "")}{avgPercentage:F2}% from last week";
+
                     TodayEarningsTextBlock.Text = $"{data.TodayEarnings:N0}";
-                    TodayEarningsIncreaseTextBlock.Text = data.TodayEarningsIncrease + " increase from yesterday";
+                    TodayEarningsIncreaseTextBlock.Text = $"{(todayPercentage >= 0 ? "+" : "")}{todayPercentage:F2}% from last week";
                     // Update chart with actual weekly comparison data
                     var overlayValues = new ChartValues<double>(
                         data.WeeklyComparison.Select(wc => (double)wc.Amount));
@@ -81,7 +111,7 @@ namespace Techugo.POS.ECOm.Pages
                             Fill = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
                             MaxColumnWidth = 40,
                             DataLabels = false,
-                            LabelPoint = point => $"?{point.Y:N0}",
+                            LabelPoint = point => $"{point.Y:N0}",
                             IsHitTestVisible = false
                         },
                         new StackedColumnSeries

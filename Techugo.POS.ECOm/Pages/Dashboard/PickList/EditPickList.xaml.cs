@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -63,6 +63,23 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 // for loose items do the usual initialization (deferred to let layout finish)
                 Dispatcher.BeginInvoke(new Action(() => InitializeSerialPort()), System.Windows.Threading.DispatcherPriority.Render);
             }
+
+            this.Unloaded += (s, e) => {
+                if (_serialPort != null)
+                {
+                    try
+                    {
+                        if (_serialPort.IsOpen)
+                        {
+                            _serialPort.DataReceived -= DataReceivedHandler;
+                            _serialPort.Close();
+                        }
+                    }
+                    catch { }
+                    _serialPort.Dispose();
+                    _serialPort = null;
+                }
+            };
 
             UpdateKeypadVisibility(false);
         }
@@ -174,8 +191,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                         if (ItemDetails != null)
                         {
                             ItemDetails.Weight = parsed;
-                            ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * parsed;
-                            // If ItemDetails implements INotifyPropertyChanged you do NOT need to reassign DataContext
+                            ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * parsed * ItemDetails.UnitFactor;
+                            Validate();
                         }
 
                         if (MeasuredWeightDisplayTextBox != null)
@@ -183,6 +200,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
                         // This will now always run (unless UI update throws)
                         LocalFileLogger.Info("Inside if (UI updated)");
+                        if (sp != null && sp.IsOpen) { try { sp.Write("W"); } catch { } }
                     }
                     catch (Exception uiEx)
                     {
@@ -269,8 +287,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
             if (enterQty)
             {
-                // show quantity in keypad input
-
+                RecalculateMeasuredAmount();
             }
 
             //if (checkWeight)
@@ -328,7 +345,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
 
         private void KeypadButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MeasuredQtyTextBox == null) return;
+            if (MeasuredQtyTextBox == null || ItemDetails == null) return;
             if (sender is not Button btn) return;
             var tag = (btn.Tag ?? string.Empty).ToString();
 
@@ -338,71 +355,73 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             {
                 var txt = MeasuredQtyTextBox.Text;
                 if (txt.Length > 0)
+                {
                     MeasuredQtyTextBox.Text = txt.Substring(0, txt.Length - 1);
-                MeasuredWeightDisplayTextBox.Text = txt.Substring(0, txt.Length - 1);
+                }
             }
             else if (tag == "CLEAR")
             {
                 if (!MeasuredQtyTextBox.Text.Contains(decSep))
                 {
                     if (string.IsNullOrEmpty(MeasuredQtyTextBox.Text))
-                    { 
-                    MeasuredQtyTextBox.Text = "0" + decSep;
-                    MeasuredWeightDisplayTextBox.Text = "0" + decSep;
-                }
-                else
-                    MeasuredQtyTextBox.Text += decSep;
-                    MeasuredWeightDisplayTextBox.Text += decSep;
+                        MeasuredQtyTextBox.Text = "0" + decSep;
+                    else
+                        MeasuredQtyTextBox.Text += decSep;
                 }
             }
             else
             {
                 MeasuredQtyTextBox.Text += tag;
-                MeasuredWeightDisplayTextBox.Text += tag;
-
-                if (ItemDetails != null)
-                {
-                    ItemDetails.Weight = string.IsNullOrEmpty(MeasuredWeightDisplayTextBox.Text) ? 0 : Convert.ToDecimal(MeasuredWeightDisplayTextBox.Text);
-                    ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * (string.IsNullOrEmpty(MeasuredWeightDisplayTextBox.Text) ? 0 : Convert.ToDecimal(MeasuredWeightDisplayTextBox.Text));
-                    // If ItemDetails implements INotifyPropertyChanged you do NOT need to reassign DataContext
-                }
-
-                //if (MeasuredWeightDisplayTextBox != null)
-                //    MeasuredWeightDisplayTextBox.Text = tag;
             }
 
-            // When in Enter Measured Qty mode, interpret keypad input as quantity (not weight)
-            if (RbEnterQty?.IsChecked == true && ItemDetails != null)
+            if (int.TryParse(MeasuredQtyTextBox.Text, out int qty) && qty > 0)
             {
-                if (TryParseInputAsDecimal(MeasuredQtyTextBox.Text, out decimal measuredQty))
-                {
-                    // update quantity and measured amount (SPrice * quantity)
-
-                }
-                else
-                {
-                    // invalid input — keep previous measured amount/qty
-
-                }
+                ItemDetails.EditedQty = qty;
             }
+            
+            RecalculateMeasuredAmount();
+        }
+
+        private void RecalculateMeasuredAmount()
+        {
+            if (ItemDetails == null) return;
+
+            bool isPosMode = RbEnterQty != null && RbEnterQty.IsChecked == true;
+
+            if (isPosMode)
+            {
+                // In POS Mode, we just use Quantity * Price per unit.
+                ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice;
+            }
+            else
+            {
+                // In Weigh Mode, we use Weight. 
+                decimal safeWeight = ItemDetails.Weight;
+                if (ItemDetails.IsLooseItem && safeWeight <= 0.001m)
+                    safeWeight = 1m;
+
+                // Formula using UnitFactor for normalization
+                ItemDetails.MeasuredAmount = ItemDetails.EditedQty * ItemDetails.SPrice * safeWeight * ItemDetails.UnitFactor;
+            }
+            Validate();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            if (_serialPort != null && _serialPort.IsOpen)
             {
-                _serialPort.Close();
-                _serialPort.Dispose();
+                if (_serialPort != null && _serialPort.IsOpen)
+                {
+                    _serialPort.Close();
+                    _serialPort.Dispose();
             }
             CloseClicked?.Invoke(this, new RoutedEventArgs());
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            if (_serialPort != null && _serialPort.IsOpen)
             {
-                _serialPort.Close();
-                _serialPort.Dispose();
+                if (_serialPort != null && _serialPort.IsOpen)
+                {
+                    _serialPort.Close();
+                    _serialPort.Dispose();
             }
             CloseClicked?.Invoke(this, new RoutedEventArgs());
         }
@@ -423,34 +442,41 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
             SaveClicked?.Invoke(this, new RoutedEventArgs());
         }
 
+        private void Validate()
+        {
+            if (ItemDetails == null) return;
+
+            // Business Rule: Measured amount cannot exceed original amount
+            // Using a slightly larger margin (0.05) to avoid rounding issues causing red text when values match
+            if (ItemDetails.MeasuredAmount > ItemDetails.OriginalAmount + 0.05m)
+            {
+                ItemDetails.CanSave = false;
+                ItemDetails.ValidationMessage = "Measured amount cannot be more than original.";
+            }
+            else if (ItemDetails.EditedQty < 0)
+            {
+                ItemDetails.CanSave = false;
+                ItemDetails.ValidationMessage = "Qty cannot be negative.";
+            }
+            else
+            {
+                ItemDetails.CanSave = true;
+                ItemDetails.ValidationMessage = "";
+            }
+        }
         private void MeasuredQtyManualTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox textBox)
+            if (sender is TextBox textBox && ItemDetails != null)
             {
-                if (int.TryParse(textBox.Text, out int changedQty))
+                if (int.TryParse(textBox.Text, out int changedQty) && changedQty >= 0)
                 {
-                    ItemDetails.MeasuredAmount = changedQty * ItemDetails.SPrice;
-                    if(changedQty > ItemDetails.OrderedQty)
-                    {
-                        ItemDetails.CanSave = false;
-                        ItemDetails.ValidationMessage = "Qty cannot be more than ordered.";
-                    }
-                    else if(changedQty < 0)
-                    {
-                        ItemDetails.CanSave = false;
-                    }
-                    else
-                    {
-                        ItemDetails.CanSave = true;
-                        ItemDetails.ValidationMessage = "";
-                    }
-                    DataContext = ItemDetails;
+                    ItemDetails.EditedQty = changedQty;
+                    RecalculateMeasuredAmount();
                 }
                 else
                 {
                     ItemDetails.CanSave = false;
-                    ItemDetails.ValidationMessage = "Qty cannot empty.";
-                    DataContext = ItemDetails;
+                    ItemDetails.ValidationMessage = string.IsNullOrWhiteSpace(textBox.Text) ? "Qty cannot be empty." : "Invalid quantity.";
                 }
             }
         }
