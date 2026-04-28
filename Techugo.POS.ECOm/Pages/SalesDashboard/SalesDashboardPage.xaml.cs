@@ -1,4 +1,4 @@
-using LiveCharts;
+﻿using LiveCharts;
 using LiveCharts.Wpf;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -27,7 +27,7 @@ namespace Techugo.POS.ECOm.Pages
                     _selectedDate = DateTime.Today; // clamp to today
                 else
                     _selectedDate = value;
-                _ = LoadDataAsync();
+                //_ = LoadDataAsync();
                 // Trigger analytics refresh logic here
             }
         }
@@ -59,76 +59,57 @@ namespace Techugo.POS.ECOm.Pages
                 if (response != null && response.Success && response.Data != null)
                 {
                     var data = response.Data;
-                    // Correct Average Daily Sales Calculation
-                    double currentWeekSum = data.WeeklyComparison.Sum(wc => (double)wc.Amount);
-                    double lastWeekSum = data.WeeklyComparison.Sum(wc => (double)wc.LastWeek);
-                    int count = data.WeeklyComparison.Count;
-
-                    data.AverageDailySales = count > 0 ? (int)(currentWeekSum / count) : 0;
-                    double lastWeekAvg = count > 0 ? lastWeekSum / count : 0;
-                    
-                    double avgPercentage = 0;
-                    if (lastWeekAvg > 0)
-                    {
-                        avgPercentage = (( (currentWeekSum / count) - lastWeekAvg) / lastWeekAvg) * 100;
-                    }
-
-                    // Today's Earnings Calculation
-                    var selectedDayName = SelectedDate.ToString("ddd");
-                    var todayData = data.WeeklyComparison.FirstOrDefault(x => x.Day == selectedDayName);
-                    
-                    data.TodayEarnings = todayData?.Amount ?? 0;
-                    double todayAmount = data.TodayEarnings;
-                    double lastWeekAmount = todayData?.LastWeek ?? 0;
-
-                    double todayPercentage = 0;
-                    if (lastWeekAmount > 0)
-                    {
-                        todayPercentage = ((todayAmount - lastWeekAmount) / lastWeekAmount) * 100;
-                    }
-
-                    // Update UI Labels
-                    AverageDailySalesTextBlock.Text = $"{data.AverageDailySales:N0}";
-                    AverageDailySalesIncreaseTextBlock.Text = $"{(avgPercentage >= 0 ? "+" : "")}{avgPercentage:F2}% from last week";
-
-                    TodayEarningsTextBlock.Text = $"{data.TodayEarnings:N0}";
-                    TodayEarningsIncreaseTextBlock.Text = $"{(todayPercentage >= 0 ? "+" : "")}{todayPercentage:F2}% from last week";
+                    //AverageDailySalesTextBlock.Text = $"{data.AverageDailySales:N0}";
+                    //AverageDailySalesIncreaseTextBlock.Text = data.AverageDailySalesIncrease + " increase from yesterday";
+                    //TodayEarningsTextBlock.Text = $"{data.TodayEarnings:N0}";
+                    //TodayEarningsIncreaseTextBlock.Text = data.TodayEarningsIncrease + " increase from yesterday";
                     // Update chart with actual weekly comparison data
-                    var overlayValues = new ChartValues<double>(
+                    var amount = new ChartValues<double>(
                         data.WeeklyComparison.Select(wc => (double)wc.Amount));
-                    var maxY = CeilingToNearest(overlayValues.Max(), 200);
-                    var baseRemainderValues = new ChartValues<double>(
-                        overlayValues.Select(v => maxY - v));
+                    var lastWeek = new ChartValues<double>(
+                        data.WeeklyComparison.Select(wc => (double)wc.LastWeek));
+                    var maxY = CeilingToNearest(amount.Concat(lastWeek).Max(), 200);
+
                    
                     _viewModel.Days = data.WeeklyComparison.Select(wc => wc.Day).ToList();
                     _viewModel.MaxY = maxY == 0 ? 1000 : maxY;
                     _viewModel.SeriesCollection = new SeriesCollection
                     {
-                        new StackedColumnSeries
+                        new ColumnSeries
                         {
                             Title = string.Empty,
-                            Values = overlayValues,
+                            Values = amount,
                             Fill = new SolidColorBrush(Color.FromRgb(30, 136, 229)),
                             MaxColumnWidth = 40,
                             DataLabels = false,
-                            LabelPoint = point => $"{point.Y:N0}",
-                            IsHitTestVisible = false
+                            LabelPoint = point => $"₹{point.Y:N0}",
+                            IsHitTestVisible = false,
+                            FontFamily = new FontFamily("Segoe UI, Noto Color Emoji")
                         },
-                        new StackedColumnSeries
+                        new ColumnSeries
                         {
                             Title = string.Empty,
-                            Values = baseRemainderValues,
+                            Values = lastWeek,
                             Fill = new SolidColorBrush(Color.FromArgb(80, 144, 202, 249)),
                             MaxColumnWidth = 40,
                             DataLabels = false,
-                            IsHitTestVisible = false
+                            LabelPoint = point => $"₹{point.Y:N0}",
+                            IsHitTestVisible = false,
+                            FontFamily = new FontFamily("Segoe UI, Noto Color Emoji")
                         }
                     };
                     //DataContext = _viewModel;
 
+                    SalesAnalyticsResponse ledger = await _apiService.GetAsync<SalesAnalyticsResponse>("branch/sales-ledger?date=" + formattedDate + "");
+                    if(ledger != null)
+                    {
+                        AverageDailySalesTextBlock.Text = $"{ledger.Data.AverageSale.AvgSale:N0}";
+                        TodayEarningsTextBlock.Text = $"{ledger.Data.Orders.TotalOrders:N0}";
+                        TotalSalesBlock1.Text = $"{ledger.Data.Sales.TotalSale:N0}";
+                    }
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // Handle exceptions (e.g., log error, show message to user)
             }
@@ -181,7 +162,7 @@ namespace Techugo.POS.ECOm.Pages
             {
                 SelectedDate = picker.SelectedDate.Value;
             }
-            
+            _ = LoadDataAsync();
 
         }
     }

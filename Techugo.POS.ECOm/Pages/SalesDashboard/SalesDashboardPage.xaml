@@ -92,7 +92,7 @@
 			</Grid>
 
 			<!-- Stat cards -->
-			<UniformGrid HorizontalAlignment="Stretch" Margin="0,0,0,18" Columns="2">
+			<UniformGrid HorizontalAlignment="Stretch" Margin="0,0,0,18" Columns="3">
 				<!-- Total Sales -->
 				<Border
 					Background="#fff7ed"
@@ -117,7 +117,7 @@
 								<svg:SvgViewbox Source="/Assets/Images/dollar.svg" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
 							</Grid>
                         <TextBlock  FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#008236" >
-                        <Run Text="Rs."/>
+                        <Run Text="₹"/>
                         <Run Name="AverageDailySalesTextBlock"/>
                         </TextBlock>
 
@@ -150,7 +150,7 @@
 								<svg:SvgViewbox Source="/Assets/Images/box.svg" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
 							</Grid>
                         <TextBlock FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#1447e6">
-                        <Run Text="Rs."/>
+                        <Run Text="₹"/>
                         <Run Name="TodayEarningsTextBlock"/>
                         </TextBlock>
                         <TextBlock Name="TodayEarningsIncreaseTextBlock" FontSize="12" Foreground="#2b7fff" Margin="0,8,0,0" />
@@ -159,7 +159,7 @@
 				</Border>
 
 				<!-- Average Order Value -->
-				<!--<Border
+				<Border
 					Background="#fff7ed"
 					BorderBrush="#e0e0e0"
 					BorderThickness="1"
@@ -178,14 +178,20 @@
 									<ColumnDefinition Width="*" />
 									<ColumnDefinition Width="Auto" />
 								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" Text="Pending Request" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+								<TextBlock Grid.Column="0" Text="Total Sales" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
 								<svg:SvgViewbox Source="/Assets/Images/indicator.svg" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>
 							</Grid>
-							<TextBlock Text="Rs.12,450" FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#8200db"/>
-							<TextBlock Text="Per order average" FontSize="12" Foreground="#ad46ff" Margin="0,8,0,0" />
+
+                        <TextBlock FontWeight="Bold" FontSize="26" Margin="0,16,0,0" Foreground="#8200db">
+<Run Text="₹"/>
+<Run Name="TotalSalesBlock1"/>
+                        </TextBlock>
+                        <TextBlock Name="TotalSalesBlock1Increase" FontSize="12" Foreground="#ad46ff" Margin="0,8,0,0" />
+
+
 						</StackPanel>
 					</Border>
-				</Border>-->
+				</Border>
 			</UniformGrid>
 
 			<!-- Two info panels side-by-side -->
@@ -200,19 +206,20 @@
 
                         <Grid>
                             <!-- Background band for base ceiling -->
-                            <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="300">
+                            <lvc:CartesianChart Series="{Binding SeriesCollection}" Height="300" FontFamily="Segoe UI, Noto Color Emoji">
                                 <lvc:CartesianChart.DataTooltip>
                                     <lvc:DefaultTooltip SelectionMode="OnlySender"
-                            Background="Black"
-                            Foreground="White"
-                            FontSize="14"/>
+Background="Black"
+Foreground="White"
+FontSize="14"
+FontFamily="Segoe UI, Noto Color Emoji"/>
                                 </lvc:CartesianChart.DataTooltip>
 
                                 <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis Title="" Labels="{Binding Days}" FontSize="14" Foreground="#222"/>
+                                    <lvc:Axis Title="" Labels="{Binding Days}" FontSize="14" Foreground="#222" FontFamily="Segoe UI, Noto Color Emoji"/>
                                 </lvc:CartesianChart.AxisX>
                                 <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis Title="" MinValue="0" MaxValue="{Binding MaxY}" FontSize="14" Foreground="#222"/>
+                                    <lvc:Axis Title="" MinValue="0" MaxValue="{Binding MaxY}" FontSize="14" Foreground="#222" FontFamily="Segoe UI, Noto Color Emoji"/>
                                 </lvc:CartesianChart.AxisY>
                             </lvc:CartesianChart>
 
@@ -235,7 +242,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="9-10 AM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="3" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="Rs.450" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="₹450" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -243,7 +250,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="10-11 AM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="5" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="Rs.750" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="₹750" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -251,7 +258,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="11-12 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="8" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="Rs.1200" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="₹1200" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -259,7 +266,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="12-1 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="12" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="Rs.1850" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="₹1850" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -267,7 +274,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="1-2 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="6" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="Rs.900" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="₹900" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -275,7 +282,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="2-3 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="4" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="Rs.600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="₹600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -283,7 +290,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="3-4 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="4" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="Rs.600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="₹600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
@@ -291,7 +298,7 @@
 							<StackPanel VerticalAlignment="Center">
 								<TextBlock Text="4-5 PM" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 								<TextBlock Text="4" Foreground="#1E6EEA" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,6"/>
-								<TextBlock Text="Rs.600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
+								<TextBlock Text="₹600" FontSize="12" Foreground="#666" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 					</UniformGrid>
@@ -313,7 +320,7 @@
 											<Ellipse Width="4" Height="4" Fill="#000000" VerticalAlignment="Center"/>
 										</BulletDecorator.Bullet>
 										<TextBlock TextWrapping="Wrap" FontSize="14" Foreground="#1b2b33" Margin="8,0,0,0">
-											Peak hour was 12-1 PM with 12 orders (Rs.1,850)
+											Peak hour was 12-1 PM with 12 orders (₹1,850)
 										</TextBlock>
 									</BulletDecorator>
 
