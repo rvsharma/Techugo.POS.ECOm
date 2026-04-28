@@ -73,6 +73,15 @@ Height="Auto" Width="Auto">
     </UserControl.Resources>
     <Grid Background="#FCFAFB">
         <StackPanel Margin="32">
+            <!-- Back Button -->
+            <Border Grid.Column="0" Width="Auto" Height="36" Padding="8,0,12,0" Background="#fff" BorderBrush="#e3e3e3" CornerRadius="8" BorderThickness="1" MouseLeftButtonUp="BackButton_Click"
+TouchUp="BackButton_Click" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <svg:SvgViewbox Source="/Assets/Images/back.svg" Width="12" Height="12" VerticalAlignment="Center" Margin="8,0,8,0"/>
+                    <TextBlock Text="Back to Dashboard" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
             <TextBlock Text="Refund Management" FontSize="24" FontWeight="Bold"/>
             <TextBlock Text="Track and manage customer refunds across all payment modes" FontSize="14" Foreground="#888" Margin="0,4,0,24"/>
 
@@ -81,10 +90,9 @@ Height="Auto" Width="Auto">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Search box (unchanged) -->
+                <!-- Search box -->
                 <Border Style="{StaticResource SearchBoxStyle}" Grid.Column="0">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -92,7 +100,7 @@ Height="Auto" Width="Auto">
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- magnifier icon (simple Path) -->
+                        <!-- magnifier icon -->
                         <Viewbox Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Canvas Width="24" Height="16">
                                 <Path Data="M15.5,14h-0.79l-0.28-0.27A6.471,6.471,0,1,0,14,15.5l0.27,0.28v0.79L20,21.5,21.5,20,15.5,14z M6.5,11A4.5,4.5,0,1,1,11,15.5,4.5,4.5,0,0,1,6.5,11z"
@@ -100,7 +108,7 @@ Height="Auto" Width="Auto">
                             </Canvas>
                         </Viewbox>
 
-                        <!-- TextBox with overlay placeholder -->
+                        <!-- TextBox -->
                         <Grid Grid.Column="1" VerticalAlignment="Center">
                             <TextBox x:Name="SearchBox"
                        BorderThickness="0"
@@ -108,7 +116,8 @@ Height="Auto" Width="Auto">
                        FontSize="14"
                        Foreground="#111827"
                        VerticalContentAlignment="Center"
-                       Padding="6,0"/>
+                       Padding="6,0"
+                       TextChanged="SearchBox_TextChanged"/>
                             <TextBlock Text="Search by customer name, order ID, or phone..."
                          FontSize="14"
                          Foreground="#9CA3AF"
@@ -119,42 +128,8 @@ Height="Auto" Width="Auto">
                     </Grid>
                 </Border>
 
-                <!-- Status Filter pill -->
-                <Border Grid.Column="1" Style="{StaticResource FilterPillBorder}" Margin="12,0,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="49"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- filter icon -->
-                        <Viewbox Grid.Column="0" Width="18" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Canvas Width="12" Height="10">
-                                <Path Data="M3,3 L13,3 L9,8 L9,13 L7,13 L7,8 Z" Fill="gray" Stretch="Uniform"/>
-                            </Canvas>
-                        </Viewbox>
-
-                        <!-- Status ComboBox -->
-                        <ComboBox Grid.Column="1"
-                      x:Name="StatusFilterCombo"
-                      Background="#F3F4F6"
-                      BorderThickness="0"
-                      Padding="6,0"
-                      Width="150"
-                      VerticalContentAlignment="Center"
-                      HorizontalContentAlignment="Left"
-                      Foreground="#111827"
-                      SelectedIndex="0">
-                            <ComboBoxItem IsSelected="True">All Status</ComboBoxItem>
-                            <ComboBoxItem>Initiated</ComboBoxItem>
-                            <ComboBoxItem>Processing</ComboBoxItem>
-                            <ComboBoxItem>Completed</ComboBoxItem>
-                        </ComboBox>
-                    </Grid>
-                </Border>
-
                 <!-- Payment Mode Filter pill -->
-                <Border Grid.Column="2" Style="{StaticResource FilterPillBorder}" Margin="12,0,0,0">
+                <Border Grid.Column="1" Style="{StaticResource FilterPillBorder}" Margin="12,0,0,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="49"/>
@@ -178,18 +153,19 @@ Height="Auto" Width="Auto">
                       VerticalContentAlignment="Center"
                       HorizontalContentAlignment="Left"
                       Foreground="#111827"
+                      SelectionChanged="PaymentModeFilterCombo_SelectionChanged"
                       SelectedIndex="0">
-                            <ComboBoxItem IsSelected="True">All Payment Modes</ComboBoxItem>
-                            <ComboBoxItem>UPI</ComboBoxItem>
-                            <ComboBoxItem>Card</ComboBoxItem>
-                            <ComboBoxItem>Wallet</ComboBoxItem>
+                            <ComboBoxItem Tag="COD" IsSelected="True">COD</ComboBoxItem>
+                            <ComboBoxItem Tag="ONLINE">Online</ComboBoxItem>
+                            <ComboBoxItem Tag="WALLET">Wallet</ComboBoxItem>
+                            <ComboBoxItem Tag="CREDIT_WALLET">Credit Wallet</ComboBoxItem>
                         </ComboBox>
                     </Grid>
                 </Border>
             </Grid>
 
 
-            <!-- Stats row (unchanged) -->
+            <!-- Stats row -->
             <Grid Margin="0,0,0,24" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -208,7 +184,7 @@ Height="Auto" Width="Auto">
 
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Total Refunds" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="6" FontSize="26" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding TotalRefunds}" FontSize="26" FontWeight="SemiBold" />
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -223,7 +199,7 @@ Height="Auto" Width="Auto">
 
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Initiated" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="2" FontSize="26" FontWeight="SemiBold"  Foreground="orange"/>
+                            <TextBlock Text="{Binding InitiatedCount}" FontSize="26" FontWeight="SemiBold"  Foreground="orange"/>
                         </StackPanel>
 
                         <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -244,12 +220,12 @@ Height="Auto" Width="Auto">
 
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Processing" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="1" FontSize="26" FontWeight="SemiBold"  Foreground="Blue "/>
+                            <TextBlock Text="{Binding ProcessingCount}" FontSize="26" FontWeight="SemiBold"  Foreground="Blue "/>
                         </StackPanel>
 
                         <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
                             <Border Background="LightBlue" CornerRadius="16" Padding="10,6" HorizontalAlignment="Right">
-                                <TextBlock Text="Inactive" Foreground="Blue" FontSize="12"  FontWeight="SemiBold"/>
+                                <TextBlock Text="Processing" Foreground="Blue" FontSize="12"  FontWeight="SemiBold"/>
                             </Border>
                         </Grid>
                     </Grid>
@@ -265,7 +241,7 @@ Height="Auto" Width="Auto">
 
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Completed" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="1" FontSize="26" FontWeight="SemiBold"  Foreground="green"/>
+                            <TextBlock Text="{Binding CompletedCount}" FontSize="26" FontWeight="SemiBold"  Foreground="green"/>
                         </StackPanel>
 
                         <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -279,17 +255,17 @@ Height="Auto" Width="Auto">
 
            
             
-            <!-- Products Inventory Card (table) -->
+            <!-- Refunds Table -->
             <Border Background="White" BorderBrush="#E6E7EB" BorderThickness="1" CornerRadius="12" Padding="20" Margin="0,0,0,24">
                 <StackPanel>
                     <!-- Header -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16" VerticalAlignment="Center">
                         <svg:SvgViewbox Source="/Assets/Images/orders.svg" Width="18" Height="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBlock Text="Refund Orders (6)" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding RefundOrderText}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
 
-                    <!-- Products ListView -->
-                    <ListView x:Name="ProductsListView" ItemsSource="{Binding Products}" Margin="0" BorderThickness="0" SelectionMode="Single">
+                    <!-- Refunds ListView -->
+                    <ListView x:Name="RefundsListView" ItemsSource="{Binding RefundData}" Margin="0" BorderThickness="0" SelectionMode="Single">
                         <!-- row style -->
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
@@ -313,78 +289,90 @@ Height="Auto" Width="Auto">
 
                         <ListView.View>
                             <GridView>
-                                <!-- Product Image -->
-                                <GridViewColumn Header="Order ID" Width="120">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border Width="64" Height="64" CornerRadius="8" Background="#F5F5F5" HorizontalAlignment="Left">
-                                                <Image Source="{Binding ImagePath}" Width="64" Height="64" Stretch="UniformToFill" />
-                                            </Border>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-
-                                <!-- Barcode -->
-                                <GridViewColumn Header="Customer Details" Width="150" DisplayMemberBinding="{Binding Barcode}" />
-
-                                <!-- Product Details -->
-                                <GridViewColumn Header="Order Items" Width="190">
+                                <!-- Order Number -->
+                                <GridViewColumn Header="Order Id" Width="150" DisplayMemberBinding="{Binding OrderNo}" />
+                                <GridViewColumn Header="Customer Details" Width="280">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel>
-                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
-                                                <TextBlock Text="{Binding ShortDescription}" Foreground="#6B7280" FontSize="12" TextWrapping="Wrap" MaxWidth="300"/>
+                                                <TextBlock Text="{Binding CustomerName}" FontWeight="SemiBold" FontSize="14"/>
+                                                <TextBlock Text="{Binding MobileNo}" Foreground="#6B7280" FontSize="12" TextWrapping="Wrap" MaxWidth="300"/>
+                                                <TextBlock Text="{Binding ShortAddress}" Foreground="#6B7280" FontSize="12" TextWrapping="Wrap" MaxWidth="300"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <!-- Brand -->
-                                <GridViewColumn Header="Refund Amount" Width="120" DisplayMemberBinding="{Binding Brand}" />
-
-                                <!-- Category -->
-                                <GridViewColumn Header="Refund Status" Width="110" DisplayMemberBinding="{Binding Category}" />
-
-                                <!-- Selling Price -->
-                                <GridViewColumn Header="Payment Mode" Width="120">
+                                <GridViewColumn Header="Order Items" Width="280">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding SellingPrice, StringFormat=₹{0:F2}}" HorizontalAlignment="Left"/>
+                                            <StackPanel>
+                                                <ItemsControl ItemsSource="{Binding OrderDetails}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Item.ItemName}" Foreground="#6B7280" FontSize="12" TextWrapping="Wrap" MaxWidth="300"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <!-- Refund Amount -->
+                                <GridViewColumn Header="Refund Amount" Width="140">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Amount, StringFormat=₹{0:F2}}" FontWeight="SemiBold" HorizontalAlignment="Left"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <!-- MRP -->
-                                <GridViewColumn Header="Refund Date" Width="100">
+                                <!-- Refund Status -->
+                                <GridViewColumn Header="Refund Status" Width="120">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding MRP, StringFormat=₹{0:F2}}" HorizontalAlignment="Left" Foreground="#6B7280"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-
-                                <!-- Active / Inactive -->
-                                <GridViewColumn Header="Action" Width="120">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border x:Name="StatusBadge" CornerRadius="12" Padding="8,4" HorizontalAlignment="Left" Margin="0,4,0,4" Background="#F3F4F6">
-                                                <TextBlock x:Name="StatusText" Text="Inactive" FontWeight="SemiBold" Foreground="#374151"/>
+                                            <Border x:Name="StatusBadge" CornerRadius="12" Padding="8,4" HorizontalAlignment="Left" Margin="0,4,0,4">
+                                                <TextBlock x:Name="StatusText" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                             </Border>
                                             <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#DCFCE7"/>
-                                                    <Setter TargetName="StatusText" Property="Text" Value="Active"/>
-                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#16A34A"/>
+                                                <DataTrigger Binding="{Binding Status}" Value="Initiated">
+                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#FEF3C7"/>
+                                                    <Setter TargetName="StatusText" Property="Text" Value="Initiated"/>
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#D97706"/>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsActive}" Value="False">
-                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#FEE2E2"/>
-                                                    <Setter TargetName="StatusText" Property="Text" Value="Inactive"/>
-                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#DC2626"/>
+                                                <DataTrigger Binding="{Binding Status}" Value="Processing">
+                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#DBEAFE"/>
+                                                    <Setter TargetName="StatusText" Property="Text" Value="Processing"/>
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#1E40AF"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#DCFCE7"/>
+                                                    <Setter TargetName="StatusText" Property="Text" Value="Completed"/>
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#16A34A"/>
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
+
+                                <!-- Refund Date -->
+                                <GridViewColumn Header="Refund Date" Width="160">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <TextBlock.Text>
+                                                    <Binding Path="CreatedAt"
+StringFormat="{}{0:yyyy-MM-dd, hh:mm tt}"
+TargetNullValue=""
+FallbackValue=""/>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                
+
                             </GridView>
                         </ListView.View>
 
@@ -393,6 +381,62 @@ Height="Auto" Width="Auto">
                             <Style TargetType="GridViewColumnHeader" BasedOn="{StaticResource GridHeaderStyle}" />
                         </ListView.Resources>
                     </ListView>
+
+                    <!-- Pagination Controls -->
+                    <Grid Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Previous Button -->
+                        <Border Grid.Column="0"
+                                Background="#F3F4F6"
+                                BorderBrush="#E6E7EB"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="0">
+                            <Button Content="← Previous"
+                                    Height="36"
+                                    Width="100"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Foreground="#111827"
+                                    IsEnabled="{Binding CanGoToPreviousPage}"
+                                    Click="PreviousButton_Click"/>
+                        </Border>
+                        
+                        <!-- Page Info -->
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding PaginationText}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="#6B7280"/>
+                        
+                        <!-- Next Button -->
+                        <Border Grid.Column="2"
+                                Background="#F3F4F6"
+                                BorderBrush="#E6E7EB"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="0">
+                            <Button Content="Next →"
+                                    Height="36"
+                                    Width="100"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Foreground="#111827"
+                                    IsEnabled="{Binding CanGoToNextPage}"
+                                    Click="NextButton_Click"/>
+                        </Border>
+                    </Grid>
                 </StackPanel>
             </Border>
         </StackPanel>
