@@ -61,7 +61,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         private async void LoadOrdersData()
         {
             string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/cancelled-orders?page=1&limit=1000&date=" + formattedDate);
+            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/cancelled-orders?page=1&limit=1000&date=" + formattedDate + "&cancelledBy=Branch");
             if (orderResponse != null)
             {
 
