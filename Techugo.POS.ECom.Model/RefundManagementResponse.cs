@@ -22,15 +22,20 @@ namespace Techugo.POS.ECom.Model
     }
     public class RefundData
     {
-        public decimal RefundAmount { get; set; }
+        public decimal Amount { get; set; }
 
         [JsonPropertyName("createdAt")]
         public DateTime CreatedAt { get; set; }
+        public string Status { get; set; }
+        public RefundOrderMaster OrderMaster { get; set; }
+    }
+
+    public class RefundOrderMaster
+    {
         public string OrderNo { get; set; }
         public string OrderID { get; set; }
         public Customer Customer { get; set; }
         public OrderAddress OrderAddress { get; set; }
-
         public object OrderDetails { get; set; }
     }
 }
