@@ -7,6 +7,7 @@ using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
 using Techugo.POS.ECOm.Services;
+using Techugo.POS.ECOm.Helper;
 
 namespace Techugo.POS.ECOm.Pages
 {
@@ -60,7 +61,7 @@ namespace Techugo.POS.ECOm.Pages
             // keep DataContext as the page so existing bindings (orderData, UpdatedTime, etc.) keep working
             DataContext = this;
             _apiService = ApiServiceFactory.Create();
-            DashboardDatePicker.SelectedDate = DateTime.Today;
+            DashboardDatePicker.SelectedDate = GlobalData.SelectedDashboardDate;
             Loaded += DashboardPage_Loaded;
             SizeChanged += DashboardPage_SizeChanged;
 
@@ -183,6 +184,7 @@ namespace Techugo.POS.ECOm.Pages
         private async void DashboardDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             DateTime date = DashboardDatePicker.SelectedDate ?? DateTime.Today;
+            GlobalData.SelectedDashboardDate = date;
             await ApiHelper.RunWithLoader(async () =>
             {
                 await LoadDashboardData(date);

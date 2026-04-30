@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Helper;
 
 namespace Techugo.POS.ECOm.Pages.Dashboard
 {
@@ -72,7 +73,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         }
         private async void LoadOrdersData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string formattedDate = GlobalData.SelectedDashboardDate.ToString("yyyy-MM-dd");
             //string formattedDate = "2025-09-30";
 
             AssignRiderOrdersResponse assignRiderOrdersResponse = await _apiService.GetAsync<AssignRiderOrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=1000&status=AssignRider&Date=" + formattedDate + "");
@@ -182,6 +183,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             var orderItem = button?.DataContext as OrderDetailVM;
             if (orderItem == null)
                 return;
+
+            if (orderItem.ExpectedDeliveryDate.HasValue && orderItem.ExpectedDeliveryDate.Value.Date > DateTime.Now.Date)
+            {
+                ShowSuccessSnackbar("Rider assignment is only allowed for today.");
+                return;
+            }
             foreach (var item in orderItem.OrderDetails)
             {
                 item.DeliveredQuantity = item.IsLooseItem ? item.Quantity + " x " + item.Size + "" + item.UOM : item.Quantity.ToString();

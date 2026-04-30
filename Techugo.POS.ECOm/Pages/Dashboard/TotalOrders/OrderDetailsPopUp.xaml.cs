@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,6 +34,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
             OrderDetails = orderDetail;
             DataContext = OrderDetails;
             UpdateMembershipAndOfferUI();
+
+            this.Loaded += (s, e) =>
+            {
+                var screenHeight = SystemParameters.PrimaryScreenHeight;
+                MainContentBorder.MaxHeight = screenHeight * 0.8;
+            };
         }
 
         /// <summary>

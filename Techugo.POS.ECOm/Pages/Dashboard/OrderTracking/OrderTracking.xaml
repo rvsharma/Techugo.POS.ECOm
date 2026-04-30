@@ -198,7 +198,7 @@ BorderBrush="#00c951"
                                      VerticalContentAlignment="Center"
                                      helpers:TouchKeyboardHelper.Enable="True"
                                      Padding="6,0"/>
-                            <TextBlock Text="Search by product name, barcode, or category..."
+                            <TextBlock Text="Search by Order ID"
                                        FontSize="14"
                                        Foreground="#9CA3AF"
                                        Margin="6,0,0,0"
@@ -317,7 +317,7 @@ BorderBrush="#00c951"
 
                                 <!--<GridViewColumn Header="Order ID" Width="150" DisplayMemberBinding="{Binding OrderNo}" />-->
 
-                                <GridViewColumn Header="Order No" Width="150">
+                                <GridViewColumn Header="Order ID" Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding OrderNo}" FontWeight="DemiBold" FontSize="14" HorizontalAlignment="Left"/>

@@ -10,6 +10,7 @@ using System.Windows.Media;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Helper;
 using Techugo.POS.ECOm.Pages.Dashboard;
 
 namespace Techugo.POS.ECOm.Pages
@@ -52,7 +53,7 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void LoadOrdersData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string formattedDate = GlobalData.SelectedDashboardDate.ToString("yyyy-MM-dd");
 
             OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=1000&status=TotalOrders&Date=" + formattedDate + "");
             if (orderResponse != null)

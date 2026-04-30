@@ -95,14 +95,14 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0">
+                    <!--<StackPanel Grid.Column="0">
                         <TextBlock Text="SKU" FontSize="12" Foreground="#666" Margin="4,0,0,4"/>
                         <Border Background="#F3F4F6" CornerRadius="6" Padding="10">
                             <TextBox Text="{Binding SKU}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>
                         </Border>
-                    </StackPanel>
+                    </StackPanel>-->
 
-                    <StackPanel Grid.Column="2">
+                    <StackPanel Grid.Column="0">
                         <TextBlock Text="Ordered Quantity" FontSize="12" Foreground="#666" Margin="4,0,0,4"/>
                         <Border Background="#F3F4F6" CornerRadius="6" Padding="10">
                             <TextBox Text="{Binding OrderedQtyDisPlay}" Background="Transparent" BorderThickness="0" IsReadOnly="True" FontWeight="SemiBold"/>

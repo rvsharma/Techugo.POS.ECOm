@@ -374,7 +374,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PickList
                 MeasuredQtyTextBox.Text += tag;
             }
 
-            if (int.TryParse(MeasuredQtyTextBox.Text, out int qty) && qty > 0)
+            if (int.TryParse(MeasuredQtyTextBox.Text, out int qty) && qty >= 0)
             {
                 ItemDetails.EditedQty = qty;
             }

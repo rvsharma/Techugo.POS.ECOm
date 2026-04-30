@@ -12,8 +12,8 @@ using System.Collections.Specialized;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
-using Techugo.POS.ECOm.Pages.Dashboard;
 using Techugo.POS.ECOm.Pages.Dashboard.PickList;
+using Techugo.POS.ECOm.Pages.Dashboard.PendingRequest;
 using Techugo.POS.ECOm.Services;
 using Techugo.POS.ECOm.Helper;
 using Techugo.POS.ECOm.Convertors;
@@ -28,6 +28,7 @@ namespace Techugo.POS.ECOm.Pages
         public event RoutedEventHandler BackRequested;
         public event PropertyChangedEventHandler PropertyChanged;
         private Window _editPickListPopUpWindow;
+        private Window _rejectOrderPopUpWindow;
 
         private readonly ApiService _api_service;
         // public ObservableCollection<PickListOrder> PickListOrders { get; set; } = new();
@@ -74,7 +75,7 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void LoadPickListData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string formattedDate = GlobalData.SelectedDashboardDate.ToString("yyyy-MM-dd");
              //string formattedDate = "2025-02-13";
             try
             {
@@ -254,7 +255,7 @@ namespace Techugo.POS.ECOm.Pages
                     OrderedQty = pli.Qty,
                     EditedQty = pli.EditQty,
                     OrderedQtyDisPlay = pli.Qty.ToString(),
-                    Weight = (pli.IsLooseItem && pli.Weight != null && decimal.TryParse(pli.Weight, out var w)) ? w : 1m,
+                    Weight = (pli.IsLooseItem && pli.Weight != null && decimal.TryParse(pli.Weight, out var w)) ? w : 0m,
                     UOM = pli.UOM,
                     SPrice = pli.SPrice,
                     Amount = pli.Amount,
@@ -408,8 +409,51 @@ namespace Techugo.POS.ECOm.Pages
                 // replace the order to raise CollectionChanged on PickListOrders (UI will refresh header fields)
                 PickListOrders[orderIndex] = parentOrder;
             }
+
             // Close popup window
             CloseOrderDetailsPopUp(popup, new RoutedEventArgs());
+
+            // Check if no items left (all items have 0 quantity)
+            if (parentOrder.Items != null && parentOrder.Items.All(i => i.EditQty <= 0))
+            {
+                ShowRejectionPopup(parentOrder);
+            }
+        }
+
+        private void ShowRejectionPopup(PickListOrder order)
+        {
+            var orderDetailVM = new OrderDetailVM
+            {
+                OrderID = order.OrderID,
+                OrderNo = order.OrderNo
+            };
+            var popUpData = new SelectableOrderDetail(orderDetailVM);
+
+            var popup = new RejectOrderPopUp(popUpData);
+            popup.CloseClicked += (s, e) => {
+                _rejectOrderPopUpWindow?.Close();
+                _rejectOrderPopUpWindow = null;
+            };
+            popup.PendingRequestClick += (s, e) => {
+                _rejectOrderPopUpWindow?.Close();
+                _rejectOrderPopUpWindow = null;
+                LoadPickListData(); // Refresh list
+                SnackbarService.Enqueue($"Order {order.OrderNo} Cancelled Successfully");
+            };
+
+            _rejectOrderPopUpWindow = new Window
+            {
+                Content = popup,
+                WindowStyle = WindowStyle.None,
+                AllowsTransparency = true,
+                Background = Brushes.Transparent,
+                Owner = Application.Current.MainWindow,
+                Width = SystemParameters.PrimaryScreenWidth,
+                Height = SystemParameters.PrimaryScreenHeight,
+                ShowInTaskbar = false,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            _rejectOrderPopUpWindow.ShowDialog();
         }
 
         private async void Ready_Button_Click(object sender, RoutedEventArgs e)
@@ -427,6 +471,13 @@ namespace Techugo.POS.ECOm.Pages
                 if (uneditedLoose != null)
                 {
                     SnackbarService.Enqueue($"Please edit the loose items.");
+                    return;
+                }
+
+                // Validation: Check if all items have 0 quantity
+                if (order.Items != null && order.Items.All(i => i.EditQty <= 0))
+                {
+                    ShowRejectionPopup(order);
                     return;
                 }
 

@@ -503,7 +503,8 @@ namespace Techugo.POS.ECOm.Pages
                     SnackbarService.Enqueue("Item updated successfully");
 
                     // Reset cache to force count refresh on next load
-                    _lastSearchForCount = null;
+                    _lastSearchForCount = "FORCE_REFRESH";
+                    _lastBrandIdForCount = -1; // Force brand mismatch too
 
                     // Reload current page with same filters
                     ReloadCurrentPage();

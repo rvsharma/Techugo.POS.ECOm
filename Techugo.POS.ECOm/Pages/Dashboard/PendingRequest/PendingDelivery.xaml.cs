@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Helper;
 using Techugo.POS.ECOm.Pages.Dashboard.PendingRequest;
 using Techugo.POS.ECOm.Services;
 
@@ -70,7 +71,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
 
         private async void LoadOrdersData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string formattedDate = GlobalData.SelectedDashboardDate.ToString("yyyy-MM-dd");
             //string formattedDate = "2026-01-11";
             OrdersResponse orderResponse = await _api_service.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=1000&status=PendingRequest&Date=" + formattedDate + "");
             if (orderResponse != null)
