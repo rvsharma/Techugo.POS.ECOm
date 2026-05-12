@@ -1,4 +1,4 @@
-﻿<Window x:Class="Techugo.POS.ECOm.Pages.Notification.QuickListWindow"
+<Window x:Class="Techugo.POS.ECOm.Pages.Notification.QuickListWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Quick List"
@@ -58,7 +58,7 @@
                 <Border Height="1" Background="#EFEFF0" DockPanel.Dock="Top" Margin="0,0,0,8"/>
 
                 <!-- Scrollable list -->
-                <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top" Height="380">
+                <ScrollViewer x:Name="NotificationScrollViewer" ScrollChanged="NotificationScrollViewer_ScrollChanged" VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top" Height="380">
                     <ItemsControl ItemsSource="{Binding Notifications}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>

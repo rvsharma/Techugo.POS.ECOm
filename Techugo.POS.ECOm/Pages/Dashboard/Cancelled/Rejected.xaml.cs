@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Helper;
 
 namespace Techugo.POS.ECOm.Pages.Dashboard
 {
@@ -60,8 +61,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         }
         private async void LoadOrdersData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=1000&status=TotalOrders&Date=" + formattedDate + "&filter=Cancelled");
+            string formattedDate = GlobalData.SelectedDashboardDate.ToString("yyyy-MM-dd");
+            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/cancelled-orders?page=1&limit=1000&date=" + formattedDate + "&cancelledBy=Branch");
             if (orderResponse != null)
             {
 

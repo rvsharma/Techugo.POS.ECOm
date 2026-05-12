@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -138,6 +138,13 @@ namespace Techugo.POS.ECom.Model.ViewModel
             set { if (_editQty == value) return; _editQty = value; OnPropertyChanged(); }
         }
 
+        private bool _isEdited;
+        public bool IsEdited
+        {
+            get => _isEdited;
+            set { if (_isEdited == value) return; _isEdited = value; OnPropertyChanged(); }
+        }
+
         private string _weight;
         public string Weight
         {
@@ -171,6 +178,13 @@ namespace Techugo.POS.ECom.Model.ViewModel
             }
         }
 
+        private decimal _originalAmount;
+        public decimal OriginalAmount
+        {
+            get => _originalAmount;
+            set { if (_originalAmount == value) return; _originalAmount = value; OnPropertyChanged(); }
+        }
+
         private decimal _netAmount;
         public decimal NetAmount
         {
@@ -183,6 +197,13 @@ namespace Techugo.POS.ECom.Model.ViewModel
         {
             get => _discount;
             set { if (_discount == value) return; _discount = value; OnPropertyChanged(); }
+        }
+
+        private decimal _originalDiscount;
+        public decimal OriginalDiscount
+        {
+            get => _originalDiscount;
+            set { if (_originalDiscount == value) return; _originalDiscount = value; OnPropertyChanged(); }
         }
 
         private decimal _rate;

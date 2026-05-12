@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,12 +46,14 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
                 return;
             
             // Set Delivery Charge text and color
-            DeliveryChargeAmount.Text = _orderDetails.DeliveryCharge > 0 ? $"+₹{_orderDetails.DeliveryCharge}" : $"Free";
+            DeliveryChargeAmount.Text = _orderDetails.DeliveryCharge > 0 ? $"+Rs.{_orderDetails.DeliveryCharge}" : $"Free";
             DeliveryChargeAmount.Foreground = _orderDetails.DeliveryCharge == 0 ? new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 0, 166, 62)) : new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 106, 114, 130));
             
             // Set Handling Charge text and color
-            HandlingCharge.Text = _orderDetails.HandlingCharge > 0 ? $"+₹{_orderDetails.HandlingCharge}" : $"Free";
+            HandlingCharge.Text = _orderDetails.HandlingCharge > 0 ? $"+Rs.{_orderDetails.HandlingCharge}" : $"Free";
             HandlingCharge.Foreground = _orderDetails.HandlingCharge == 0 ? new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 0, 166, 62)) : new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 106, 114, 130));
+
+            PlatformFeeAmount.Text = _orderDetails.PlatformCharge != null && _orderDetails.PlatformCharge > 0 ? $"+Rs.{_orderDetails.PlatformCharge}" : $"Free";
 
             // Handle Membership Display
             if (_orderDetails.Membership != null)
@@ -63,7 +65,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
                     MembershipExistingPanel.Visibility = Visibility.Collapsed;
 
                     MembershipNamePurchased.Text = _orderDetails.Membership.MembershipName;
-                    MembershipAmountPurchased.Text = $"+₹{_orderDetails.Membership.Amount}";
+                    MembershipAmountPurchased.Text = $"+Rs.{_orderDetails.Membership.Amount}";
                 }
                 else
                 {
@@ -73,7 +75,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
                         // Membership was already existing (applied to this order)
                         MembershipPurchasedPanel.Visibility = Visibility.Collapsed;
                         MembershipExistingPanel.Visibility = Visibility.Visible;
-                        MembershipDiscount.Text = $"-₹{_orderDetails.MembershipDiscount}";
+                        MembershipDiscount.Text = $"-Rs.{_orderDetails.MembershipDiscount}";
 
 
                         MembershipNameExisting.Text = _orderDetails.Membership.MembershipName;
@@ -95,7 +97,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
 
                 if (_orderDetails.OfferDiscount > 0)
                 {
-                    OfferDiscount.Text = $"-₹{_orderDetails.OfferDiscount}";
+                    OfferDiscount.Text = $"-Rs.{_orderDetails.OfferDiscount}";
                 }
                 else
                 {
@@ -111,12 +113,12 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.PendingRequest
             if (_orderDetails.TotalDiscount > 0)
             {
                 TotalSaved.Visibility = Visibility.Visible;
-                TotalSavedAmount.Text = $"-₹{_orderDetails.TotalDiscount}";
+                TotalSavedAmount.Text = $"-Rs.{_orderDetails.TotalDiscount}";
                 TotalSavedAmount.Visibility = Visibility.Visible;
             }
             else
             {
-                TotalSavedAmount.Text = "-₹0";
+                TotalSavedAmount.Text = "-Rs.0";
                 TotalSavedAmount.Visibility = Visibility.Visible;
             }
             TotalAmount.Text = (_orderDetails.PaidAmount).ToString();

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Techugo.POS.ECom.Model;
 using Techugo.POS.ECom.Model.ViewModel;
 using Techugo.POS.ECOm.ApiClient;
+using Techugo.POS.ECOm.Helper;
 using Techugo.POS.ECOm.Pages.Dashboard;
 
 namespace Techugo.POS.ECOm.Pages.Dashboard
@@ -63,7 +64,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         }
         private async void LoadOrdersData()
         {
-            string formattedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string formattedDate = GlobalData.SelectedDashboardDate.ToString("yyyy-MM-dd");
             DeliverdOrdersResponse orderResponse = await _apiService.GetAsync<DeliverdOrdersResponse>("order/orders-list-by-zone?OrderType=OneTime&page=1&limit=1000&status=DeliveredOrders&Date=" + formattedDate + "");
             if (orderResponse != null)
             {
@@ -149,6 +150,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             order.OfferDiscount = data.OfferDiscount;
                             order.RefundAmount = data.RefundAmount;
                             order.DeliveryCharge = data.DeliveryCharge;
+                            order.PlatformCharge = o.PlatformCharge;
                             order.MembershipDiscount = data.MembershipDiscount;
                             order.TotalDiscount = data.TotalDiscount;
                             order.Items = data.OrderDetails.Count + " items(s)";

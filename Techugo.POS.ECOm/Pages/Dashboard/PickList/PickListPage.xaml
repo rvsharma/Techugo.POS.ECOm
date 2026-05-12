@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Techugo.POS.ECOm.Pages.PickListPage"
+<UserControl x:Class="Techugo.POS.ECOm.Pages.PickListPage"
               xmlns:svg="http://sharpvectors.codeplex.com/svgc/"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -148,7 +148,7 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                     <Border Background="#F3F4F6" CornerRadius="12" Padding="8,2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding TotalItems, StringFormat={}{0} items}" FontWeight="SemiBold" FontSize="14" Foreground="#222"/>
                                     </Border>
-                                    <TextBlock Text="{Binding OrderValue, StringFormat=₹{0:N2}}" FontWeight="Bold" FontSize="16" Grid.Column="3" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding OrderValue, StringFormat=Rs.{0:N2}}" FontWeight="Bold" FontSize="16" Grid.Column="3" VerticalAlignment="Center"/>
                                     <!-- Actions Column -->
                                     <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto">
                                         <Button Command="{Binding ToggleExpandCommand}" Content="{Binding ActionsText}" FontSize="16" Foreground="#222" Background="Transparent" BorderBrush="Transparent" Width="Auto">
@@ -214,8 +214,9 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                             <ColumnDefinition Width="1*" MinWidth="50"/>
                                             <ColumnDefinition Width="1.5*" MinWidth="70"/>
                                             <ColumnDefinition Width="1.5*" MinWidth="90"/>
+                                            <ColumnDefinition Width="1.2*" MinWidth="70"/>
+                                            <ColumnDefinition Width="1.2*" MinWidth="70"/>
                                             <ColumnDefinition Width="1.5*" MinWidth="70"/>
-                                            <ColumnDefinition Width="2*" MinWidth="70"/>
                                             <ColumnDefinition Width="2*" MinWidth="90"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="Item Name" FontWeight="SemiBold" FontSize="14" Grid.Column="0" Foreground="#888" Margin="16,0" VerticalAlignment="Center"/>
@@ -223,9 +224,10 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                         <TextBlock Text="Qty" FontWeight="SemiBold" FontSize="14" Grid.Column="2" Foreground="#888" VerticalAlignment="Center"/>
                                         <TextBlock Text="Edit Qty" FontWeight="SemiBold" FontSize="14" Grid.Column="3" Foreground="#888" VerticalAlignment="Center"/>
                                         <TextBlock Text="Weight (kg)" FontWeight="SemiBold" FontSize="14" Grid.Column="4" Foreground="#888" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Rate (₹)" FontWeight="SemiBold" FontSize="14" Grid.Column="5" Foreground="#888" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Total (₹)" FontWeight="SemiBold" FontSize="14" Grid.Column="6" Foreground="#888" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Actions" FontWeight="SemiBold" FontSize="14" Grid.Column="7" Foreground="#888" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Rate (Rs.)" FontWeight="SemiBold" FontSize="14" Grid.Column="5" Foreground="#888" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Discount (Rs.)" FontWeight="SemiBold" FontSize="14" Grid.Column="6" Foreground="#888" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Total (Rs.)" FontWeight="SemiBold" FontSize="14" Grid.Column="7" Foreground="#888" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Actions" FontWeight="SemiBold" FontSize="14" Grid.Column="8" Foreground="#888" VerticalAlignment="Center"/>
                                     </Grid>
                                     <ItemsControl ItemsSource="{Binding Items}">
                                         <ItemsControl.ItemTemplate>
@@ -237,8 +239,9 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                         <ColumnDefinition Width="1*" MinWidth="50"/>
                                                         <ColumnDefinition Width="1.5*" MinWidth="70"/>
                                                         <ColumnDefinition Width="1.5*" MinWidth="90"/>
+                                                        <ColumnDefinition Width="1.2*" MinWidth="70"/>
+                                                        <ColumnDefinition Width="1.2*" MinWidth="70"/>
                                                         <ColumnDefinition Width="1.5*" MinWidth="70"/>
-                                                        <ColumnDefinition Width="2*" MinWidth="70"/>
                                                         <ColumnDefinition Width="2*" MinWidth="90"/>
                                                     </Grid.ColumnDefinitions>
                                                     <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center">
@@ -248,8 +251,8 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                                 <ImageBrush ImageSource="{Binding ImageUrl}" Stretch="UniformToFill"/>
                                                             </Rectangle.Fill>
                                                         </Rectangle>
-
-                                                        <TextBlock Text="{Binding ItemName}" ToolTip="{Binding ItemFullName, RelativeSource={RelativeSource Self}}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Margin="0,0,16,0" />
+ 
+                                                        <TextBlock Text="{Binding ItemName}" ToolTip="{Binding ItemFullName}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Margin="0,0,16,0" />
                                                     </StackPanel>
                                                     <Border Background="#F3F4F6" CornerRadius="8" Padding="8,2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
                                                         <TextBlock Text="{Binding Size}" FontSize="13" Foreground="#222"/>
@@ -263,15 +266,20 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                                                         <TextBlock Text="{Binding Weight}" FontSize="15" Foreground="#222"/>
                                                     </StackPanel>
                                                     <TextBlock Grid.Column="5" FontSize="15" VerticalAlignment="Center">
-                                                      <Run Text="₹"/>
+                                                      <Run Text="Rs."/>
                                                       <Run Text="{Binding SPrice, StringFormat={}{0:N2}, FallbackValue=0.00}"/>             
                                                     </TextBlock>
-                                                    <!-- Total (₹) -->
-                                                    <TextBlock Grid.Column="6" FontWeight="Bold" FontSize="15" VerticalAlignment="Center">
-                                                      <Run Text="₹"/>
+                                                    <!-- Discount (Rs.) -->
+                                                    <TextBlock Grid.Column="6" FontSize="15" VerticalAlignment="Center" Foreground="#d4183d">
+                                                      <Run Text="-Rs."/>
+                                                      <Run Text="{Binding Discount, StringFormat={}{0:N2}, FallbackValue=0.00}"/>
+                                                    </TextBlock>
+                                                    <!-- Total (Rs.) -->
+                                                    <TextBlock Grid.Column="7" FontWeight="Bold" FontSize="15" VerticalAlignment="Center">
+                                                      <Run Text="Rs."/>
                                                       <Run Text="{Binding NetAmount, StringFormat={}{0:N2}, FallbackValue=0.00}"/>
                                                     </TextBlock>
-                                                    <Button Grid.Column="7" Height="32" Padding="12,0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                    <Button Grid.Column="8" Height="32" Padding="12,0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1"  HorizontalAlignment="Left" VerticalAlignment="Center"
                                                             Click="EditQty_Click">
                                                         <Button.Template>
                                                             <ControlTemplate TargetType="Button">

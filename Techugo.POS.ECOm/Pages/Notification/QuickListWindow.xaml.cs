@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -26,6 +26,10 @@ namespace Techugo.POS.ECOm.Pages.Notification
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly ApiService _apiService;
+        private int _currentPage = 1;
+        private bool _isLoading = false;
+        private bool _hasMoreItems = true;
+        private const int PageSize = 20;
 
         private ObservableCollection<NotificationItem> _notifications;
         public ObservableCollection<NotificationItem> Notifications
@@ -80,24 +84,62 @@ namespace Techugo.POS.ECOm.Pages.Notification
             }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
-        public async Task GetNotificationsAsync()
+        public async Task GetNotificationsAsync(bool isInitialLoad = true)
         {
+            if (_isLoading) return;
+            if (!isInitialLoad && !_hasMoreItems) return;
+
+            _isLoading = true;
             try
             {
-                NotificationsResponse data = await _apiService.GetAsync<NotificationsResponse>("branch/notification-list?page=1&limit=100");
-                if (data != null)
+                if (isInitialLoad)
                 {
-                    Notifications = new ObservableCollection<NotificationItem>(
-                        data.Data.Where(x => x.IsRead == false).Select(n => new NotificationItem
+                    _currentPage = 1;
+                    _hasMoreItems = true;
+                    Notifications.Clear();
+                }
+
+                NotificationsResponse data = await _apiService.GetAsync<NotificationsResponse>($"branch/notification-list?page={_currentPage}&limit={PageSize}");
+                if (data != null && data.Data != null)
+                {
+                    foreach (var n in data.Data)
+                    {
+                        Notifications.Add(new NotificationItem
                         {
                             Title = n.Title,
                             Message = n.Message,
                             CreatedAt = n.CreatedAt
-                        })
-                    );
+                        });
+                    }
+
+                    if (data.Data.Count < PageSize)
+                    {
+                        _hasMoreItems = false;
+                    }
+                    else
+                    {
+                        _currentPage++;
+                    }
+                }
+                else
+                {
+                    _hasMoreItems = false;
                 }
             }
             catch (Exception ex) { /* consider logging ex */ }
+            finally
+            {
+                _isLoading = false;
+            }
+        }
+
+        private async void NotificationScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            // If scrolled near the bottom (with 50px buffer)
+            if (e.VerticalOffset > 0 && e.VerticalOffset >= (e.ExtentHeight - e.ViewportHeight - 50))
+            {
+                await GetNotificationsAsync(false);
+            }
         }
 
         public class NotificationItem

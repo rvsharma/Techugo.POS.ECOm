@@ -37,6 +37,7 @@ namespace Techugo.POS.ECom.Model
         public bool IsNextDayDelivery { get; set; }
         public decimal PaidAmount { get; set; }
         public decimal? RefundAmount { get; set; }
+        public decimal? PlatformCharge { get; set; }
         public string Status { get; set; }
         public string BranchStatus { get; set; }
         public string RiderStatus { get; set; }
