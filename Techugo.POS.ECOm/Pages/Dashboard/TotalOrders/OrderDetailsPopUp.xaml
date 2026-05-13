@@ -14,7 +14,7 @@ Background="Transparent">
                    HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"/>
         <!-- Centered Popup: shadow layer (behind) + content layer (in front, no Effect) -->
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="680" Height="Auto">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="500" Height="Auto">
             <!-- Shadow layer (no text inside) -->
             <Border CornerRadius="16" Background="White" Margin="0" SnapsToDevicePixels="True">
                 <Border.Effect>
@@ -26,7 +26,7 @@ Background="Transparent">
             <Border x:Name="MainContentBorder" Background="White"
                     CornerRadius="16"
                     Padding="32"
-                    HorizontalAlignment="Stretch"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                 <Grid>
                     <!-- Close Button -->

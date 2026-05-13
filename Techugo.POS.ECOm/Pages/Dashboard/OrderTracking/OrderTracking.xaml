@@ -104,9 +104,10 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
             <Grid Margin="0,0,0,24" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Orders in Progress -->
+                <!-- Total Products -->
                 <Border
                    Background="#f3f8ff"
 BorderBrush="#e0e0e0"
@@ -127,14 +128,41 @@ BorderBrush="#e0e0e0"
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Grid.Column="0" Text="Orders in Progress" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                                <!--<svg:SvgViewbox Source="/Assets/Images/rejected.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>-->
                             </Grid>
                             <TextBlock Text="{Binding InProgress}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
                             <TextBlock Text="Currently being processed" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
                         </StackPanel>
                     </Border>
                 </Border>
+                <Border
+                    Background="#f0fdf4"
+BorderBrush="#e0e0e0"
+                    BorderThickness="1"
+                    CornerRadius="20"
+                    Margin="8"
+                    Padding="0"
+                    Height="150" Grid.Column="1">
+                    <Border
+                        Background="#f0fdf4"
+BorderBrush="#00c951"
+                        BorderThickness="4,0,0,0"
+                        CornerRadius="20">
+                        <StackPanel Margin="24">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Delivered Today" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                                <!--<svg:SvgViewbox Source="/Assets/Images/rejected.svg" Width="26" Height="26" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0"/>-->
+                            </Grid>
+                            <TextBlock Text="{Binding Completed}" FontWeight="Bold" FontSize="26" Margin="0,16,0,0"/>
+                            <TextBlock Text="Successfully completed" FontSize="12" Foreground="#888" Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Border>
             </Grid>
-
 
 
             <!-- Search + Filter row -->
