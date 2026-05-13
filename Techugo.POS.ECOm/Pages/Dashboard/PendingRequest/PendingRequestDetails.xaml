@@ -269,7 +269,7 @@ Background="Transparent">
                                     <TextBlock FontSize="15" FontWeight="DemiBold" Foreground="#222">
                                         <TextBlock.Text>
                                             <Binding Path="ExpectedDeliveryDate"
-                 StringFormat="{}{0:yyyy-MM-dd}"
+                 StringFormat="{}{0:yyyy-MM-dd HH:mm}"
                  TargetNullValue=""
                  FallbackValue=""/>
                                         </TextBlock.Text>

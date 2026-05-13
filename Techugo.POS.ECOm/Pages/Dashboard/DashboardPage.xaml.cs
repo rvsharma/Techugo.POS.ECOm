@@ -167,7 +167,8 @@ namespace Techugo.POS.ECOm.Pages
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            DateTime date = DashboardDatePicker.SelectedDate ?? DateTime.Today;
+            DateTime date = DateTime.Today;
+            DashboardDatePicker.SelectedDate = date;
             await ApiHelper.RunWithLoader(async () =>
             {
                 await Task.Delay(500).ConfigureAwait(false); // 2 second delay
