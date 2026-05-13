@@ -146,31 +146,31 @@ namespace Techugo.POS.ECOm.Pages
                 }
 
                 RefundManagementResponse response = await _apiService.GetAsync<RefundManagementResponse>(endpoint);
-
+                TotalPages = 0;
+                TotalRefunds = 0;
+                RefundData.Clear();
                 if (response != null && response.Success && response.Data != null)
                 {
-                    TotalPages = 0;
-                    TotalRefunds = 0;
-                    RefundData.Clear();
+                    
                     foreach (var refund in response.Data)
                     {
-                        if(refund.OrderDetails != null)
+                        if(refund?.OrderMaster?.OrderDetails != null)
 
                         {
                             string address = string.Empty;
-                            if (refund.OrderAddress != null)
+                            if (refund.OrderMaster?.OrderAddress != null)
                             {
                                 var parts = new List<string>();
-                                if (!string.IsNullOrWhiteSpace(refund.OrderAddress.HouseNo))
-                                    parts.Add(refund.OrderAddress.HouseNo);
-                                if (!string.IsNullOrWhiteSpace(refund.OrderAddress.StreetNo))
-                                    parts.Add(refund.OrderAddress.StreetNo);
-                                if (!string.IsNullOrWhiteSpace(refund.OrderAddress.State))
-                                    parts.Add(refund.OrderAddress.State);
-                                if (!string.IsNullOrWhiteSpace(refund.OrderAddress.City))
-                                    parts.Add(refund.OrderAddress.City);
-                                if (!string.IsNullOrWhiteSpace(refund.OrderAddress.Pincode))
-                                    parts.Add(refund.OrderAddress.Pincode);
+                                if (!string.IsNullOrWhiteSpace(refund.OrderMaster.OrderAddress.HouseNo))
+                                    parts.Add(refund.OrderMaster.OrderAddress.HouseNo);
+                                if (!string.IsNullOrWhiteSpace(refund.OrderMaster.OrderAddress.StreetNo))
+                                    parts.Add(refund.OrderMaster.OrderAddress.StreetNo);
+                                if (!string.IsNullOrWhiteSpace(refund.OrderMaster.OrderAddress.State))
+                                    parts.Add(refund.OrderMaster.OrderAddress.State);
+                                if (!string.IsNullOrWhiteSpace(refund.OrderMaster.OrderAddress.City))
+                                    parts.Add(refund.OrderMaster.OrderAddress.City);
+                                if (!string.IsNullOrWhiteSpace(refund.OrderMaster.OrderAddress.Pincode))
+                                    parts.Add(refund.OrderMaster.OrderAddress.Pincode);
 
                                 address = string.Join(", ", parts);
                             }
@@ -195,16 +195,16 @@ namespace Techugo.POS.ECOm.Pages
                             RefundVM refundVm = new RefundVM
                             {
                                 //OrderID = refund.OrderMaster?.OrderID ?? string.Empty,
-                                OrderNo = refund?.OrderNo ?? string.Empty,
-                                Amount = refund.RefundAmount,
+                                OrderNo = refund.OrderMaster?.OrderNo ?? string.Empty,
+                                Amount = refund.Amount,
 
 
                                 CreatedAt = refund.CreatedAt,
                                 ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address,
-                                Status = GetRefundStatus(refund.OrderID) ?? string.Empty,
-                                CustomerName = refund.Customer?.CustomerName == null ? refund.OrderAddress.Name : refund.Customer?.CustomerName,
-                                MobileNo = refund.OrderAddress?.MobileNo,
-                                OrderDetails = refund.OrderDetails != null ? System.Text.Json.JsonSerializer.Deserialize<List<OrderDetail>>(refund.OrderDetails.ToString()) : null
+                                Status = GetRefundStatus(refund.OrderMaster?.OrderID) ?? string.Empty,
+                                CustomerName = refund.OrderMaster?.Customer?.CustomerName == null ? refund.OrderMaster?.OrderAddress?.Name : refund.OrderMaster?.Customer?.CustomerName,
+                                MobileNo = refund.OrderMaster?.OrderAddress?.MobileNo,
+                                OrderDetails = refund.OrderMaster?.OrderDetails != null ? System.Text.Json.JsonSerializer.Deserialize<List<OrderDetail>>(refund.OrderMaster.OrderDetails.ToString()) : null
                             };
                             RefundData.Add(refundVm);
                         }
@@ -217,6 +217,14 @@ namespace Techugo.POS.ECOm.Pages
                     UpdateStats();
                     UpdatePaginationUI();
                     UpdateRefundOrderText();
+                }
+                else
+                {
+                    RefundData.Clear();
+                    UpdateStats();
+                    UpdatePaginationUI();
+                    UpdateRefundOrderText();
+                    PaginationSection.Visibility = Visibility.Collapsed;
                 }
             }
             catch (Exception ex)
