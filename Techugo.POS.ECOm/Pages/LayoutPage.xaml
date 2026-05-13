@@ -110,12 +110,12 @@
                         </StackPanel>
                     </ListBoxItem>
 
-                    <ListBoxItem PreviewMouseLeftButtonUp="RefundManagementMenu_Click" >
+                    <!--<ListBoxItem PreviewMouseLeftButtonUp="RefundManagementMenu_Click" >
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <svg:SvgViewbox Source="/Assets/Images/refund_list_icon.svg" Width="12" Height="12" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             <TextBlock Text="Refund Management" FontSize="14" VerticalAlignment="Center" Style="{StaticResource MenuItemTextStyle}"/>
                         </StackPanel>
-                    </ListBoxItem>
+                    </ListBoxItem>-->
 
                     <ListBoxItem PreviewMouseLeftButtonUp="InventoryManagementMenu_Click" >
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
