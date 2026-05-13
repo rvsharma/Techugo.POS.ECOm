@@ -62,7 +62,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         private async void LoadOrdersData()
         {
             string formattedDate = GlobalData.SelectedDashboardDate.ToString("yyyy-MM-dd");
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/cancelled-orders?page=1&limit=1000&date=" + formattedDate + "&cancelledBy=Branch");
+            //OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/cancelled-orders?page=1&limit=1000&date=" + formattedDate + "&cancelledBy=Branch");
+            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=1000&status=CancelledOrders&Date=" + formattedDate);
             if (orderResponse != null)
             {
 
@@ -137,7 +138,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                         orderData.Add(order);
                     }
                 }
-                DeliverdOrdersText = $"Cancelled Orders ({orderResponse?.TotalItems} orders)";
+                DeliverdOrdersText = $"Cancelled Orders ({orderData.Count} orders)";
             }
 
         }

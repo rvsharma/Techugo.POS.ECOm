@@ -76,19 +76,25 @@ namespace Techugo.POS.ECOm.Pages.Dashboard.OrderTracking
                 orderData.Clear();
                 foreach (var or in orderResponse.Data)
                 {
+                    var statusInfo = GetStatusToShow(or);
+
+                    // Skip delivered/completed orders — they should not appear on the tracking screen
+                    if (string.Equals(statusInfo.Status, "Completed", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(statusInfo.Status, "Delivered", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
                     TrackingItem trackingItem = new TrackingItem
                     {
                         OrderID = or.OrderID,
                         OrderNo = or.OrderNo,
-                        Status = GetStatusToShow(or).Status,
-                        Message = or.Rider.Name != null ? or.Rider.Name + " " + GetStatusToShow(or).Description : GetStatusToShow(or).Description,
+                        Status = statusInfo.Status,
+                        Message = or.Rider.Name != null ? or.Rider.Name + " " + statusInfo.Description : statusInfo.Description,
                         Rider = or.Rider
                     };
                     orderData.Add(trackingItem);
                 }
 
-                Completed = orderData.Count(item => item.Status == "Completed");
-                InProgress = orderData.Count(item => item.Status != "Completed");
+                InProgress = orderData.Count;
 
             }
         }

@@ -147,6 +147,52 @@ namespace Techugo.POS.ECOm.Pages.Notification
             public string Title { get; set; }
             public string Message { get; set; }
             public DateTime CreatedAt { get; set; }
+
+            /// <summary>
+            /// Returns a user-friendly relative time string based on CreatedAt.
+            /// </summary>
+            public string TimeAgo
+            {
+                get
+                {
+                    // Handle null / default DateTime safely
+                    if (CreatedAt == default(DateTime) || CreatedAt == DateTime.MinValue)
+                        return string.Empty;
+
+                    DateTime now = DateTime.Now;
+
+                    // If CreatedAt is in the future (clock skew), treat as "Now"
+                    if (CreatedAt > now)
+                        return "Now";
+
+                    TimeSpan elapsed = now - CreatedAt;
+
+                    // Less than 1 minute → "Now"
+                    if (elapsed.TotalMinutes < 1)
+                        return "Now";
+
+                    // Less than 60 minutes → "X Min Ago"
+                    if (elapsed.TotalMinutes < 60)
+                    {
+                        int mins = (int)elapsed.TotalMinutes;
+                        return mins == 1 ? "1 Min Ago" : $"{mins} Mins Ago";
+                    }
+
+                    // Less than 24 hours → "X Hours Ago"
+                    if (elapsed.TotalHours < 24)
+                    {
+                        int hours = (int)elapsed.TotalHours;
+                        return hours == 1 ? "1 Hour Ago" : $"{hours} Hours Ago";
+                    }
+
+                    // Yesterday check (calendar day based)
+                    if (CreatedAt.Date == now.Date.AddDays(-1))
+                        return "Yesterday";
+
+                    // Older → formatted date & time
+                    return CreatedAt.ToString("dd MMM yyyy, hh:mm tt");
+                }
+            }
         }
 
         //public string SelectedItem => ItemsListBox.SelectedItem as string;

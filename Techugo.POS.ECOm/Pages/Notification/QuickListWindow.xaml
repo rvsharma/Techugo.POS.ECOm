@@ -83,8 +83,20 @@
                                             BorderThickness="2,0,0,0"
                                             CornerRadius="8">
                                         <StackPanel Margin="4">
-
-                                            <TextBlock Text="{Binding Title}" FontWeight="DemiBold" FontSize="14" Margin="0,8,0,0"/>
+                                            <!-- Header row: Title + TimeAgo -->
+                                            <DockPanel Margin="0,8,0,0">
+                                                <TextBlock Text="{Binding TimeAgo}"
+                                                           DockPanel.Dock="Right"
+                                                           FontSize="11"
+                                                           Foreground="#999"
+                                                           VerticalAlignment="Center"
+                                                           Margin="8,0,4,0"/>
+                                                <TextBlock Text="{Binding Title}"
+                                                           FontWeight="DemiBold"
+                                                           FontSize="14"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           VerticalAlignment="Center"/>
+                                            </DockPanel>
                                             <TextBlock Text="{Binding Message}" FontSize="12" Foreground="#888" Margin="0,8,0,0" TextWrapping="Wrap"/>
                                         </StackPanel>
                                     </Border>
