@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -149,7 +150,7 @@ namespace Techugo.POS.ECOm.Pages
                 TotalPages = 0;
                 TotalRefunds = 0;
                 RefundData.Clear();
-                if (response != null && response.Success && response.Data != null)
+                if (response != null && response.Success && response.Data != null && response.Data.Count >0)
                 {
                     
                     foreach (var refund in response.Data)
@@ -201,7 +202,7 @@ namespace Techugo.POS.ECOm.Pages
 
                                 CreatedAt = refund.CreatedAt,
                                 ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address,
-                                Status = GetRefundStatus(refund.OrderMaster?.OrderID) ?? string.Empty,
+                                Status = refund.Status,
                                 CustomerName = refund.OrderMaster?.Customer?.CustomerName == null ? refund.OrderMaster?.OrderAddress?.Name : refund.OrderMaster?.Customer?.CustomerName,
                                 MobileNo = refund.OrderMaster?.OrderAddress?.MobileNo,
                                 OrderDetails = refund.OrderMaster?.OrderDetails != null ? System.Text.Json.JsonSerializer.Deserialize<List<OrderDetail>>(refund.OrderMaster.OrderDetails.ToString()) : null
@@ -214,14 +215,15 @@ namespace Techugo.POS.ECOm.Pages
 
                     TotalPages = response.TotalPages;
                     TotalRefunds = response.TotalItems;
-                    UpdateStats();
+                    UpdateStatsAsync();
                     UpdatePaginationUI();
                     UpdateRefundOrderText();
+                    PaginationSection.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     RefundData.Clear();
-                    UpdateStats();
+                    UpdateStatsAsync();
                     UpdatePaginationUI();
                     UpdateRefundOrderText();
                     PaginationSection.Visibility = Visibility.Collapsed;
@@ -247,11 +249,15 @@ namespace Techugo.POS.ECOm.Pages
             };
         }
 
-        private void UpdateStats()
+        private async Task UpdateStatsAsync()
         {
-            InitiatedCount = RefundData.Count(r => r.Status == "Initiated");
-            ProcessingCount = RefundData.Count(r => r.Status == "Processing");
-            CompletedCount = RefundData.Count(r => r.Status == "Completed");
+            string endpoint = $"order/refund-summary?paymentMode={SelectedPaymentMode}";
+
+            CountResponse response = await _apiService.GetAsync<CountResponse>(endpoint);
+            TotalRefunds = response.Data.Total;
+            InitiatedCount = response.Data.Initiated;
+            ProcessingCount = response.Data.Failed;
+            CompletedCount = response.Data.Processed;
         }
 
         private void UpdatePaginationUI()
@@ -349,6 +355,20 @@ namespace Techugo.POS.ECOm.Pages
             public string CustomerName { get; set; }
             public string MobileNo { get; set; }
             public List<OrderDetail> OrderDetails { get; set; }
+        }
+
+        public class CountResponse: BaseResponse
+        {
+            [JsonPropertyName("data")]
+            public RefundCount Data { get; set; }
+        }
+
+        public class RefundCount
+        {
+            public int Total { get; set; }
+            public int Initiated { get; set; }
+            public int Processed { get; set; }
+            public int Failed { get; set; }
         }
     }
 }

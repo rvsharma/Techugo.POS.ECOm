@@ -62,7 +62,7 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
         private async void LoadOrdersData()
         {
             string formattedDate = GlobalData.SelectedDashboardDate.ToString("yyyy-MM-dd");
-            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/cancelled-orders?page=1&limit=1000&date=" + formattedDate + "&cancelledBy=Branch");
+            OrdersResponse orderResponse = await _apiService.GetAsync<OrdersResponse>("order/orders-list?OrderType=OneTime&page=1&limit=1000&status=CancelledOrders&Date=" + formattedDate +"");
             if (orderResponse != null)
             {
 
@@ -95,8 +95,8 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                         order.ExpectedDeliveryDate = data.ExpectedDeliveryDate.HasValue
     ? data.ExpectedDeliveryDate.Value.ToLocalTime()
     : null;
-                        order.TotalAmount = data.TotalAmount;
-                        order.PaidAmount = data.PaidAmount;
+                        order.TotalAmount = data.TotalAmount + data.DeliveryCharge + (data.Membership != null ? data.Membership.Amount : 0) - data.TotalDiscount;
+
                         order.Status = data.Status;
                         string address = string.Empty;
                         if (data.OrderAddress != null)
@@ -116,12 +116,13 @@ namespace Techugo.POS.ECOm.Pages.Dashboard
                             address = string.Join(", ", parts);
                         }
                         order.Address = address;
-                        order.PaidAmount = (decimal)(data.IsMembershipPurchase == true ? data.Membership.Amount + data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount) : data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount));
+                        order.PaidAmount = (decimal)(data.IsMembershipPurchase == true ? (data.Membership != null? data.Membership.Amount : 0) + data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount) : data.PaidAmount - (data.RefundAmount == null ? 0m : data.RefundAmount));
                         order.ShortAddress = address.Length > 20 ? address.Substring(0, 20) + "..." : address;
                         order.PaymentMode = data.PaymentMode;
                         order.Subscription = data.Subscription;
                         order.OrderDetails = data.OrderDetails;
-                        order.Customer = data.Customer;
+                        order.CustomerName = data.OrderAddress?.Name;
+                        order.MobileNo = data.OrderAddress?.MobileNo;
                         order.BranchDeliverySlot = or.BranchDeliverySlot?.StartTime + " - " + or.BranchDeliverySlot?.EndTime;
                         order.ItemImages = or.ItemImages;
                         order.Status = or.Status;

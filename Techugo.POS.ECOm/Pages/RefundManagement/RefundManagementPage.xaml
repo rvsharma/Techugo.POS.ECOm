@@ -283,13 +283,13 @@ TouchUp="BackButton_Click" HorizontalAlignment="Left">
                         </Grid.ColumnDefinitions>
 
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Processing" FontSize="14" Foreground="#6B7280"/>
-                            <TextBlock Text="{Binding ProcessingCount}" FontSize="26" FontWeight="SemiBold"  Foreground="Blue "/>
+                            <TextBlock Text="Failed" FontSize="14" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding ProcessingCount}" FontSize="26" FontWeight="SemiBold"  Foreground="Red "/>
                         </StackPanel>
 
                         <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
-                            <Border Background="#DBEAFE" CornerRadius="16" Padding="10,6" HorizontalAlignment="Right">
-                                <TextBlock Text="Processing" Foreground="#1E40AF" FontSize="12"  FontWeight="SemiBold"/>
+                            <Border Background="#FFCBD1" CornerRadius="16" Padding="10,6" HorizontalAlignment="Right">
+                                <TextBlock Text="Processing" Foreground="#F94449" FontSize="12"  FontWeight="SemiBold"/>
                             </Border>
                         </Grid>
                     </Grid>
@@ -407,14 +407,14 @@ ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollB
                                                     <Setter TargetName="StatusText" Property="Text" Value="Initiated"/>
                                                     <Setter TargetName="StatusText" Property="Foreground" Value="#D97706"/>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="Processing">
-                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#DBEAFE"/>
-                                                    <Setter TargetName="StatusText" Property="Text" Value="Processing"/>
-                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#1E40AF"/>
+                                                <DataTrigger Binding="{Binding Status}" Value="Failed">
+                                                    <Setter TargetName="StatusBadge" Property="Background" Value="#FFCBD1"/>
+                                                    <Setter TargetName="StatusText" Property="Text" Value="Failed"/>
+                                                    <Setter TargetName="StatusText" Property="Foreground" Value="#F94449"/>
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="Completed">
+                                                <DataTrigger Binding="{Binding Status}" Value="Processed">
                                                     <Setter TargetName="StatusBadge" Property="Background" Value="#DCFCE7"/>
-                                                    <Setter TargetName="StatusText" Property="Text" Value="Completed"/>
+                                                    <Setter TargetName="StatusText" Property="Text" Value="Processed"/>
                                                     <Setter TargetName="StatusText" Property="Foreground" Value="#16A34A"/>
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
